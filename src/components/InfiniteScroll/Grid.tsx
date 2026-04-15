@@ -5,7 +5,7 @@ import { Item } from "@/types";
 import { REF } from "@/constants/refs";
 import { ACTIONS } from "@/constants/actions";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
 import Spinner from "@/components/Spinner";
@@ -89,7 +89,7 @@ const Grid = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
   }, [last_shared_event]);
 
   useEffect(() => {
-    const PLAYLIST_EVENTS = [EVENTS.PLAYLIST_UPDATED, INFO_EVENTS.PLAYLIST_CREATED, INFO_EVENTS.PLAYLIST_REMOVED, INFO_EVENTS.PLAYLIST_UPDATED];
+    const PLAYLIST_EVENTS = [EVENTS.PLAYLIST_UPDATED, INTERNAL_EVENTS.PLAYLIST_CREATED, INTERNAL_EVENTS.PLAYLIST_REMOVED, INTERNAL_EVENTS.PLAYLIST_UPDATED];
     if (PLAYLIST_EVENTS.includes(action.event)) {
       fetch();
     }

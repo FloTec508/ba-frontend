@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useBluetoothService } from "@/services/bluetooth";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 export function useBluetoothActions() {
   const dispatch = useDispatch();
@@ -16,12 +16,12 @@ export function useBluetoothActions() {
 
     if (rescan) {
       dispatch({
-        type: INFO_EVENTS.BLUETOOTH_SCAN_COMPLETED,
+        type: INTERNAL_EVENTS.BLUETOOTH_SCAN_COMPLETED,
         payload: response,
       });
     } else {
       dispatch({
-        type: INFO_EVENTS.BLUETOOTH_LIST,
+        type: INTERNAL_EVENTS.BLUETOOTH_LIST,
         payload: response,
       });
     }

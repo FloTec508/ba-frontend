@@ -7,6 +7,7 @@ import { FolderSimpleIcon, GearIcon, MusicNotesIcon, UserIcon, VinylRecordIcon }
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { REF } from "@/constants/refs";
 import { ViewMode } from "@/types";
+import { usePlayNow } from "@/hooks/usePlayNow";
 
 import Page from "@/components/Page";
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
@@ -28,6 +29,7 @@ import ListItem from "@/components/ListItem";
 
 const Local = () => {
   const navigate = useNavigate();
+  const { handlePlayNow } = usePlayNow();
 
   const { view, id } = useParams<{ view: REF; id: string }>();
   const { getDirectory } = useLocalService();
@@ -179,7 +181,7 @@ const Local = () => {
                 {itemsDetailList.length > 0 &&
                   itemsDetailList.map((item: any, index: number) => (
                     <ItemWrapper key={index}>
-                      <ListItem key={item.uri} item={item} index={index} />
+                      <ListItem key={item.uri} item={item} index={index} onClickCallback={handlePlayNow}/>
                     </ItemWrapper>
                   ))}
               </div>

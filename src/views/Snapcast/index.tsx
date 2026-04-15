@@ -16,7 +16,7 @@ import {
   WarningCircleIcon,
 } from "@phosphor-icons/react";
 import { EVENTS } from "@/constants/events";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT, ICON_XS, LOCAL_IP } from "@/constants";
 import { REF } from "@/constants/refs";
 
@@ -120,7 +120,7 @@ const Snapcast = () => {
 
     const commitVolume = async (volume: number, muted?: boolean) => {
       try {
-        dispatch({ type: INFO_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
+        dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
         dispatch({
           type: EVENTS.SNAPCAST_NOTIFICATION,
           payload: {
@@ -148,17 +148,17 @@ const Snapcast = () => {
     };
 
     const onChangeVolume = ([value]: number[]) => {
-      dispatch({ type: INFO_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
+      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
       setvolumeLevel(value);
       setVolume(id, value);
     };
 
     const onMouseEnter = () => {
-      dispatch({ type: INFO_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
+      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
     };
 
     const onMouseLeave = () => {
-      dispatch({ type: INFO_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
+      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
     };
 
     useEffect(() => {

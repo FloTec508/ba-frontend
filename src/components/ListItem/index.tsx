@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MusicNotesMinusIcon,
   NetworkIcon,
@@ -33,7 +33,6 @@ const ListItem = ({
   item,
   view = REF.TRACK,
   isPlaylist = false,
-  isLoading = false,
   cover,
   index = null,
   style,
@@ -54,6 +53,8 @@ const ListItem = ({
   onClickCallback?: (item: Item) => void;
   onClickActionCallback?: (action: ACTIONS, item: Item) => void;
 }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { handleAddToQueue } = useAddToQueue();
   const { handlePlayNow } = usePlayNow();
   const { handleGoToArtist } = useGoToArtist();
@@ -139,16 +140,25 @@ const ListItem = ({
     },
   ];
 
+  const onClickItem = async () => {
+    setLoading(true);
+    try {
+      await Promise.resolve(onClickCallback?.(item));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return cover ? (
-    <div key={index} className={`cursor-pointer w-full h-full relative ${className ? className : ""}`} style={{ ...style }}>
-      <Cover item={item} view={view} loading={isLoading} onClick={() => onClickCallback?.(item)} actions={<ActionMenu items={itemsMenu} />} />
+    <div key={index} className={`cursor-pointer relative ${className ? className : ""}`} style={{ ...style }}>
+      <Cover item={item} view={view} loading={loading} onClick={onClickItem} actions={<ActionMenu items={itemsMenu} />} />
     </div>
   ) : (
     <>
       {/* Not a button else draggable wont work */}
-      <div className="flex items-center w-full cursor-pointer justify-between relative" onClick={() => onClickCallback?.(item)}>
+      <div className="flex items-center w-full cursor-pointer justify-between relative" >
         <ItemPadding>
-          <CoverList no={index === null ? undefined : index + 1} item={item} view={view} loading={isLoading} selected={selected} />
+          <CoverList no={index === null ? undefined : index + 1} item={item} view={view} loading={loading} selected={selected} onClick={onClickItem}/>
         </ItemPadding>
       </div>
       <div className="pr-2">

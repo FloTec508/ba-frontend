@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { usePlaylistService } from "@/services/playlist";
 import { MusicNoteIcon, PlaylistIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { ACTIONS } from "@/constants/actions";
 import { REF } from "@/constants/refs";
 import { splitUri } from "@/util";
@@ -53,7 +53,7 @@ const Playlists = () => {
           tracks: prev?.tracks.filter((item: TlTrack) => item.tlid !== tlid),
         }));
         dispatch({
-          type: INFO_EVENTS.PLAYLIST_TRACK_REMOVED,
+          type: INTERNAL_EVENTS.PLAYLIST_TRACK_REMOVED,
           payload: item,
         });
       }

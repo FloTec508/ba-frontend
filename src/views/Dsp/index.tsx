@@ -1,6 +1,6 @@
 import { CAMILLA_DSP_URL } from "@/constants";
 
-const SettingsCamillaDsp = () => {
+const Dsp = () => {
   return (
       <iframe
         src={CAMILLA_DSP_URL}
@@ -14,4 +14,4 @@ const SettingsCamillaDsp = () => {
   );
 };
 
-export default SettingsCamillaDsp;
+export default Dsp;

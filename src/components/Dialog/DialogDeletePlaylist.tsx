@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Item } from "@/types";
 import { usePlaylistService } from "@/services/playlist";
-import { INFO_EVENTS, DIALOG_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS, DIALOG_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
@@ -17,7 +17,7 @@ const DialogDeletePlaylist = ({ item }: { item: Item }) => {
     setButtonLoading(true);
     if (await deleteItem(item?.uri as string)) {
       dispatch({
-        type: INFO_EVENTS.PLAYLIST_REMOVED,
+        type: INTERNAL_EVENTS.PLAYLIST_REMOVED,
         payload: item,
       });
       dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });

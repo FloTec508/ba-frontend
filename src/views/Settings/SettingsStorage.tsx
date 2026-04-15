@@ -1,57 +1,43 @@
-import { useEffect, useState } from "react";
-import { useConfigService } from "@/services/config";
+import { useFormActions } from "@/hooks/useFormActions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useDispatch } from "react-redux";
-import { DIALOG_EVENTS } from "@/store/constants";
 import { z } from "zod";
 
 import Page from "@/components/Page";
 import ButtonSave from "@/components/Button/ButtonSave";
 
+const optionalString = (minLength: number, message: string) =>
+  z
+    .string()
+    .optional()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => !val || val.length >= minLength, { message });
+
 export const formSchema = z.object({
-  storage: z.object({
-    username: z
-      .string()
-      .optional()
-      .refine((val) => !val || val.length >= 3, {
-        message: "Username must be at least 2 characters",
-      }),
-    password: z
-      .string()
-      .optional()
-      .refine((val) => !val || val.length >= 6, {
-        message: "Password must be at least 6 characters",
-      }),
-  }),
+  storage: z
+    .object({
+      username: optionalString(3, "Username must be at least 3 characters").nullable(),
+      password: optionalString(6, "Password must be at least 6 characters").nullable(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.password && !data.username) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Username is required when password is provided",
+          path: ["username"],
+        });
+      }
+    }),
 });
 
-const SettingsSharing = () => {
-  const dispatch = useDispatch();
-  const { getConfig, setConfig } = useConfigService();
-
-  const [loading, setLoading] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
+const SettingsStorage= () => {
+  const form = useForm<z.input<typeof formSchema>, any, z.output<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
   });
 
-  useEffect(() => {
-    (async () => {
-      const _config = await getConfig();
-      form.reset({ ..._config });
-    })();
-  }, []);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    await setConfig(values);
-    dispatch({ type: DIALOG_EVENTS.DIALOG_REBOOT });
-    setLoading(false);
-  };
+  const { onSubmitHandler, loading } = useFormActions(form);
 
   return (
     <Page
@@ -60,13 +46,13 @@ const SettingsSharing = () => {
       rightComponent={
         <div className="flex">
           <div className="mr-4">
-            <ButtonSave onClick={form.handleSubmit(onSubmit)} isLoading={loading} />
+            <ButtonSave onClick={onSubmitHandler} isLoading={loading} />
           </div>
         </div>
       }
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-md">
+        <form onSubmit={onSubmitHandler} className="space-y-6 max-w-md">
           <div className="lg:px-0 px-6 py-3 lg:w-90">
             <div>
               <h2 className="mt-3 mb-3 text-xl">Authentication</h2>
@@ -81,9 +67,9 @@ const SettingsSharing = () => {
                 name="storage.username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium text-muted">Username</FormLabel>
+                    <FormLabel className="text-md block font-medium">Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Username" {...field} />
+                      <Input placeholder="Username" {...field} {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,9 +83,9 @@ const SettingsSharing = () => {
                 name="storage.password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium text-muted">Password</FormLabel>
+                    <FormLabel className="text-md block font-medium">Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Password" {...field} />
+                      <Input type="password" placeholder="Password" {...field} {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -113,4 +99,4 @@ const SettingsSharing = () => {
   );
 };
 
-export default SettingsSharing;
+export default SettingsStorage;

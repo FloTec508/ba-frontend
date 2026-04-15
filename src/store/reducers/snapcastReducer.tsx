@@ -1,5 +1,5 @@
 import { SnapcastState } from "@/types";
-import { INFO_EVENTS } from "../constants";
+import { INTERNAL_EVENTS } from "../constants";
 import { EVENTS } from "@/constants/events";
 
 const initialState: SnapcastState = {
@@ -12,14 +12,14 @@ export const snapcastReducer = (state = initialState, action: any): SnapcastStat
   const { type, payload } = action;
 
   switch (type) {
-    case INFO_EVENTS.SNAPCAST_VOLUME_DRAGGING:
+    case INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING:
       return {
         ...state,
         dragging: payload,
       };
 
-    case INFO_EVENTS.SNAPCAST_SCAN_COMPLETED:
-    case INFO_EVENTS.SNAPCAST_LIST:
+    case INTERNAL_EVENTS.SNAPCAST_SCAN_COMPLETED:
+    case INTERNAL_EVENTS.SNAPCAST_LIST:
       return {
         ...state,
         servers: payload,

@@ -4,7 +4,7 @@ import { TrashSimpleIcon } from "@phosphor-icons/react";
 
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import { useDispatch } from "react-redux";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 /**
  * A button component that clears the current queue.
@@ -18,7 +18,7 @@ const ButtonQueueClear = () => {
   const onClickHandler = () => {
     clear();
     dispatch({
-      type: INFO_EVENTS.CLEAR_QUEUE,
+      type: INTERNAL_EVENTS.CLEAR_QUEUE,
     });
   };
 

@@ -10,6 +10,7 @@ import { bluetoothReducer } from "./bluetoothReducer";
 import { snapcastReducer } from "./snapcastReducer";
 import { scanReducer } from "./scanReducer";
 import { networkReducer } from "./networkReducer";
+import { configReducer } from "./configReducer";
 
 export const rootReducer = combineReducers({
   socket: socketReducer,
@@ -23,4 +24,5 @@ export const rootReducer = combineReducers({
   bluetooth: bluetoothReducer,
   snapcast: snapcastReducer,
   network: networkReducer,
+  config: configReducer,
 });

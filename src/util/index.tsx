@@ -73,6 +73,11 @@ export const getPosition = (position: number) => convertMillisecondstoTime(posit
 export const getBitrate = (bitrate: number) => `${Math.floor((bitrate ?? 0) / 1000)}kbps`;
 
 /**
+ * Returns the channels in text.
+ */
+export const getChannels = (channels: number) => `${channels === 2 ? "Stereo" : "Mono"}`;
+
+/**
  * Returns the track's sample rate in khz.
  */
 export const getSampleRate = (samplerate: number) => `${Math.floor((samplerate ?? 0) / 1000)}kHz`;

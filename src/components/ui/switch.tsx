@@ -14,7 +14,7 @@ export function Switch({ value = false, onChange, disabled }: SwitchProps) {
       onCheckedChange={onChange}
       disabled={disabled}
       className={cn(
-        "cursor-pointer peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-black/20 dark:data-[state=unchecked]:bg-popover focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-7 w-12 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
+        "cursor-pointer peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-black/90 dark:data-[state=unchecked]:bg-popover focus-visible:border-ring focus-visible:ring-ring/50 inline-flex h-7 w-12 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
       )}
     >
       <SwitchPrimitive.Thumb

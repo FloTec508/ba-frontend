@@ -7,6 +7,7 @@ export enum REF {
     CATEGORY = "category",
     STORAGE = "storage",
     RADIO = "radio",
+    TUNER = "tuner",
     PLAYLIST = "playlist",
     ROOM = "room",
 }

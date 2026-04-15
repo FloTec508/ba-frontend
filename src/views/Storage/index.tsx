@@ -22,14 +22,14 @@ import Grid from "@/components/InfiniteScroll/Grid";
 import NoItems from "@/components/ListItem/NoItems";
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import ButtonAddSmb from "@/components/Button/ButtonAddSmb";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 const Storage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { getDirectory, setMount, setUnMount, setUnMountShared, setShare, setUnshare, addToLibrary } = useStorageService();
-  const { fetchStorages, loading } = useStorageActions();
+  const { getDirectory, setMount, setUnMount, setUnMountShared, setShare, setUnshare } = useStorageService();
+  const { fetchStorages, addLibraryPath, loading } = useStorageActions();
   const { storages } = useSelector((state: any) => state.storage);
   const { "*": path } = useParams<{ "*": string }>();
 
@@ -54,17 +54,12 @@ const Storage = () => {
 
     switch (action) {
       case ACTIONS.ADD_LIBRARY:
-        if (await addToLibrary(item.uri)) {
-          dispatch({
-            type: INFO_EVENTS.STORAGE_ADD_TO_LIBRARY,
-            payload: item,
-          });
-        }
+       addLibraryPath(item)
         break;
       case ACTIONS.DIRECTORY_SHARE:
         if (await setShare(item.uri)) {
           dispatch({
-            type: INFO_EVENTS.STORAGE_SHARED,
+            type: INTERNAL_EVENTS.STORAGE_SHARED,
             payload: item,
           });
         }
@@ -72,7 +67,7 @@ const Storage = () => {
       case ACTIONS.DIRECTORY_UNSHARE:
         if (await setUnshare(item.uri)) {
           dispatch({
-            type: INFO_EVENTS.STORAGE_UNSHARED,
+            type: INTERNAL_EVENTS.STORAGE_UNSHARED,
             payload: item,
           });
         }
@@ -80,7 +75,7 @@ const Storage = () => {
       case ACTIONS.MOUNT:
         if (await setMount(item.dev)) {
           dispatch({
-            type: INFO_EVENTS.STORAGE_MOUNTED,
+            type: INTERNAL_EVENTS.STORAGE_MOUNTED,
             payload: item,
           });
         }
@@ -88,7 +83,7 @@ const Storage = () => {
       case ACTIONS.UNMOUNT:
         if (await setUnMount(item.dev)) {
           dispatch({
-            type: INFO_EVENTS.STORAGE_UNMOUNTED,
+            type: INTERNAL_EVENTS.STORAGE_UNMOUNTED,
             payload: item,
           });
         }
@@ -185,7 +180,7 @@ const Storage = () => {
           )}
 
           <div className="mr-4">
-            <ButtonIcon onClick={() => navigate("/settings/local")}>
+            <ButtonIcon onClick={() => navigate("/settings/storage")}>
               <GearIcon weight={ICON_WEIGHT} size={ICON_SM} />
             </ButtonIcon>
           </div>

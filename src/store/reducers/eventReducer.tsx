@@ -1,5 +1,5 @@
 import { EVENTS } from "@/constants/events";
-import { INFO_EVENTS } from "../constants";
+import { INTERNAL_EVENTS } from "../constants";
 
 interface EventState {
   event: string | null;
@@ -16,9 +16,9 @@ export const eventReducer = (state = initialDialogState, action: any): EventStat
 
   switch (type) {
     case EVENTS.PLAYLIST_UPDATED:
-    case INFO_EVENTS.PLAYLIST_CREATED:
-    case INFO_EVENTS.PLAYLIST_REMOVED:
-    case INFO_EVENTS.PLAYLIST_UPDATED:
+    case INTERNAL_EVENTS.PLAYLIST_CREATED:
+    case INTERNAL_EVENTS.PLAYLIST_REMOVED:
+    case INTERNAL_EVENTS.PLAYLIST_UPDATED:
       return {
         event: type,
         payload: null,

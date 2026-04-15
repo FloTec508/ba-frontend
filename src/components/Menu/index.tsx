@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { DotsNineIcon } from "@phosphor-icons/react";
 import { OVERLAY_EVENTS, DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM } from "@/constants";
@@ -13,7 +13,6 @@ import ButtonVolume from "../Player/ButtonVolume";
 export function Menu() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { source } = useSelector((state: any) => state.player);
 
   const onClickMenuHandler = () => {
     dispatch({ type: OVERLAY_EVENTS.OVERLAY_CLOSE });
@@ -36,12 +35,9 @@ export function Menu() {
         <div className="mr-1">
           <ButtonSearch />
         </div>
-        {source?.state?.connected && (
-          <div className="mr-2 ml-1">
-            <Source hideText={true} className="scale-90" />
-          </div>
-        )}
-       
+        <div className="mr-2 ml-1">
+          <Source hideText={true} className="scale-90" />
+        </div>
         <ButtonVolume />
       </div>
     </div>

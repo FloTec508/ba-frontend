@@ -1,3 +1,4 @@
+import { EVENTS } from "@/constants/events";
 import { DIALOG_EVENTS } from "../constants";
 
 interface DialogState {
@@ -10,10 +11,7 @@ const initialDialogState: DialogState = {
   payload: null,
 };
 
-export const dialogReducer = (
-  state = initialDialogState,
-  action: any
-): DialogState => {
+export const dialogReducer = (state = initialDialogState, action: any): DialogState => {
   const { type, payload } = action;
 
   switch (type) {
@@ -32,15 +30,16 @@ export const dialogReducer = (
     case DIALOG_EVENTS.DIALOG_EDIT_NETWORK:
     case DIALOG_EVENTS.DIALOG_REBOOT:
     case DIALOG_EVENTS.DIALOG_POWER_OPTIONS:
-      return {
-        dialog: type,
-        payload,
-      };
+      return { dialog: type, payload };
+
     case "dialog/close":
-      return {
-        dialog: null,
-        payload: null,
-      };
+      return { dialog: null, payload: null };
+
+    case EVENTS.SYSTEM:
+      if (payload?.action === "restart") {
+        return { dialog: DIALOG_EVENTS.DIALOG_REBOOT, payload: null };
+      }
+      return state;
 
     default:
       return state;

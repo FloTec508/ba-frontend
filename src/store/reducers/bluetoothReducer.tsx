@@ -1,5 +1,5 @@
 import { BluetoothDevice, BluetoothState } from "@/types";
-import { INFO_EVENTS } from "../constants";
+import { INTERNAL_EVENTS } from "../constants";
 import { EVENTS } from "@/constants/events";
 
 const initialState: BluetoothState = {
@@ -12,8 +12,8 @@ export const bluetoothReducer = (state = initialState, action: any): BluetoothSt
   const { type, payload } = action;
 
   switch (type) {
-    case INFO_EVENTS.BLUETOOTH_SCAN_COMPLETED:
-    case INFO_EVENTS.BLUETOOTH_LIST:
+    case INTERNAL_EVENTS.BLUETOOTH_SCAN_COMPLETED:
+    case INTERNAL_EVENTS.BLUETOOTH_LIST:
       return {
         ...state,
         devices: payload?.sort((a: BluetoothDevice, b: BluetoothDevice) => a.name.localeCompare(b.name)),
@@ -24,7 +24,7 @@ export const bluetoothReducer = (state = initialState, action: any): BluetoothSt
       return { ...state, adapter_state: { ...state.adapter_state, powered: payload.state } };
     case EVENTS.BLUETOOTH_PAIRABLE:
       return { ...state, adapter_state: { ...state.adapter_state, pairable: payload.state } };
-    case INFO_EVENTS.BLUETOOTH_STATE_UPDATED:
+    case INTERNAL_EVENTS.BLUETOOTH_STATE_UPDATED:
       return { ...state, adapter_state: { ...payload } };
     case EVENTS.BLUETOOTH_CONNECTED:
     case EVENTS.BLUETOOTH_DISCONNECTED:

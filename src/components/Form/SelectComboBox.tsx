@@ -7,8 +7,8 @@ import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 
 export interface ComboboxItem {
   label: string;
-  value: string | number;
-  description?: string;
+  value: string | number | null;
+  description?: string | null;
 }
 
 export interface ComboboxBox {

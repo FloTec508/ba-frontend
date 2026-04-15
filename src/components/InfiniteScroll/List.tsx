@@ -4,7 +4,7 @@ import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { FolderSimpleIcon } from "@phosphor-icons/react";
 import { Item } from "@/types";
 import { ACTIONS } from "@/constants/actions";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
 import useVirtual from "react-cool-virtual";
@@ -71,7 +71,7 @@ const List = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
   }, [last_shared_event]);
 
   useEffect(() => {
-    const PLAYLIST_EVENTS = [EVENTS.PLAYLIST_UPDATED, INFO_EVENTS.PLAYLIST_CREATED, INFO_EVENTS.PLAYLIST_REMOVED, INFO_EVENTS.PLAYLIST_UPDATED];
+    const PLAYLIST_EVENTS = [EVENTS.PLAYLIST_UPDATED, INTERNAL_EVENTS.PLAYLIST_CREATED, INTERNAL_EVENTS.PLAYLIST_REMOVED, INTERNAL_EVENTS.PLAYLIST_UPDATED];
     if (PLAYLIST_EVENTS.includes(action.event)) {
       fetch();
     }
@@ -100,7 +100,7 @@ const List = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
           const item = items[index] || [];
           return (
             <ItemWrapper key={index}>
-              <ListItem item={item} onClickCallback={onClickCallback} onClickActionCallback={onClickActionCallback} />
+              <ListItem item={item} onClickCallback={onClickCallback} onClickActionCallback={onClickActionCallback}  />
             </ItemWrapper>
           );
         })}

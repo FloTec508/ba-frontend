@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSnapcastService } from "@/services/snapcast";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
 export function useSnapcastActions() {
@@ -16,12 +16,12 @@ export function useSnapcastActions() {
 
     if (rescan) {
       dispatch({
-        type: INFO_EVENTS.SNAPCAST_SCAN_COMPLETED,
+        type: INTERNAL_EVENTS.SNAPCAST_SCAN_COMPLETED,
         payload: response,
       });
     } else {
       dispatch({
-        type: INFO_EVENTS.SNAPCAST_LIST,
+        type: INTERNAL_EVENTS.SNAPCAST_LIST,
         payload: response,
       });
     }

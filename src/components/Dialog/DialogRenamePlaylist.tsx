@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Item } from "@/types";
 import { Input } from "@/components/Form/Input";
 import { usePlaylistService } from "@/services/playlist";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
@@ -19,7 +19,7 @@ const DialogRenamePlaylist = ({ item }: { item: Item }) => {
     setButtonLoading(true);
     if (await editItem(item?.uri as string, playlistName)) {
       dispatch({
-        type: INFO_EVENTS.PLAYLIST_UPDATED,
+        type: INTERNAL_EVENTS.PLAYLIST_UPDATED,
         payload: item,
       });
       dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });

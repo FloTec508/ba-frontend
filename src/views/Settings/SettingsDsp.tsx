@@ -1,22 +1,22 @@
-import { useFormActions } from "@/hooks/useFormActions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormActions } from "@/hooks/useFormActions";
 import { useForm } from "react-hook-form";
+import { InputNumber } from "@/components/Form/InputNumber";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
 
 import Page from "@/components/Page";
 import ButtonSave from "@/components/Button/ButtonSave";
-import SelectDisplayDevices from "@/components/Form/SelectDisplay";
-import SelectVisualizer from "@/components/Form/SelectVisualizer";
+import SelectSampleRate from "@/components/Form/SelectSampleRate";
 
 export const formSchema = z.object({
-  display: z.object({
-    output_display: z.string().nullable(),
-    visualizer_layout: z.number(),
+  dsp: z.object({
+    resample_rate: z.number().nullable(),
+    default_gain: z.number(),
   }),
 });
 
-const SettingsDisplay = () => {
+const SettingsDsp = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -26,7 +26,7 @@ const SettingsDisplay = () => {
   return (
     <Page
       backButton
-      title="Display"
+      title="DSP"
       rightComponent={
         <div className="flex">
           <div className="mr-4">
@@ -38,31 +38,39 @@ const SettingsDisplay = () => {
       <Form {...form}>
         <form onSubmit={onSubmitHandler} className="space-y-6 max-w-md">
           <div className="lg:px-0 px-6 py-3 lg:w-90">
-          
             <div className="mb-6">
               <FormField
                 control={form.control}
-                name="display.output_display"
+                name="dsp.default_gain"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium">Display</FormLabel>
+                    <FormLabel className="text-md block font-medium">Default Gain (dB)</FormLabel>
+                    <div className="pb-4 text-secondary">
+                      Default gain applied to all sources. <br></br>Use this to control clipping globally.
+                    </div>
                     <FormControl>
-                      <SelectDisplayDevices placeholder="Select Display" {...field} />
+                      <InputNumber {...field} max={20} min={-20} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
             <div className="mb-6">
               <FormField
                 control={form.control}
-                name="display.visualizer_layout"
+                name="dsp.resample_rate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium">Default Visualizer</FormLabel>
+                    <FormLabel className="text-md block font-medium">Resample Rate (Hz)</FormLabel>
+                    <div className="pb-4 text-secondary">
+                      ‘No Resampling’ adjusts DSP sample rate dynamically as needed for Bit perfect audio. Multiroom client may often disconnect to
+                      adjust sample rate. <br></br>(Recommended) Fixed resample rate - make sure your sound card supports the required sample rate
+                      before enabling.
+                    </div>
                     <FormControl>
-                      <SelectVisualizer placeholder="Select Visualiser" {...field} />
+                      <SelectSampleRate placeholder="No Resampling" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -75,4 +83,5 @@ const SettingsDisplay = () => {
     </Page>
   );
 };
-export default SettingsDisplay;
+
+export default SettingsDsp;

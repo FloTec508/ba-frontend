@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { usePlaylistService } from "@/services/playlist";
 import { useLocalService } from "@/services/local";
 import { Item, Track } from "@/types";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { REF } from "@/constants/refs";
 
@@ -63,7 +63,7 @@ const DialogAddToPlaylist = ({ item }: { item: Item }) => {
     selectedItems.forEach(async (item) => {
       await onAdd([item.uri], trackUris);
       dispatch({
-        type: INFO_EVENTS.PLAYLIST_TRACK_ADDED,
+        type: INTERNAL_EVENTS.PLAYLIST_TRACK_ADDED,
         payload: { ...item, tracks: trackUris },
       });
     });

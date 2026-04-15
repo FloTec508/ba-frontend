@@ -8,6 +8,8 @@ import { Item } from "@/types";
 import { getSubtitle } from ".";
 import { getImage } from "@/util";
 import { SharedUnsharedIcon } from "../Icons";
+import { PlayCircleIcon } from "@phosphor-icons/react";
+import { ICON_LG } from "@/constants";
 
 interface Cover {
   loading?: boolean;
@@ -29,25 +31,26 @@ const Cover = ({ item, view = REF.TRACK, loading = false, shadow = false, action
 
   return (
     <div className="w-full">
-      <button onClick={onClick} className="w-full cursor-pointer  shadow-1xl">
+      <button onClick={onClick} className="w-full cursor-pointer  shadow-1xl relative">
         <div className={`mb-2 md:mb-1 overflow-hidden rounded-md transition-all ${shadow ?? "shadow-[1px_14px_21px_-6px_rgba(0,0,0,0.1)]"}`}>
-          {loading && (
-            <div className="absolute w-full h-full flex items-center justify-center z-10 dark:bg-black/80 bg-white/80">
-              <Spinner />
-            </div>
-          )}
-
           {image && !imgError ? (
             <img
               src={image}
               alt={title}
-              className="object-cover w-full scale-101 aspect-square grayscale-30 inline-block"
+              className="object-cover w-full h-full aspect-square grayscale-30 inline-block"
               onError={() => setImgError(true)}
             />
           ) : (
             <Directory type={item_type} variant="primary" />
           )}
+
+          <div
+            className={`absolute top-0  left-0 w-full h-full rounded-md flex items-center justify-center z-2 ${loading ? "opacity-100" : "opacity-0 hover:opacity-100"}  hover:bg-black/50 transition duration-150`}
+          >
+            {loading ? <Spinner /> : <PlayCircleIcon size={ICON_LG} weight={"fill"} />}
+          </div>
         </div>
+
         <SharedUnsharedIcon shared={item.shared} classname="absolute top-2 right-2" />
       </button>
       {!cover_only && (

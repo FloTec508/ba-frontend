@@ -4,12 +4,13 @@ import TruncateText from "../TruncateText";
 import Spinner from "../Spinner";
 import ListImageWrapper from "../Wrapper/ListImageWrapper";
 
-import { MusicNotesIcon } from "@phosphor-icons/react";
+import { MusicNotesIcon, PlayCircleIcon } from "@phosphor-icons/react";
 import { formatNo, getImage } from "@/util";
 import { getDuration, getSubtitle } from ".";
 import { Item } from "@/types";
 import { REF } from "@/constants/refs";
 import { SharedUnsharedIcon } from "../Icons";
+import { ICON_SM } from "@/constants";
 
 interface CoverList {
   no?: number;
@@ -18,6 +19,7 @@ interface CoverList {
   loading?: boolean;
   image?: string;
   selected?: boolean;
+  onClick?: () => void;
 }
 /**
  * CoverList component
@@ -33,7 +35,7 @@ interface CoverList {
  * @param {string} props.selected - Highlighted
  * @returns {JSX.Element} The rendered cover list element.
  */
-const CoverList = ({ no, item, view = REF.TRACK, loading = false, selected = false }: CoverList) => {
+const CoverList = ({ no, item, view = REF.TRACK, loading = false, selected = false, onClick }: CoverList) => {
   const title = item.name;
   const type = item.type;
   const subtitle = getSubtitle(item, view);
@@ -45,18 +47,28 @@ const CoverList = ({ no, item, view = REF.TRACK, loading = false, selected = fal
   return (
     <div className="flex items-center w-full relative">
       {no && <div className="-ml-1 mr-4 text-sm text-secondary w-[10px] text-center">{formatNo(no)}</div>}
-      <ListImageWrapper>
-        {loading && (
-          <div className="absolute w-full h-full flex items-center justify-center z-10 dark:background/80 ">
-            <Spinner />
+
+      <button onClick={onClick} className="cursor-pointer relative">
+        <ListImageWrapper>
+          <div
+            className={`absolute w-full h-full rounded-sm flex items-center justify-center z-10 ${loading ? "opacity-100" : "opacity-0 hover:opacity-100"}  hover:bg-black/50 transition duration-150`}
+          >
+            {loading ? <Spinner /> : <PlayCircleIcon size={ICON_SM} weight={"fill"} />}
           </div>
-        )}
-        {image && !imgError ? (
-          <img src={image} alt={title} className="object-cover aspect-square w-full grayscale-25" onError={() => setImgError(true)} />
-        ) : (
-          <Directory type={type} variant="primary" />
-        )}
-      </ListImageWrapper>
+          {image && !imgError ? (
+            <img
+              src={image}
+              alt={title}
+              className={`object-cover aspect-square w-full grayscale-25`}
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <Directory type={type} variant="primary" />
+          )}
+
+          
+        </ListImageWrapper>
+      </button>
       <SharedUnsharedIcon shared={item.shared} classname="absolute -top-1 left-8" />
       <div className="text-left flex-grow w-0 pr-5">
         <h2 className={`text-lg font-medium tracking-tight flex`}>

@@ -5,7 +5,7 @@ import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
 import { Item, TlTrack, Track } from "@/types";
 import { useDispatch } from "react-redux";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 export function useAddToQueue() {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export function useAddToQueue() {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
         dispatch({
-          type: INFO_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
           payload: tracks,
         });
         break;
@@ -39,7 +39,7 @@ export function useAddToQueue() {
           tracksUris.push(...playlist.tracks.map((track: TlTrack) => track.track.uri));
         }
         dispatch({
-          type: INFO_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
           payload: playlist?.tracks,
         });
         break;
@@ -47,7 +47,7 @@ export function useAddToQueue() {
       default:
         tracksUris.push(item.uri);
         dispatch({
-          type: INFO_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
           payload: item,
         });
         break;

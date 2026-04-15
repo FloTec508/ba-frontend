@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useConfigService } from "@/services/config";
 import { useSourceService } from "@/services/source";
 import { usePlaybackService } from "@/services/playback";
 import { useTracklistService } from "@/services/tracklist";
@@ -28,11 +29,13 @@ export default function Layout({ children }: { children: any }) {
   const { getSystemTime, getPowerState } = useSystemService();
   const { getDevices } = useNetworkService();
   const { getSource } = useSourceService();
+  const { getConfig } = useConfigService();
 
   useEffect(() => {
     const initialize = async () => {
       try {
         const [
+          _config,
           _getNetworkDevices,
           _getPowerState,
           _getState,
@@ -46,6 +49,7 @@ export default function Layout({ children }: { children: any }) {
           _volume,
           _mute,
         ] = await Promise.all([
+          getConfig(),
           getDevices(),
           getPowerState(),
           getState(),
@@ -59,6 +63,11 @@ export default function Layout({ children }: { children: any }) {
           getMixerVolume(),
           getMixerMute(),
         ]);
+
+        dispatch({
+          type: EVENTS.CONFIG_UPDATED,
+          payload: { config: _config },
+        });
 
         dispatch({
           type: EVENTS.NETWORK_DEVICES,
@@ -98,6 +107,10 @@ export default function Layout({ children }: { children: any }) {
         dispatch({
           type: EVENTS.VOLUME_CHANGED,
           payload: { volume: _volume },
+        });
+        dispatch({
+          type: EVENTS.MIXER_MUTE,
+          payload: { mute: _mute },
         });
       } catch (err) {
         console.error("Error initiazing:", err);

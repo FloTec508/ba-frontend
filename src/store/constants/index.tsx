@@ -9,7 +9,7 @@ export enum PLAYER_EVENTS {
   VOLUME_CHANGED = "player/volume",
 }
 
-export enum INFO_EVENTS {
+export enum INTERNAL_EVENTS {
   // Playlist
   PLAYLIST_CREATED = "event/playlist/create",
   PLAYLIST_UPDATED = "event/playlist/update",
@@ -23,6 +23,8 @@ export enum INFO_EVENTS {
 
   // Library
   LIBRARY_SCAN_COMPLETED = "event/library/scan/completed",
+  LIBRARY_PATH_ADD = "event/library/path/add",
+  LIBRARY_PATH_EXISTS = "event/library/path/exists",
   SCAN_UPDATED = "event/local/scan/updated",
   SCAN_ARTIST_UPDATED = "event/local/artist/scan/updated",
 
@@ -32,7 +34,6 @@ export enum INFO_EVENTS {
   STORAGE_UNMOUNTED = "event/storage/unmounted",
   STORAGE_SHARED = "event/storage/shared",
   STORAGE_UNSHARED = "event/storage/unshared",
-  STORAGE_ADD_TO_LIBRARY = "event/storage/add/library",
 
   // Bluetooth
   BLUETOOTH_SCAN_COMPLETED = "event/bluetooth/scan/completed",

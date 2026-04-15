@@ -200,6 +200,7 @@
 .seek-slider-mini [data-slot="slider-track"] {
   height: 4px;
 }
+
 .show {
   display: block;
 }
@@ -247,3 +248,12 @@
   scrollbar-color: #555 #1a1a1a;
 }
 
+[data-sonner-toaster][data-y-position="bottom"] {
+  bottom: 100px !important; 
+}
+
+@media (max-width: 768px) {
+  [data-sonner-toaster][data-y-position="bottom"] {
+    bottom: 90px !important; 
+  }
+}

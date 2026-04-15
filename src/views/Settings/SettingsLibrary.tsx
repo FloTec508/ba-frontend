@@ -1,3 +1,8 @@
+import { FolderIcon, StackSimpleIcon, TrashSimpleIcon } from "@phosphor-icons/react";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { useStorageActions } from "@/hooks/useStorageActions";
+import { useSelector } from "react-redux";
+
 import Page from "@/components/Page";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import TruncateText from "@/components/TruncateText";
@@ -7,32 +12,11 @@ import ButtonClearLibrary from "@/components/Button/ButtonClearLibrary";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import NoItems from "@/components/ListItem/NoItems";
 
-import { FolderIcon, StackSimpleIcon, TrashSimpleIcon } from "@phosphor-icons/react";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { useStorageService } from "@/services/storage";
-import { useEffect, useState } from "react";
-import { useConfigService } from "@/services/config";
-
 const SettingsLocal = () => {
-  const { getConfig } = useConfigService();
-  const { removeFromLibrary } = useStorageService();
+  const { removeLibraryPath } = useStorageActions();
+  const { config } = useSelector((state: any) => state.config);
 
-  const [pathList, setPathList] = useState<string[]>();
-
-  useEffect(() => {
-    (async () => {
-      await getConfig().then((config) => {
-        setPathList(config["local"]["library_path"]);
-      });
-    })();
-  }, []);
-
-  const onClickRemovePath = async (uri: string) => {
-    await removeFromLibrary(uri);
-    await getConfig().then((config) => {
-      setPathList(config["local"]["library_path"]);
-    });
-  };
+  const paths = config.local.library_path;
 
   return (
     <Page
@@ -41,10 +25,10 @@ const SettingsLocal = () => {
       rightComponent={
         <div className="flex">
           <div className="mr-4">
-            <ButtonScanLibrary disabled={!pathList?.length} />
+            <ButtonScanLibrary disabled={!paths.length} />
           </div>
           <div className="mr-4">
-            <ButtonScanArtist disabled={!pathList?.length} />
+            <ButtonScanArtist disabled={!paths.length} />
           </div>
           <div className="mr-4">
             <ButtonClearLibrary />
@@ -52,16 +36,16 @@ const SettingsLocal = () => {
         </div>
       }
     >
-      {pathList?.length ? (
+      {paths.length ? (
         <div className="lg:px-0 px-6 py-3">
-          {pathList &&
-            pathList.map((uri: string) => (
+          {paths &&
+            paths.map((uri: string) => (
               <div key={uri} className="pl-4 pr-2 py-2 rounded-sm mt-1 flex items-center justify-between bg-popover hover:bg-primary">
                 <div className="flex items-center overflow-hidden">
                   <FolderIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />
                   <TruncateText>{uri}</TruncateText>
                 </div>
-                <ButtonIcon className="text-right ml-5" onClick={() => onClickRemovePath(uri)}>
+                <ButtonIcon className="text-right ml-5" onClick={() => removeLibraryPath(uri)}>
                   <TrashSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />
                 </ButtonIcon>
               </div>

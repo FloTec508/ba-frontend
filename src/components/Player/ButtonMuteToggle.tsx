@@ -7,12 +7,12 @@ import ButtonIcon from "../Button/ButtonIcon";
 
 const ButtonMuteToggle = () => {
   const { mute } = useSelector((state: any) => state.player);
-  const { setMixerMute } = useMixerService();
+  const { toggleMixerMute } = useMixerService();
 
   return (
-    <ButtonIcon onClick={async () => await setMixerMute(!mute)}>
+    <ButtonIcon onClick={async () => await toggleMixerMute()}>
       {mute ? (
-        <SpeakerSlashIcon size={ICON_SM} weight={ICON_WEIGHT} className="text-muted"/>
+        <SpeakerSlashIcon size={ICON_SM} weight={ICON_WEIGHT} className="text-muted" />
       ) : (
         <SpeakerHighIcon size={ICON_SM} weight={ICON_WEIGHT} />
       )}

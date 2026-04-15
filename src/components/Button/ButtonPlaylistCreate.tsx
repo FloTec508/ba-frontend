@@ -3,7 +3,7 @@ import { ListPlusIcon } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePlaylistService } from "@/services/playlist";
 import { Input } from "@/components/Form/Input";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
 import Modal from "@/components/Modal";
@@ -24,7 +24,7 @@ const ButtonPlaylistCreate = ({ fromQueue = false }: { fromQueue?: boolean }) =>
     const tl_tracks = fromQueue ? current_playlist : [];
     if (await createItem(playlistName, tl_tracks)) {
       dispatch({
-        type: INFO_EVENTS.PLAYLIST_CREATED,
+        type: INTERNAL_EVENTS.PLAYLIST_CREATED,
         payload: { name: playlistName },
       });
       setShowCreateModal(false);

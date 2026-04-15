@@ -1,27 +1,24 @@
-import { useFormActions } from "@/hooks/useFormActions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormActions } from "@/hooks/useFormActions";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { InputNumber } from "@/components/Form/InputNumber";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
 
 import Page from "@/components/Page";
-import SelectTimezone from "@/components/Form/SelectTimezone";
 import ButtonSave from "@/components/Button/ButtonSave";
-import ButtonThemeToggle from "@/components/Button/ButtonThemeToggle";
+import SelectSampleRate from "@/components/Form/SelectSampleRate";
+import SelectAlsaDevices from "@/components/Form/SelectAlsaDevices";
 
 export const formSchema = z.object({
-  system: z.object({
-    hostname: z.string().min(1, "Hostname is required"),
-    timezone: z.string().min(6, "Timezone is required"),
-  }),
-  playback: z.object({
-    background_albumart: z.boolean(),
+  tuner: z.object({
+    input_device: z.string().nullable(),
+    sample_rate: z.number().min(1, "Sample rate is required"),
+    gain: z.number(),
   }),
 });
 
-const SettingsGeneral = () => {
+const SettingsTuner = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -31,7 +28,7 @@ const SettingsGeneral = () => {
   return (
     <Page
       backButton
-      title="General"
+      title="Tuner"
       rightComponent={
         <div className="flex">
           <div className="mr-4">
@@ -46,15 +43,27 @@ const SettingsGeneral = () => {
             <div className="mb-6">
               <FormField
                 control={form.control}
-                name="system.hostname"
+                name="tuner.input_device"
+                render={() => (
+                  <FormItem>
+                    <FormLabel className="text-md block font-medium">Tuner</FormLabel>
+                    <FormControl>Select Tuner Device</FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="mb-6">
+              <FormField
+                control={form.control}
+                name="tuner.input_device"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium">Hostname</FormLabel>
-                    <div className="pb-4 text-secondary">
-                      Used by Berryaudio OS Player as the device name for Spotify, AirPlay, Bluetooth, and browser access.{" "}
-                    </div>
+                    <FormLabel className="text-md block font-medium">Input device</FormLabel>
+                    <div className="pb-4 text-secondary">Tuner audio will be captured from the following device. Works on souncards with ADC</div>
                     <FormControl>
-                      <Input placeholder="Device Name" {...field} />
+                      <SelectAlsaDevices placeholder="Select Device" {...field} cmd="arecord" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -65,12 +74,13 @@ const SettingsGeneral = () => {
             <div className="mb-6">
               <FormField
                 control={form.control}
-                name="system.timezone"
+                name="tuner.sample_rate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium">Timezone</FormLabel>
+                    <FormLabel className="text-md block font-medium">Sample Rate (Hz)</FormLabel>
+                    <div className="pb-4 text-secondary">Capture sample rate. Check your ADC specifications for supported sample rates.</div>
                     <FormControl>
-                      <SelectTimezone placeholder="Select Timezone" {...field} />
+                      <SelectSampleRate placeholder="Select sample rate" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -81,28 +91,17 @@ const SettingsGeneral = () => {
             <div className="mb-6">
               <FormField
                 control={form.control}
-                name="playback.background_albumart"
+                name="tuner.gain"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-md block font-medium">Now Playing Background Album Art</FormLabel>
-                    <div className="pb-4 text-secondary">Shows or hides blurred album art in the background on the Now Playing screen</div>
+                    <FormLabel className="text-md block font-medium">Default Gain (dB)</FormLabel>
                     <FormControl>
-                      <Switch {...field} value={field.value ?? false} />
+                      <InputNumber {...field} max={20} min={-20} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="mb-6">
-              <FormItem>
-                <FormLabel className="text-md block font-medium">Theme</FormLabel>
-                <FormControl>
-                  <ButtonThemeToggle />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
             </div>
           </div>
         </form>
@@ -111,4 +110,4 @@ const SettingsGeneral = () => {
   );
 };
 
-export default SettingsGeneral;
+export default SettingsTuner;

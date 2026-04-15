@@ -68,7 +68,6 @@ export interface Playlist {
   last_modified: string;
 }
 
-
 export interface Item {
   __model__: "Item";
   uri: string;
@@ -171,11 +170,11 @@ export interface SnapcastState {
     streams?: [];
   };
   servers: SnapcastServer[];
-  dragging:boolean;
+  dragging: boolean;
 }
 
 export interface StorageState {
-  last_shared_event: {event:EVENTS, uri:string } | {},
+  last_shared_event: { event: EVENTS; uri: string } | {};
   storages: StorageItem[];
 }
 
@@ -306,9 +305,131 @@ export interface PcmDevice {
   volume_control_mixer: string;
 }
 
+export interface AlsaDevice {
+  name: string;
+  card: string;
+  dtoverlay: string | null;
+  device: string | null;
+  description: string | null;
+}
+
+export interface AlsaVolumeDevice {
+  name: string;
+  card: string;
+  device: string | null;
+  description: string | null;
+  type: "playback" | "capture";
+  channels: number;
+  range: {
+    min: number;
+    max: number;
+    unit: "dB";
+  };
+  muted: boolean;
+}
+
 export interface SelectOption {
   label: string;
   value: string;
 }
 
 export interface CustomSelect<T = any> extends SelectProps<T> {}
+
+export type Nullable<T> = T | null;
+
+export interface SystemConfig {
+  hostname: string;
+  timezone: string;
+}
+
+export interface SpotifyConfig {
+  bitrate: number;
+  bit_depth: string;
+  volume_default: number;
+  volume_normalization: boolean;
+}
+
+export interface SmbClient {
+  username: string;
+  password: string;
+}
+
+export interface StorageConfig {
+  username: Nullable<string>;
+  password: Nullable<string>;
+  smb_clients: Record<string, SmbClient>;
+}
+
+export interface NetworkConfig {
+  apmode_password: string;
+}
+
+export interface DisplayConfig {
+  output_display: Nullable<string>;
+  visualizer_layout: number;
+}
+
+export interface LineInConfig {
+  input_device: string;
+  sample_rate: number;
+  bit_depth: string;
+  gain: number;
+}
+
+export interface TunerConfig {
+  input_device: string;
+  sample_rate: number;
+  bit_depth: string;
+  gain: number;
+}
+
+export interface DspConfig {
+  default_capture_device: string;
+  default_gain: number;
+  resample_rate: number;
+}
+
+export interface MultiroomConfig {
+  capture_device: string;
+  playback_device: string;
+  server: boolean;
+  codec: string;
+  chunk: number;
+  buffer: number;
+}
+
+export interface MixerConfig {
+  output_device: string;
+  hw_device: string;
+  dtoverlay: string;
+  volume_default: number;
+  volume_device: string;
+}
+
+export interface PlaybackConfig {
+  background_albumart: boolean;
+}
+
+export interface Config {
+  system: SystemConfig;
+  spotify: SpotifyConfig;
+  storage: StorageConfig;
+  network: NetworkConfig;
+  display: DisplayConfig;
+  linein: LineInConfig;
+  tuner: TunerConfig;
+  dsp: DspConfig;
+  multiroom: MultiroomConfig;
+  mixer: MixerConfig;
+  playback: PlaybackConfig;
+  web: Record<string, never>;
+  radio: Record<string, never>;
+  source: Record<string, never>;
+  shairportsync: Record<string, never>;
+  bluetooth: Record<string, never>;
+  local: { library_path: string[] };
+  search: Record<string, never>;
+  playlist: Record<string, never>;
+  infrared: Record<string, never>;
+  command: Record<string, never>;
+}
