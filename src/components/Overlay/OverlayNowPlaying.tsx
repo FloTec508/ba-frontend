@@ -7,7 +7,7 @@ import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { PLAYBACK_STATE } from "@/constants/states";
 import { OVERLAY_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 import { Menu } from "../Menu";
 
 import PositionSlider from "../Player/PositionSlider";
@@ -17,15 +17,15 @@ import NextButton from "../Player/NextButton";
 import PreviousButton from "../Player/PreviousButton";
 import PlayPauseButton from "../Player/PlayPauseButton";
 import Page from "../Page";
-import Source from "../Source";
+import Source from "../Source/SourceDevice";
 import FavouriteButton from "../Player/FavouriteButton";
 import Overlay from ".";
 import ShuffleButton from "../Player/ShuffleButton";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import ButtonQueue from "../Button/ButtonQueue";
-import Directory from "../ListItem/directory";
 import Ruler from "../ui/ruler";
 import StreamInfo from "../Player/StreamInfo";
+import Placeholder from "../CoverArt/Placeholder";
 
 const OverlayNowPlaying = () => {
   const dispatch = useDispatch();
@@ -81,9 +81,9 @@ const OverlayNowPlaying = () => {
   };
 
   return (
-    <Overlay show={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING} full className="dark text-white" zindex={50}>
+    <Overlay show={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING} full className="bg-neutral-950 text-white" zindex={50}>
       {config.playback.background_albumart && (
-        <div className="bg-background w-full h-full absolute bg-neutral-950">
+        <div className="w-full h-full absolute bg-neutral-950">
           <div
             className="h-full bg-cover blur-3xl opacity-80"
             style={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING ? { backgroundImage: `url(${image})` } : {}}
@@ -94,10 +94,10 @@ const OverlayNowPlaying = () => {
       <Page>
         {/* Start Vertical Layout */}
         <ButtonCollapse />
-        <div className="h-600-hide -mt-[30px] px-6 relative z-50">
+        <div className="h-600-hide -mt-7.5 px-6 relative z-50">
           <div className="flex items-center justify-center">
             <div
-              className={`w-1/12 left-5 aspect-square h-[270px] w-[270px] md:h-[350px] md:w-[350px] h-600-img h-800-400-img lg:mr-10 relative transition-all duration-500 ease-in-out transform ${
+              className={`left-5 aspect-square h-67.5 w-67.5 md:h-87.5 md:w-87.5 h-600-img h-800-400-img lg:mr-10 relative transition-all duration-500 ease-in-out transform ${
                 playback_state === PLAYBACK_STATE.PLAYING ? "mr-10" : "mr-5"
               }`}
             >
@@ -111,7 +111,7 @@ const OverlayNowPlaying = () => {
                 {image ? (
                   <img src={image} alt={current_track?.track.album?.name} width={"160px"} className={"object-cover rounded-xs h-full w-full "} />
                 ) : (
-                  <Directory width={"100%"} height={"100%"} type={REF.ALBUM} variant="primary" />
+                  <Placeholder width={"100%"} height={"100%"} type={MODEL.ALBUM} variant="primary" />
                 )}
               </div>
             </div>
@@ -204,10 +204,10 @@ const OverlayNowPlaying = () => {
         {/* End Vertical Layout */}
 
         {/* Start Horizontal Layout */}
-        <div className="h-600-show -mt-[33px] px-5 relative z-50">
+        <div className="h-600-show -mt-8.25 px-5 relative z-50">
           <div className="flex items-center justify-center">
             <div
-              className={`w-1/12 aspect-square md:w-[350px] h-600-img lg:mr-10 relative transition-all duration-500 ease-in-out transform ${
+              className={`w-1/12 aspect-square md:w-87.5 h-600-img lg:mr-10 relative transition-all duration-500 ease-in-out transform ${
                 playback_state === PLAYBACK_STATE.PLAYING ? "mr-10" : "mr-5"
               }`}
             >
@@ -221,7 +221,7 @@ const OverlayNowPlaying = () => {
                 {image ? (
                   <img src={image} alt={current_track?.track.album?.name} className={"object-cover rounded-xs h-full w-full "} />
                 ) : (
-                  <Directory width={"100%"} height={"100%"} type={REF.ALBUM} variant="primary" />
+                  <Placeholder width={"100%"} height={"100%"} type={MODEL.ALBUM} variant="primary" />
                 )}
               </div>
             </div>

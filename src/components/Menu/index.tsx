@@ -4,11 +4,12 @@ import { DotsNineIcon } from "@phosphor-icons/react";
 import { OVERLAY_EVENTS, DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM } from "@/constants";
 
-import Source from "../Source";
 import DateTime from "../DateTime";
 import ButtonIcon from "../Button/ButtonIcon";
 import ButtonSearch from "../Button/ButtonSearch";
 import ButtonVolume from "../Player/ButtonVolume";
+import BluetoothStatus from "../Bluetooth/BluetoothStatus";
+import SourceStatus from "../Source/SourceStatus";
 
 export function Menu() {
   const dispatch = useDispatch();
@@ -26,18 +27,15 @@ export function Menu() {
         <ButtonIcon onClick={onClickMenuHandler}>
           <DotsNineIcon size={ICON_SM} weight={"bold"} />
         </ButtonIcon>
-        <span className="pr-4 pl-1 scale-90">
+        <span className="pr-4 pl-1">
           <DateTime time />
         </span>
       </div>
 
       <div className="flex items-center">
-        <div className="mr-1">
-          <ButtonSearch />
-        </div>
-        <div className="mr-2 ml-1">
-          <Source hideText={true} className="scale-90" />
-        </div>
+        <BluetoothStatus />
+        <SourceStatus/>
+        <ButtonSearch />
         <ButtonVolume />
       </div>
     </div>

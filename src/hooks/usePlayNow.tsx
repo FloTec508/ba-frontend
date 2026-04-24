@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 import { useLocalService } from "@/services/local";
 import { usePlaybackService } from "@/services/playback";
 import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
-import { Item, TlTrack, Track } from "@/types";
+import { AnyItem, TlTrack, Track } from "@/types";
 
 export function usePlayNow() {
   const { add, clear } = useTracklistService();
@@ -14,14 +14,14 @@ export function usePlayNow() {
 
    const [loading, setLoading] = useState<boolean>(false);
 
-  const handlePlayNow = async (item: Item) => {
+  const handlePlayNow = async (item: AnyItem) => {
     setLoading(true);
     const tracksUris: string[] = [];
-    switch (item.type) {
-      case REF.CATEGORY:
-      case REF.ARTIST:
-      case REF.ALBUM:
-      case REF.GENRE: {
+    switch (item.__model__) {
+      case MODEL.CATEGORY:
+      case MODEL.ARTIST:
+      case MODEL.ALBUM:
+      case MODEL.GENRE: {
         const tracks = await getDirectory(`${item.uri}:tracks`);
         if (tracks.length) {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
@@ -29,7 +29,7 @@ export function usePlayNow() {
         await play(tracksUris[0]);
         break;
       }
-      case REF.PLAYLIST: {
+      case MODEL.PLAYLIST: {
         const playlist = await getPlaylistItem(item.uri);
         if (playlist.tracks.length) {
           tracksUris.push(

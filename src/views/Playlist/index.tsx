@@ -15,7 +15,7 @@ import Spinner from "@/components/Spinner";
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import SortableList from "@/components/SortableList";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 import ButtonPlaylistCreate from "@/components/Button/ButtonPlaylistCreate";
 import List from "@/components/InfiniteScroll/List";
 import Grid from "@/components/InfiniteScroll/Grid";

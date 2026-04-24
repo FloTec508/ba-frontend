@@ -14,10 +14,10 @@ const items: ComboboxItem[] = [
   { label: "96000",   value: 96000  },
   { label: "176400",  value: 176400 },
   { label: "192000",  value: 192000 },
-  // { label: "352800",  value: 352800 },
-  // { label: "384000",  value: 384000 },
-  // { label: "705600",  value: 705600 },
-  // { label: "768000",  value: 768000 },
+  { label: "352800",  value: 352800 },
+  { label: "384000",  value: 384000 },
+  { label: "705600",  value: 705600 },
+  { label: "768000",  value: 768000 },
 ];
 
 function SelectSampleRate({ ...props }: SelectSampleRateProps) {

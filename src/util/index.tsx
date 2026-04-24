@@ -1,7 +1,8 @@
 import { ICON_SM, ICON_WEIGHT, SERVER_URL } from "@/constants";
+import { MODEL, REF } from "@/constants/refs";
 import { REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
-import { Album, Artist } from "@/types";
-import { LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
+import { Album, AnyItem, Artist } from "@/types";
+import { BluetoothIcon, DeviceMobileIcon, HeadphonesIcon, LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
 
 /**
  * Checks if url contains http, https.
@@ -110,9 +111,9 @@ export const getCodecName = (format: string) => {
     "MPEG-4 AAC": "AAC",
     "MPEG-2 AAC": "AAC",
     "Free Lossless Audio Codec (FLAC)": "FLAC",
-    "Opus (low-latency lossy audio codec)": "Opus",
-    "Ogg Opus (Opus audio in Ogg container)": "Opus",
-    "Ogg Vorbis (lossy audio codec)": "Ogg Vorbis",
+    "Opus (low-latency lossy audio codec)": "OPUS",
+    "Ogg Opus (Opus audio in Ogg container)": "OPUS",
+    "Ogg Vorbis (lossy audio codec)": "OGG",
   };
 
   return mapping[format as CodecFormat] || format;
@@ -124,11 +125,12 @@ export const getCodecName = (format: string) => {
 export const getBitDepth = (format: string) => {
   if (!format) return "";
 
-  type AudioFormat = "S16_LE" | "S24_32LE" | "S16" | "S24_LE" | "S32_LE" | "S16_BE" | "S24_BE" | "S32_BE" | "S16LE" | "S24LE" | "F32LE";
+  type AudioFormat = "S16_LE" | "S24_32LE" | "S16" | "S32" | "S24_LE" | "S32_LE" | "S16_BE" | "S24_BE" | "S32_BE" | "S16LE" | "S24LE" | "F32LE";
 
   const mapping: Record<AudioFormat, string> = {
     S16_LE: "16bit",
     S16: "16bit",
+    S32: "32bit",
     S24_LE: "24bit",
     S24_32LE: "32bit",
     S32_LE: "32bit",
@@ -273,4 +275,50 @@ export const timeAgo = (unixSeconds: number): string => {
 
   const days = Math.floor(hours / 24);
   return `${days} day${days !== 1 ? "s" : ""} ago`;
+};
+
+export const BluetoothDeviceIcon = ({ type, className }: { type: string; className?: string }) => {
+  switch (type) {
+    case "audio-headset":
+    case "audio-headphones":
+      return <HeadphonesIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    case "phone":
+      return <DeviceMobileIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    case "computer":
+      return <LaptopIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    default:
+      return <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+  }
+};
+
+
+export const getSubtitle = (item: AnyItem, model: MODEL): string => {
+  switch (model) {
+    case MODEL.TRACK:
+    case MODEL.ALBUM:
+      return item?.artists?.map((artist: any) => artist.name).join(",") || "";
+    case MODEL.ARTIST:
+      return item?.albums?.map((album: any) => album.name).join(",") || "...";
+    case MODEL.DIRECTORY:
+    case MODEL.PLAYLIST:
+      if (item.length) {
+        return `${String(item.length)} Tracks`;
+      } else {
+        return "";
+      }
+    default:
+      return "";
+  }
+};
+
+
+export const getDuration = (item: AnyItem): string | undefined => {
+  switch (item.type) {
+    case REF.TRACK:
+      return item.length ? convertMillisecondstoTime(item.length) : undefined;
+    case REF.PLAYLIST:
+      return `${formatDate(item?.last_modified)}`;
+    default:
+      return undefined;
+  }
 };

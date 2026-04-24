@@ -1,4 +1,4 @@
-import { PLAYER_EVENTS } from "../constants";
+import { INTERNAL_EVENTS, PLAYER_EVENTS } from "../constants";
 import { PLAYBACK_STATE, REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
 import { EVENTS } from "@/constants/events";
 import { MediaPlayer, Source } from "@/types";
@@ -71,7 +71,8 @@ export const playerReducer = (state = initialMediaPlayer, action: any): MediaPla
         ...state,
         elapsed_ms: payload,
       };
-
+    
+    case INTERNAL_EVENTS.SOURCE_STATE:
     case EVENTS.SOURCE_CHANGED:
       return { ...state, source: { ...payload.source } };
 
@@ -109,6 +110,7 @@ export const playerReducer = (state = initialMediaPlayer, action: any): MediaPla
         volume: payload.volume,
       };
 
+    case INTERNAL_EVENTS.MIXER_STATE:
     case EVENTS.MIXER_MUTE:
       return {
         ...state,

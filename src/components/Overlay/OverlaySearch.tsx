@@ -10,8 +10,8 @@ import { OVERLAY_EVENTS } from "@/store/constants";
 import { REF } from "@/constants/refs";
 
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
-import ListItem from "@/components/ListItem";
-import NoItems from "@/components/ListItem/NoItems";
+import ListItem from "@/components/Item";
+import NoItems from "@/components/Item/NoItems";
 import Spinner from "@/components/Spinner";
 import Overlay from "@/components/Overlay";
 import Page from "@/components/Page";

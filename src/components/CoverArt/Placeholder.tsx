@@ -1,41 +1,33 @@
 import { CouchIcon, FolderSimpleIcon, MusicNoteSimpleIcon, PlaylistIcon, UserIcon, VinylRecordIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 
-/**
- * Renders an icon representing the type of media item (e.g., track, album, artist).
- *
- * @component
- * @param {Object} props - The component props.
- * @param {string} props.type - The type of media item ('track', 'album', 'artist', 'directory').
- * @param {number} [props.width=50] - The width of the icon container in pixels.
- * @param {number} [props.height=50] - The height of the icon container in pixels.
- * @returns {JSX.Element} A styled icon inside a container div.
- */
-const Directory = ({
+const Placeholder = ({
   type,
   width = "auto",
   height = "auto",
   variant,
 }: {
-  type?: REF;
+  type?: MODEL;
   width?: number | string;
   height?: number | string;
   variant?: string;
 }) => {
   const getIconByType = (type?: string) => {
     switch (type) {
-      case REF.DIRECTORY:
+      case MODEL.DIRECTORY:
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case REF.ARTIST:
-        return <UserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case REF.TRACK:
+      case MODEL.FILE:
         return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case REF.ALBUM:
+      case MODEL.ARTIST:
+        return <UserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+      case MODEL.TRACK:
+        return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+      case MODEL.ALBUM:
         return <VinylRecordIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case REF.PLAYLIST:
+      case MODEL.PLAYLIST:
         return <PlaylistIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case REF.ROOM:
+      case MODEL.ROOM:
         return <CouchIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       default:
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
@@ -45,7 +37,7 @@ const Directory = ({
   return (
     <div
       style={{ width, height }}
-      className={`bg-neutral-900   text-white  flex items-center justify-center aspect-square w-full overflow-hidden ${
+      className={`dark:bg-neutral-900 bg-white text-white  flex items-center justify-center aspect-square w-full overflow-hidden ${
         variant === "primary" ? "text-primary" : ""
       }`}
     >
@@ -54,4 +46,4 @@ const Directory = ({
   );
 };
 
-export default Directory;
+export default Placeholder;

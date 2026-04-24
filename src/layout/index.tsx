@@ -18,6 +18,7 @@ import OverlayStandby from "@/components/Overlay/OverlayStandby";
 import OverlayOffline from "@/components/Overlay/OverlayOffline";
 import Dialog from "@/components/Dialog";
 import OverlayVolume from "@/components/Overlay/OverlayVolume";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 export default function Layout({ children }: { children: any }) {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ export default function Layout({ children }: { children: any }) {
         ]);
 
         dispatch({
-          type: EVENTS.CONFIG_UPDATED,
+          type: INTERNAL_EVENTS.CONFIG_STATE,
           payload: { config: _config },
         });
 
@@ -85,7 +86,7 @@ export default function Layout({ children }: { children: any }) {
         });
 
         dispatch({
-          type: EVENTS.SOURCE_CHANGED,
+          type: INTERNAL_EVENTS.SOURCE_STATE,
           payload: { source: _getAudioSource },
         });
 
@@ -109,7 +110,7 @@ export default function Layout({ children }: { children: any }) {
           payload: { volume: _volume },
         });
         dispatch({
-          type: EVENTS.MIXER_MUTE,
+          type: INTERNAL_EVENTS.MIXER_STATE,
           payload: { mute: _mute },
         });
       } catch (err) {

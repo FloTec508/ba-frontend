@@ -4,7 +4,6 @@ import { EVENTS } from "@/constants/events";
 
 const initialState: BluetoothState = {
   adapter_state: { powered: false, discoverable: false, pairable: false, connected: false },
-  device_connected: undefined,
   devices: [],
 };
 

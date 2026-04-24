@@ -18,17 +18,17 @@ import {
 import { EVENTS } from "@/constants/events";
 import { INTERNAL_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT, ICON_XS, LOCAL_IP } from "@/constants";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 
 import Page from "@/components/Page";
 import ActionMenu from "@/components/Actions";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Spinner from "@/components/Spinner";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 import ButtonSnapcastScan from "@/components/Button/ButtonSnapcastScan";
 import ButtonIcon from "@/components/Button/ButtonIcon";
-import Directory from "@/components/ListItem/directory";
+import Placeholder from "@/components/CoverArt/Placeholder";
 
 const Snapcast = () => {
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const Snapcast = () => {
             <div className="text-lg font-medium">
               <div className="w-full flex mt-1 ">
                 <div className={`overflow-hidden rounded-sm mr-3 min-w-13 w-13 h-13  ${item?.connected ? "text-primary" : ""}`}>
-                  <Directory type={REF.ROOM} variant={item?.connected ? "primary" : ""} />
+                  <Placeholder type={MODEL.ROOM} variant={item?.connected ? "primary" : ""} />
                 </div>
                 <div>
                   <div className="flex items-center text-xl font-medium">

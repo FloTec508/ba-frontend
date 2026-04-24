@@ -49,6 +49,11 @@ export enum INTERNAL_EVENTS {
   SNAPCAST_SCAN_COMPLETED = "event/snapcast/scan/completed",
   SNAPCAST_LIST = "event/snapcast/list",
   SNAPCAST_VOLUME_DRAGGING = "event/snapcast/volume/dragging",
+
+  //States
+  CONFIG_STATE = "event/config/state",
+  MIXER_STATE = "event/mixer/muted/state",
+  SOURCE_STATE = "event/source/state"
 }
 
 export enum DIALOG_EVENTS {

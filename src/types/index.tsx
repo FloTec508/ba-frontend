@@ -1,10 +1,10 @@
 import { EVENTS } from "@/constants/events";
-import { REF } from "@/constants/refs";
+import { MODEL, REF } from "@/constants/refs";
 import { PLAYBACK_STATE, REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
 import { SelectProps } from "antd";
 
 export interface Artist {
-  __model__: "Artist";
+  __model__: MODEL.ARTIST;
   uri: string;
   name: string;
   sortname: string | null;
@@ -12,7 +12,7 @@ export interface Artist {
 }
 
 export interface Album {
-  __model__: "Album";
+  __model__: MODEL.ALBUM;
   uri: string;
   name: string;
   artists: Artist[];
@@ -23,14 +23,14 @@ export interface Album {
 }
 
 export interface Image {
-  __model__: "Image";
+  __model__: MODEL.IMAGE;
   uri: string;
   width: number | null;
   height: number | null;
 }
 
 export interface Track {
-  __model__: "Track";
+  __model__: MODEL.TRACK;
   uri: string;
   name: string;
   artists: Artist[];
@@ -69,7 +69,7 @@ export interface Playlist {
 }
 
 export interface Item {
-  __model__: "Item";
+  __model__: MODEL.ITEM;
   uri: string;
   name: string;
   type: REF;
@@ -150,7 +150,6 @@ export interface AdapterState {
 
 export interface BluetoothState {
   adapter_state: AdapterState;
-  device_connected: undefined | {};
   devices: BluetoothDevice[];
 }
 
@@ -175,7 +174,7 @@ export interface SnapcastState {
 
 export interface StorageState {
   last_shared_event: { event: EVENTS; uri: string } | {};
-  storages: StorageItem[];
+  storages: Storage[];
 }
 
 export interface StorageUsage {
@@ -184,21 +183,37 @@ export interface StorageUsage {
   free: number;
 }
 
-export interface StorageItem {
-  __model__: "Storage";
+export interface Storage {
+  __model__: MODEL.STORAGE;
   type: "internal" | "removable" | "nas" | "directory";
+  uri: string;
+  size: number | null;
   name: string;
   dev: string;
   shared: boolean;
   fstype: string;
   status: "mounted" | "unmounted";
-  uri: string;
   usage: StorageUsage | null;
   read_only: boolean | null;
   guest_allowed: boolean | null;
   user: string | null;
   create_permissions: string | null;
   directory_permissions: string | null;
+}
+
+export interface Directory {
+  __model__: MODEL.DIRECTORY;
+  uri: string;
+  name: string;
+  shared: boolean;
+}
+
+export interface File {
+  __model__: MODEL.FILE;
+  uri: string;
+  name: string;
+  size: number;
+  ext: string;
 }
 
 export interface NetworkState {
@@ -386,7 +401,7 @@ export interface TunerConfig {
 export interface DspConfig {
   default_capture_device: string;
   default_gain: number;
-  resample_rate: number;
+  resample_rate: number | null;
 }
 
 export interface MultiroomConfig {
@@ -433,3 +448,5 @@ export interface Config {
   infrared: Record<string, never>;
   command: Record<string, never>;
 }
+
+export type AnyItem = Item | Track | Album | Artist | File | Directory | Storage;

@@ -1,5 +1,6 @@
 import { EVENTS } from "@/constants/events";
 import { Config } from "@/types";
+import { INTERNAL_EVENTS } from "../constants";
 
 interface State {
   config: Config;
@@ -44,7 +45,7 @@ const initialState: State = {
     dsp: {
       default_capture_device: "",
       default_gain: 0,
-      resample_rate: 0,
+      resample_rate: null,
     },
     multiroom: {
       capture_device: "",
@@ -79,13 +80,27 @@ const initialState: State = {
   },
 };
 
+const deepMerge = (base: any, update: any) => {
+  const result = { ...base };
+  for (const key in update) {
+    result[key] =
+      update[key] !== null &&
+      typeof update[key] === "object" &&
+      !Array.isArray(update[key])
+        ? deepMerge(base[key] ?? {}, update[key])
+        : update[key];
+  }
+  return result;
+};
+
 export const configReducer = (state = initialState, action: any): State => {
   const { type, payload } = action;
 
   switch (type) {
+    case INTERNAL_EVENTS.CONFIG_STATE:
     case EVENTS.CONFIG_UPDATED:
       return {
-        config: { ...state.config, ...payload.config },
+        config: deepMerge(state.config, payload.config),
       };
     default:
       return state;

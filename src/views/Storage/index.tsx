@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useStorageService } from "@/services/storage";
 import { useStorageActions } from "@/hooks/useStorageActions";
 import { EjectSimpleIcon, FolderOpenIcon, GearIcon, HardDriveIcon, NetworkIcon, UsbIcon } from "@phosphor-icons/react";
-import { StorageItem, Item, ViewMode } from "@/types";
+import { Storage, ViewMode, AnyItem } from "@/types";
 import { formatBytes } from "@/util";
 import { ACTIONS } from "@/constants/actions";
+import { INTERNAL_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT, ICON_XS } from "@/constants";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 
 import Page from "@/components/Page";
 import Spinner from "@/components/Spinner";
@@ -19,12 +20,11 @@ import ItemPadding from "@/components/Wrapper/ItemPadding";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import List from "@/components/InfiniteScroll/List";
 import Grid from "@/components/InfiniteScroll/Grid";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import ButtonAddSmb from "@/components/Button/ButtonAddSmb";
-import { INTERNAL_EVENTS } from "@/store/constants";
 
-const Storage = () => {
+const StorageView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -49,12 +49,10 @@ const Storage = () => {
     }
   }, [path]);
 
-  const onClickActionMenu = async (action: ACTIONS, _item: Item | StorageItem) => {
-    const item = _item as StorageItem;
-
+  const onClickActionMenu = async (action: ACTIONS, item: AnyItem) => {
     switch (action) {
       case ACTIONS.ADD_LIBRARY:
-       addLibraryPath(item)
+        addLibraryPath(item);
         break;
       case ACTIONS.DIRECTORY_SHARE:
         if (await setShare(item.uri)) {
@@ -73,7 +71,7 @@ const Storage = () => {
         }
         break;
       case ACTIONS.MOUNT:
-        if (await setMount(item.dev)) {
+        if (await setMount((item as Storage).dev)) {
           dispatch({
             type: INTERNAL_EVENTS.STORAGE_MOUNTED,
             payload: item,
@@ -81,7 +79,7 @@ const Storage = () => {
         }
         break;
       case ACTIONS.UNMOUNT:
-        if (await setUnMount(item.dev)) {
+        if (await setUnMount((item as Storage).dev)) {
           dispatch({
             type: INTERNAL_EVENTS.STORAGE_UNMOUNTED,
             payload: item,
@@ -89,18 +87,18 @@ const Storage = () => {
         }
         break;
       case ACTIONS.UNMOUNT_SHARED:
-        await setUnMountShared(item.dev);
+        await setUnMountShared((item as Storage).dev);
         break;
     }
   };
 
-  const onClickItem = async (item: Item | StorageItem) => {
-    if (item.type === REF.TRACK) return;
-    const path = item.uri.replace("storage:", "");
-    navigate(`/storage${path}`);
+  const onClickItem = async (item: AnyItem) => {
+    if (item.__model__ === MODEL.FILE)return
+   const path = item.uri.replace("storage:", "");
+      navigate(`/storage${path}`);
   };
 
-  const ListItemStorage = ({ item }: { item: Item | StorageItem }) => {
+  const ListItemStorage = ({ item }: { item: Storage }) => {
     const is_mounted = item.status == "mounted";
     const is_unmounted = item.status == "unmounted";
     const is_removable = item.type === "removable";
@@ -134,7 +132,7 @@ const Storage = () => {
             <div className="font-medium">
               <div className="w-full flex">
                 <div className="flex text-lg ">
-                  {item.type === "storage" && <HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />}
+                  {item.type === "internal" && <HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />}
                   {item.type === "removable" && <UsbIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />}
                   {item.type === "nas" && <NetworkIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />}
                   {item.name}
@@ -145,7 +143,7 @@ const Storage = () => {
               }`}</div>
             </div>
           </button>
-          <div className="-mr-2">{item.type !== "storage" && <ActionMenu items={actionItems} />}</div>
+          <div className="-mr-2">{item.type !== "internal" && <ActionMenu items={actionItems} />}</div>
         </div>
 
         <div onClick={() => is_mounted && onClickItem(item)} className="w-full bg-popover rounded-full h-1 mt-3 mb-1">
@@ -215,7 +213,7 @@ const Storage = () => {
           </>
         )
       ) : (
-        storages.map((item: StorageItem) => (
+        storages.map((item: Storage) => (
           <ItemWrapper key={item.uri}>
             <ItemPadding>
               <ListItemStorage item={item} />
@@ -226,4 +224,4 @@ const Storage = () => {
     </Page>
   );
 };
-export default Storage;
+export default StorageView;

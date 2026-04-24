@@ -152,7 +152,7 @@ const SettingsSystem = () => {
                   Memory
                 </>
               }
-              desc={`${systemInfo?.memory?.mem_used.toFixed(2)}GB used of ${systemInfo?.memory?.mem_total.toFixed(2)}GB`}
+              desc={`${systemInfo?.memory?.mem_used.toFixed(2)}MB used of ${systemInfo?.memory?.mem_total.toFixed(2)}MB`}
               percent={systemInfo?.memory?.mem_percent}
             />
           </div>

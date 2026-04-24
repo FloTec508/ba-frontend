@@ -13,8 +13,8 @@ import { TlTrack } from "@/types";
 import { ACTIONS } from "@/constants/actions";
 import { REF } from "@/constants/refs";
 
-import ListItem from "../ListItem";
 import ItemWrapper from "../Wrapper/ItemWrapper";
+import ListItem from "../Item/ListItem";
 
 const reorder = (list: TlTrack[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);

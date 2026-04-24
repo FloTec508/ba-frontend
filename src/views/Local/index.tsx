@@ -15,7 +15,7 @@ import Grid from "../../components/InfiniteScroll/Grid";
 import List from "../../components/InfiniteScroll/List";
 import ListMenu from "@/components/ListMenu";
 import ButtonIcon from "@/components/Button/ButtonIcon";
-import Cover from "@/components/ListItem/Cover";
+import Cover from "@/components/Item/GridItem";
 import TruncateText from "@/components/TruncateText";
 import ButtonPlayAll from "@/components/Button/ButtonPlayAll";
 import ButtonAddToQueue from "@/components/Button/ButtonAddToQueue";
@@ -25,7 +25,7 @@ import ButtonInfo from "@/components/Button/ButtonInfo";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Spinner from "@/components/Spinner";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
-import ListItem from "@/components/ListItem";
+import ListItem from "@/components/Item";
 
 const Local = () => {
   const navigate = useNavigate();
@@ -181,7 +181,7 @@ const Local = () => {
                 {itemsDetailList.length > 0 &&
                   itemsDetailList.map((item: any, index: number) => (
                     <ItemWrapper key={index}>
-                      <ListItem key={item.uri} item={item} index={index} onClickCallback={handlePlayNow}/>
+                      <ListItem type="list" key={item.uri} item={item} index={index} onClickCallback={handlePlayNow}/>
                     </ItemWrapper>
                   ))}
               </div>

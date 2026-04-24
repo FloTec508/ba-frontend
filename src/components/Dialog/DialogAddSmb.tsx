@@ -10,8 +10,8 @@ import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import Modal from "@/components/Modal";
 import ItemWrapper from "../Wrapper/ItemWrapper";
 import ItemPadding from "../Wrapper/ItemPadding";
-import CoverList from "../ListItem/coverList";
-import NoItems from "../ListItem/NoItems";
+import CoverList from "../Item/ListItem";
+import NoItems from "../Item/NoItems";
 
 type smbShared = {
   ip: String;

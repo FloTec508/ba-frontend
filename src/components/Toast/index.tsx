@@ -32,7 +32,7 @@ export const ToastContent = ({ id, title, description, variant, hideClose = fals
         </div>
       </div>
       {!hideClose && (
-        <ButtonIcon className="h-10 w-10 shrink-0" onClick={() => toast.dismiss(id)}>
+        <ButtonIcon className="h-10 w-10 shrink-0 text-white" onClick={() => toast.dismiss(id)}>
           ✕
         </ButtonIcon>
       )}

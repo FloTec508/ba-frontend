@@ -10,11 +10,11 @@ import { REF } from "@/constants/refs";
 
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
-import CoverList from "@/components/ListItem/coverList";
+import CoverList from "@/components/Item/ListItem";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
 import ItemPadding from "@/components/Wrapper/ItemPadding";
 import useVirtual from "react-cool-virtual";
-import NoItems from "../ListItem/NoItems";
+import NoItems from "../Item/NoItems";
 
 const DialogAddToPlaylist = ({ item }: { item: Item }) => {
   const dispatch = useDispatch();

@@ -5,7 +5,7 @@ import { store } from "./store";
 import { Toaster } from "sonner";
 
 import Local from "./views/Local";
-import Storage from "./views/Storage";
+import StorageView from "./views/Storage";
 import Start from "./views/Start";
 import Layout from "./layout";
 import Queue from "./views/Queue";
@@ -58,7 +58,7 @@ const App = () => {
               <Route path="/local/:view?/:id?" element={<Local />} />
               <Route path="/radio" element={<Radio />} />
               <Route path="/tuner" element={<Tuner />} />
-              <Route path="/storage/*" element={<Storage />} />
+              <Route path="/storage/*" element={<StorageView />} />
               <Route path="/dsp" element={<Dsp />} />
               <Route path="/settings/" element={<Settings />} />
               <Route path="/settings/system/" element={<SettingsSystem />} />

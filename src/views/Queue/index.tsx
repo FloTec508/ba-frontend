@@ -8,7 +8,7 @@ import { ACTIONS } from "@/constants/actions";
 import ButtonPlaylistCreate from "@/components/Button/ButtonPlaylistCreate";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import SortableList from "@/components/SortableList";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 import Page from "@/components/Page";
 import ButtonQueueClear from "@/components/Button/ButtonQueueClear";
 

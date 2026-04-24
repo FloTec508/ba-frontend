@@ -49,7 +49,7 @@ const SettingsDsp = () => {
                       Default gain applied to all sources. <br></br>Use this to control clipping globally.
                     </div>
                     <FormControl>
-                      <InputNumber {...field} max={20} min={-20} />
+                      <InputNumber {...field} max={20} min={-20} value={field.value ?? 0} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -70,7 +70,7 @@ const SettingsDsp = () => {
                       before enabling.
                     </div>
                     <FormControl>
-                      <SelectSampleRate placeholder="No Resampling" {...field} />
+                      <SelectSampleRate placeholder="No Resampling" {...field} value={field.value ?? null}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

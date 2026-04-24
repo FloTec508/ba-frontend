@@ -3,16 +3,8 @@ import { useSelector } from "react-redux";
 import { useBluetoothService } from "@/services/bluetooth";
 import { useBluetoothActions } from "@/hooks/useBluetoothActions";
 import { BluetoothDevice } from "@/types";
-import {
-  BluetoothConnectedIcon,
-  BluetoothIcon,
-  BluetoothSlashIcon,
-  DeviceMobileIcon,
-  HeadphonesIcon,
-  LaptopIcon,
-  TrashSimpleIcon,
-} from "@phosphor-icons/react";
-import { getBitDepth, getSampleRate } from "@/util";
+import { BluetoothConnectedIcon, BluetoothIcon, BluetoothSlashIcon, TrashSimpleIcon } from "@phosphor-icons/react";
+import { BluetoothDeviceIcon, getBitDepth, getSampleRate } from "@/util";
 import { DotIcon } from "lucide-react";
 import { ICON_SM, ICON_WEIGHT, ICON_XS } from "@/constants";
 
@@ -24,7 +16,7 @@ import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Spinner from "@/components/Spinner";
 import ButtonBluetoothScan from "@/components/Button/ButtonBluetoothScan";
 import ButtonBluetoothToggle from "@/components/Button/ButtonBluetoothToggle";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 
 const Bluetooth = () => {
   const { devices } = useSelector((state: any) => state.bluetooth);
@@ -56,25 +48,11 @@ const Bluetooth = () => {
       },
     ];
 
-    const RenderIcon = ({ type, className }: { type: string; className: string }) => {
-      switch (type) {
-        case "audio-headset":
-        case "audio-headphones":
-          return <HeadphonesIcon weight={ICON_WEIGHT} size={ICON_SM} className={className} />;
-        case "phone":
-          return <DeviceMobileIcon weight={ICON_WEIGHT} size={ICON_SM} className={className} />;
-        case "computer":
-          return <LaptopIcon weight={ICON_WEIGHT} size={ICON_SM} className={className} />;
-        default:
-          return <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} className={className} />;
-      }
-    };
-
     return (
       <div className="w-full">
         <div className="flex justify-between items-center">
           <div className="flex  items-center">
-            <RenderIcon type={item.icon} className={`mr-2 ${item.connected ? "text-primary" : ""}`} />
+            <BluetoothDeviceIcon type={item.icon} className={`mr-2 ${item.connected ? "text-primary" : ""}`} />
             <div className="">
               <div className="w-full">
                 <div className="text-lg font-medium">{item.name}</div>

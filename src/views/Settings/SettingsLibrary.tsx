@@ -10,7 +10,7 @@ import ButtonScanLibrary from "@/components/Button/ButtonScanLibrary";
 import ButtonScanArtist from "@/components/Button/ButtonScanArtist";
 import ButtonClearLibrary from "@/components/Button/ButtonClearLibrary";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 
 const SettingsLocal = () => {
   const { removeLibraryPath } = useStorageActions();

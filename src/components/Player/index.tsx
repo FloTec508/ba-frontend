@@ -4,7 +4,7 @@ import { usePlaybackService } from "@/services/playback";
 import { usePlayerActions } from "@/hooks/usePlayerActions";
 import { getArtists, getImage } from "@/util";
 import { PLAYBACK_STATE } from "@/constants/states";
-import { REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 import { PLAYER_EVENTS } from "@/store/constants";
 
 import VolumeSlider from "./VolumeSlider";
@@ -15,9 +15,9 @@ import ShuffleButton from "./ShuffleButton";
 import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import PlayPauseButton from "./PlayPauseButton";
-import Directory from "../ListItem/directory";
 import ButtonQueue from "../Button/ButtonQueue";
-import Source from "../Source";
+import SourceDevice from "../Source/SourceDevice";
+import Placeholder from "../CoverArt/Placeholder";
 
 const Player = () => {
   const dispatch = useDispatch();
@@ -51,18 +51,18 @@ const Player = () => {
   return (
     <>
       <div className="seek-slider seek-slider-mini relative z-10 bg-neutral-950">
-        <PositionSlider className="h-1"/>
+        <PositionSlider className="h-1" />
       </div>
       <div className="bg-neutral-900 dark:bg-neutral-950 text-white relative z-0">
         <div className="lg:flex hidden px-4 py-2 items-center ">
           <div className="w-3/8">
             <button onClick={openNowPlayingOverlay} className="flex items-center cursor-pointer w-full  text-left">
               <div className="flex items-center grow">
-                <div className="overflow-hidden flex-none rounded-sm mr-3 grayscale-25 w-[50px]  min-w-[50px]">
+                <div className="overflow-hidden flex-none rounded-sm mr-3 w-12.5  min-w-12.5">
                   {image ? (
                     <img src={image} alt={current_track?.track.album?.name} className={"object-cover aspect-square w-full"} />
                   ) : (
-                    <Directory type={REF.ALBUM} variant="primary" />
+                    <Placeholder type={MODEL.ALBUM} variant="primary" />
                   )}
                 </div>
                 {source.uri && (
@@ -78,7 +78,7 @@ const Player = () => {
                           }`}
                         />
                       ) : (
-                        <Source hideIcon={true} />
+                        <SourceDevice />
                       )}
                     </div>
                   </div>
@@ -113,11 +113,11 @@ const Player = () => {
           <div className="flex items-center p-2 w-4/6 z-20 relative">
             <button onClick={openNowPlayingOverlay} className="w-full cursor-pointer text-left">
               <div className="flex items-center">
-                <div className={`overflow-hidden rounded-sm mr-3 min-w-10 w-10 grayscale-25`}>
+                <div className={`overflow-hidden rounded-sm mr-3 min-w-10 w-10`}>
                   {image ? (
                     <img src={image} alt={current_track?.track.album?.name} className={`object-cover aspect-square w-full`} />
                   ) : (
-                    <Directory type={REF.ALBUM} variant="primary" />
+                    <Placeholder type={MODEL.ALBUM} variant="primary" />
                   )}
                 </div>
                 {source.uri && (
@@ -133,7 +133,7 @@ const Player = () => {
                           }`}
                         />
                       ) : (
-                        <Source hideIcon={true} />
+                        <SourceDevice />
                       )}
                     </div>
                   </div>
