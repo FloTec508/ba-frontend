@@ -6,7 +6,6 @@ export const usePlaylistService = () => {
 
   return {
     getDirectory: (uri?: string, limit?: number, offset?:number) => request("playlist.directory", {uri, limit, offset}),
-    getPlaylistItem: (uri: string) => request("playlist.item", { uri }),
     createItem: (name?: string, tl_tracks?: TlTrack[]) => request("playlist.create", { name, tl_tracks }),
     editItem: (uri: string, name: string) => request("playlist.edit", { uri, name }),
     deleteItem: (uri: string) => request("playlist.delete", { uri }),

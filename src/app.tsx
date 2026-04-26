@@ -11,7 +11,7 @@ import Layout from "./layout";
 import Queue from "./views/Queue";
 import Settings from "./views/Settings";
 import Radio from "./views/Radio";
-import Playlists from "./views/Playlist";
+import Playlists from "./views/Playlist/Playlists";
 import SettingsGeneral from "./views/Settings/SettingsGeneral";
 import SettingsNetwork from "./views/Settings/SettingsNetwork";
 import Snapcast from "./views/Snapcast";
@@ -22,12 +22,13 @@ import SettingsDisplay from "./views/Settings/SettingsDisplay";
 import SettingsStorage from "./views/Settings/SettingsStorage";
 import SettingsSupport from "./views/Settings/SettingsSupport";
 import SettingsSystem from "./views/Settings/SettingsSystem";
-import Tuner from "./views/Tuner";
-import Dsp from "./views/Dsp";
 import SettingsDsp from "./views/Settings/SettingsDsp";
 import SettingsLinein from "./views/Settings/SettingsLinein";
 import SettingsTuner from "./views/Settings/SettingsTuner";
 import SettingsMixer from "./views/Settings/SettingsMixer";
+import PlaylistView from "./views/Playlist/PlaylistView";
+import Tuner from "./views/Tuner";
+import Dsp from "./views/Dsp";
 
 const App = () => {
   return (
@@ -54,7 +55,8 @@ const App = () => {
               <Route path="/linein" element={<Start />} />
               <Route path="/multiroom" element={<Snapcast />} />
               <Route path="/queue" element={<Queue />} />
-              <Route path="/playlist/:id?" element={<Playlists />} />
+              <Route path="/playlist/" element={<Playlists />} />
+              <Route path="/playlist/:id" element={<PlaylistView />} />
               <Route path="/local/:view?/:id?" element={<Local />} />
               <Route path="/radio" element={<Radio />} />
               <Route path="/tuner" element={<Tuner />} />

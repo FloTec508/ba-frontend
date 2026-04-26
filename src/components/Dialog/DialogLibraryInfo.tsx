@@ -1,10 +1,10 @@
 import { useDispatch } from "react-redux";
 import { DIALOG_EVENTS } from "@/store/constants";
-import { Item } from "@/types";
+import { AnyItem } from "@/types";
 
 import Modal from "@/components/Modal";
 
-const DialogLibraryInfo = ({ item }: { item: Item }) => {
+const DialogLibraryInfo = ({ item }: { item: AnyItem }) => {
   const dispatch = useDispatch();
 
   return (

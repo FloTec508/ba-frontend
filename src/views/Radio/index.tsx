@@ -8,13 +8,9 @@ import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import List from "@/components/InfiniteScroll/List";
 import Grid from "@/components/InfiniteScroll/Grid";
 import Page from "@/components/Page";
-import { usePlayNow } from "@/hooks/usePlayNow";
-
 
 const Radio = () => {
   const navigate = useNavigate();
-    const { handlePlayNow } = usePlayNow();
-  
 
   const { getDirectory } = useRadioService();
   const [layout, setLayout] = useState<ViewMode>("grid");
@@ -31,20 +27,8 @@ const Radio = () => {
       backButtonOnClick={() => navigate("/")}
       backButton
     >
-      {layout === "list" && (
-        <List
-          uri={REF.RADIO}
-          getDirectory={getDirectory}
-          onClickCallback={handlePlayNow}
-        />
-      )}
-      {layout === "grid" && (
-        <Grid
-          uri={REF.RADIO}
-          getDirectory={getDirectory}
-          onClickCallback={handlePlayNow}
-        />
-      )}
+      {layout === "list" && <List uri={REF.RADIO} getDirectory={getDirectory} />}
+      {layout === "grid" && <Grid uri={REF.RADIO} getDirectory={getDirectory} />}
     </Page>
   );
 };

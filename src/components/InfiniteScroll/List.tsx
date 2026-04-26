@@ -9,8 +9,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { FolderSimpleIcon } from "@phosphor-icons/react";
-import { AnyItem } from "@/types";
-import { ACTIONS } from "@/constants/actions";
+import { AnyItem, Directory } from "@/types";
 import { INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
@@ -18,11 +17,10 @@ interface List {
   uri: string;
   getDirectory: (uri?: string, limit?: number, offset?: number) => Promise<[]>;
   onClickCallback?: (item: AnyItem) => void;
-  onClickActionCallback?: (action: ACTIONS, item: AnyItem) => void;
   emptyComponent?: React.ReactNode;
 }
 
-const List = ({ uri, getDirectory, onClickCallback, onClickActionCallback, emptyComponent }: List) => {
+const List = ({ uri, getDirectory, onClickCallback, emptyComponent }: List) => {
   const loadMoreCount = 15;
   const action = useSelector((state: any) => state.event);
   const { last_shared_event } = useSelector((state: any) => state.storage);
@@ -60,11 +58,12 @@ const List = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
     setIsLoading(false);
   };
 
+  // todo als in Grid to move to a common place
   useEffect(() => {
     if (!last_shared_event) return;
     setItems((prev: any) =>
       prev.map((item: AnyItem) => {
-        if (item.uri !== last_shared_event.uri) return item;
+        if ((item as Directory).uri !== last_shared_event.uri) return item;
         return { ...item, shared: last_shared_event.event === EVENTS.STORAGE_SHARED };
       }),
     );
@@ -107,10 +106,9 @@ const List = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
             <ItemWrapper key={index}>
               {/* Not a button else draggable wont work */}
               <ListItem
-                no={index === null ? undefined : index + 1}
+                // no={index === null ? undefined : index + 1}
                 item={item}
                 onClick={() => onClickCallback?.(item)}
-                onClickActionCallback={onClickActionCallback}
               />
             </ItemWrapper>
           );

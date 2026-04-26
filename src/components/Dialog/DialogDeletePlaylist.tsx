@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Item } from "@/types";
+import { AnyItem } from "@/types";
 import { usePlaylistService } from "@/services/playlist";
 import { INTERNAL_EVENTS, DIALOG_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
-const DialogDeletePlaylist = ({ item }: { item: Item }) => {
+const DialogDeletePlaylist = ({ item }: { item: AnyItem }) => {
   const dispatch = useDispatch();
 
   const { deleteItem } = usePlaylistService();

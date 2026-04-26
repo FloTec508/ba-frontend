@@ -20,6 +20,7 @@ export enum INTERNAL_EVENTS {
   // Queue
   ADD_TO_QUEUE = "event/queue/add",
   CLEAR_QUEUE = "event/queue/clear",
+  TRACKLIST_TRACK_REMOVED = "event/tracklist/track/removed",
 
   // Library
   LIBRARY_SCAN_COMPLETED = "event/library/scan/completed",

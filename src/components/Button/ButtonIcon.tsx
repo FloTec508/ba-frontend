@@ -13,7 +13,7 @@ const ButtonIcon = ({
 }) => {
   return (
     <button
-      className={`cursor-pointer flex hover:bg-button-hover w-10 h-10 items-center justify-center rounded-full disabled:opacity-30 transition-all duration-200 ${className ? className : ""} `}
+      className={`text-neutral-950 dark:text-white cursor-pointer flex hover:bg-button-hover w-10 h-10 items-center justify-center rounded-full disabled:opacity-30 transition-all duration-200 ${className ? className : ""} `}
       onClick={onClick}
       disabled={disabled}
     >

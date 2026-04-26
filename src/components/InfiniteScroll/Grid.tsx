@@ -2,24 +2,21 @@ import Spinner from "@/components/Spinner";
 import NoItems from "@/components/Item/NoItems";
 import useVirtual from "react-cool-virtual";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
+import GridItem from "../Item/GridItem";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FolderSimpleIcon } from "@phosphor-icons/react";
-import { AnyItem } from "@/types";
+import { AnyItem, Directory } from "@/types";
 import { REF } from "@/constants/refs";
-import { ACTIONS } from "@/constants/actions";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
-import ActionMenu from "../Actions";
-import GridItem from "../Item/GridItem";
 
 interface Grid {
   uri: string;
   getDirectory: (uri?: string, limit?: number, offset?: number) => Promise<[]>;
   onClickCallback?: (item: AnyItem) => void;
-  onClickActionCallback?: (action: ACTIONS, item: AnyItem) => void;
   emptyComponent?: React.ReactNode;
 }
 
@@ -32,7 +29,7 @@ const calculateCols = () => {
   else return 8;
 };
 
-const Grid = ({ uri, getDirectory, onClickCallback, onClickActionCallback, emptyComponent }: Grid) => {
+const Grid = ({ uri, getDirectory, onClickCallback, emptyComponent }: Grid) => {
   const dispatch = useDispatch();
 
   const loadMoreCount = 6;
@@ -79,11 +76,12 @@ const Grid = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
     setIsLoading(false);
   };
 
+  // todo als in Grid to move to a common place
   useEffect(() => {
     if (!last_shared_event) return;
     setItems((prev) =>
       prev.map((item) => {
-        if (item.uri !== last_shared_event.uri) return item;
+        if ((item as Directory).uri !== last_shared_event.uri) return item;
         return { ...item, shared: last_shared_event.event === EVENTS.STORAGE_SHARED };
       }),
     );
@@ -134,12 +132,8 @@ const Grid = ({ uri, getDirectory, onClickCallback, onClickActionCallback, empty
           return (
             <div key={index} className="flex items-start">
               {rowItems.map((item: any, index: number) => (
-                <div key={index} className={`cursor-pointer relative p-3 lg:p-4 pb-6`} style={{ width: `${100 / columns}%` }}>
-                  <GridItem
-                    item={item}
-                    onClick={() => onClickCallback?.(item)}
-                    actions={<ActionMenu item={item} onClickActionCallback={onClickActionCallback} />}
-                  />
+                <div key={index} className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200" style={{ width: `${100 / columns}%` }}>
+                  <GridItem item={item} onClick={() => onClickCallback?.(item)} />
                 </div>
               ))}
             </div>

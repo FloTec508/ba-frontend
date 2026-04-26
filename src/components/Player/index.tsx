@@ -53,7 +53,7 @@ const Player = () => {
       <div className="seek-slider seek-slider-mini relative z-10 bg-neutral-950">
         <PositionSlider className="h-1" />
       </div>
-      <div className="bg-neutral-900 dark:bg-neutral-950 text-white relative z-0">
+      <div className="bg-neutral-200 dark:bg-neutral-900 relative z-0">
         <div className="lg:flex hidden px-4 py-2 items-center ">
           <div className="w-3/8">
             <button onClick={openNowPlayingOverlay} className="flex items-center cursor-pointer w-full  text-left">

@@ -103,7 +103,7 @@ const SettingsMixer = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-md block font-medium">Volume Device</FormLabel>
-                    <div className="pb-4 text-secondary">Select the hardware that controls the volume.</div>
+                    <div className="pb-4 text-secondary">Select the hardware that controls the volume. Some DACs dont offer hardware volume use software instead.</div>
                     <FormControl>
                       <SelectAlsaVolumeDevice placeholder="Select Volume" card={selectedCard} {...field} />
                     </FormControl>

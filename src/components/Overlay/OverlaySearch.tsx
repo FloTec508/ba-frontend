@@ -4,20 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { useSearchService } from "@/services/search";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Input } from "@/components/Form/Input";
-import { Item } from "@/types";
+import { AnyItem } from "@/types";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { OVERLAY_EVENTS } from "@/store/constants";
 import { REF } from "@/constants/refs";
 
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
-import ListItem from "@/components/Item";
 import NoItems from "@/components/Item/NoItems";
 import Spinner from "@/components/Spinner";
 import Overlay from "@/components/Overlay";
 import Page from "@/components/Page";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
+import ListItem from "../Item/ListItem";
 
-type SearchResults = Record<string, Item[]>;
+type SearchResults = Record<string, AnyItem[]>;
 
 const OverlaySearch = () => {
   const dispatch = useDispatch();
@@ -111,7 +111,7 @@ const OverlaySearch = () => {
                       <ItemWrapper key={index}>
                         <ListItem
                           item={item}
-                          onClickCallback={onClickItem}
+                          onClick={()=>onClickItem(item)}
                         />
                       </ItemWrapper>
                     ))}

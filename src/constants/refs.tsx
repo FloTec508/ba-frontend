@@ -19,11 +19,11 @@ export enum MODEL {
     ARTIST = "Artist",
     ALBUM = "Album",
     TRACK = "Track",
+    TLTRACK = "TlTrack",
     ROOM = "Room",
     PLAYLIST = "Playlist",
     GENRE = "Genre",
     TUNER = "Tuner",
-    ITEM = "Item",
     STORAGE = "Storage",
     CATEGORY = "Category",
 }

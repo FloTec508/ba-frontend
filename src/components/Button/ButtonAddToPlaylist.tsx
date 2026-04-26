@@ -1,15 +1,15 @@
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { Item } from "@/types";
-import { PlaylistIcon } from "@phosphor-icons/react";
-import { useAddToPlaylist } from "@/hooks/useAddToPlaylist";
-
 import ButtonIcon from "@/components/Button/ButtonIcon";
 
-const ButtonAddToPlaylist = ({ item }: { item: Item }) => {
-  const { handleAddToPlaylist } = useAddToPlaylist();
+import { usePlaylistActions } from "@/hooks/usePlaylistActions";
+import { AnyItem } from "@/types";
+import { PlaylistIcon } from "@phosphor-icons/react";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+
+const ButtonAddToPlaylist = ({ item }: { item: AnyItem }) => {
+  const { playlistAddDialog } = usePlaylistActions();
 
   return (
-    <ButtonIcon onClick={() => handleAddToPlaylist(item)}>
+    <ButtonIcon onClick={() => playlistAddDialog(item)}>
       <PlaylistIcon weight={ICON_WEIGHT} size={ICON_SM} />
     </ButtonIcon>
   );

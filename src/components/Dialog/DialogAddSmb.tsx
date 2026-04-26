@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Input } from "../Form/Input";
 import { useStorageActions } from "@/hooks/useStorageActions";
-import { StorageItem } from "@/types";
+import { Storage } from "@/types";
 import { CheckCircleIcon, CircleIcon, HardDriveIcon } from "@phosphor-icons/react";
 import { DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
@@ -16,13 +16,13 @@ import NoItems from "../Item/NoItems";
 type smbShared = {
   ip: String;
   hostname: String;
-  shares: StorageItem[];
+  shares: Storage[];
 };
 
 const DialogAddSmb = () => {
   const dispatch = useDispatch();
 
-  const { connectStorage, mountSharedStorage, loading } = useStorageActions();
+  const { storageConnect, storageMountShared, loading } = useStorageActions();
 
   const [smbIpAddress, setSmbIpAddress] = useState<string>("");
   const [smbUsername, setSmbUsername] = useState<string>("");
@@ -31,16 +31,16 @@ const DialogAddSmb = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const onClickConnect = async () => {
-    const result = await connectStorage(smbIpAddress, smbUsername, smbPassword);
+    const result = await storageConnect(smbIpAddress, smbUsername, smbPassword);
     setSmbResponse(result);
   };
 
   const onClickMount = async () => {
-    const response = await mountSharedStorage(selectedItems)
+    const response = await storageMountShared(selectedItems)
     response && dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
   };
 
-  const onClickSelectSmbs = (item: StorageItem) => {
+  const onClickSelectSmbs = (item: Storage) => {
     setSelectedItems((prev) => (prev.includes(item.dev) ? prev.filter((dev) => dev !== item.dev) : [...prev, item.dev]));
   };
 
@@ -63,7 +63,7 @@ const DialogAddSmb = () => {
           ) : (
             <>
               <div className="pt-2 pb-4 text-secondary px-5">Found {smbResponse?.shares?.length} items. Select the items you want to add and they will appear in your Storage section.</div>
-              {smbResponse?.shares?.map((item: StorageItem) => (
+              {smbResponse?.shares?.map((item: Storage) => (
                 <ItemWrapper key={item.dev}>
                   <button className="w-full cursor-pointer" onClick={() => onClickSelectSmbs(item)}>
                     <ItemPadding>

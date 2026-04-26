@@ -1,7 +1,7 @@
 import { ICON_SM, ICON_WEIGHT, SERVER_URL } from "@/constants";
-import { MODEL, REF } from "@/constants/refs";
+import { MODEL } from "@/constants/refs";
 import { REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
-import { Album, AnyItem, Artist } from "@/types";
+import { Album, AnyItem, Artist, TlTrackExt, Track } from "@/types";
 import { BluetoothIcon, DeviceMobileIcon, HeadphonesIcon, LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
 
 /**
@@ -291,32 +291,28 @@ export const BluetoothDeviceIcon = ({ type, className }: { type: string; classNa
   }
 };
 
-
-export const getSubtitle = (item: AnyItem, model: MODEL): string => {
-  switch (model) {
-    case MODEL.TRACK:
+export const getSubtitle = (item: AnyItem): string | undefined => {
+  switch (item.__model__) {
     case MODEL.ALBUM:
-      return item?.artists?.map((artist: any) => artist.name).join(",") || "";
+    case MODEL.TRACK:
+    case MODEL.TLTRACK:
+      return (item as TlTrackExt).artists?.map((artist: Artist) => artist.name).join(",") || "";
+    case MODEL.FILE:
+      return formatBytes(item.size);
     case MODEL.ARTIST:
-      return item?.albums?.map((album: any) => album.name).join(",") || "...";
-    case MODEL.DIRECTORY:
+      return item.albums?.map((album: Album) => album.name).join(",") || "...";
     case MODEL.PLAYLIST:
-      if (item.length) {
-        return `${String(item.length)} Tracks`;
-      } else {
-        return "";
-      }
+      return item.length ? `${String(item.length)} Tracks` : "Empty playlist";
     default:
-      return "";
+      return undefined;
   }
 };
 
-
 export const getDuration = (item: AnyItem): string | undefined => {
-  switch (item.type) {
-    case REF.TRACK:
-      return item.length ? convertMillisecondstoTime(item.length) : undefined;
-    case REF.PLAYLIST:
+  switch (item.__model__) {
+    case MODEL.TRACK:
+      return item.length ? convertMillisecondstoTime((item as Track).length) : undefined;
+    case MODEL.PLAYLIST:
       return `${formatDate(item?.last_modified)}`;
     default:
       return undefined;

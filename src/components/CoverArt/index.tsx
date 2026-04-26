@@ -12,7 +12,7 @@ interface CoverArt {
   title?: string;
   shadow?: boolean;
   loading?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CoverArt = ({ type = MODEL.DIRECTORY, src = "", title = "", shadow = false, loading = false, onClick }: CoverArt) => {
@@ -32,12 +32,12 @@ const CoverArt = ({ type = MODEL.DIRECTORY, src = "", title = "", shadow = false
           <Placeholder type={type} variant="primary" />
         )}
 
-        {[MODEL.ALBUM, MODEL.ARTIST, MODEL.FILE, MODEL.TRACK, MODEL.PLAYLIST].includes(type) && (
+        {[MODEL.ALBUM, MODEL.ARTIST, MODEL.FILE, MODEL.TRACK, MODEL.TLTRACK, MODEL.PLAYLIST].includes(type) && (
           <button
             onClick={onClick}
             className={`absolute top-0 cursor-pointer left-0 w-full h-full rounded-md flex items-center justify-center z-2 ${loading ? "opacity-100" : "opacity-0 hover:opacity-100"}  hover:bg-black/50 transition duration-150`}
           >
-            {loading ? <Spinner /> : <PlayCircleIcon size={ICON_LG} weight={"fill"} />}
+            {loading ? <Spinner mode="light"/> : <PlayCircleIcon size={ICON_LG} weight={"fill"} className="text-white" />}
           </button>
         )}
       </div>

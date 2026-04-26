@@ -81,7 +81,7 @@ const OverlayNowPlaying = () => {
   };
 
   return (
-    <Overlay show={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING} full className="bg-neutral-950 text-white" zindex={50}>
+    <Overlay show={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING} full zindex={50}>
       {config.playback.background_albumart && (
         <div className="w-full h-full absolute bg-neutral-950">
           <div

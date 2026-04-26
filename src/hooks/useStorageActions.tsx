@@ -3,52 +3,56 @@ import { useDispatch, useSelector } from "react-redux";
 import { INTERNAL_EVENTS } from "@/store/constants";
 import { useStorageService } from "@/services/storage";
 import { useConfigService } from "@/services/config";
-import { Item, StorageItem } from "@/types";
+import { Directory, Storage } from "@/types";
 
 export function useStorageActions() {
   const dispatch = useDispatch();
 
   const { setConfig } = useConfigService();
-  const { getDirectory, addShared, setMountShared } = useStorageService();
+  const { getDirectory, addShared, setMountShared, setShare, setUnshare, setMount, setUnMount, setUnMountShared } = useStorageService();
   const { config } = useSelector((state: any) => state.config);
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchStorages = async () => {
+  const storageFetch = async () => {
     setLoading(true);
-    const response = await getDirectory();
-
-    dispatch({
-      type: INTERNAL_EVENTS.STORAGE_UPDATED,
-      payload: response,
-    });
-    setLoading(false);
+    try {
+      const response = await getDirectory();
+      dispatch({
+        type: INTERNAL_EVENTS.STORAGE_UPDATED,
+        payload: response,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const connectStorage = async (ip: string, username: string = "", password: string = "") => {
+  const storageConnect = async (ip: string, username: string = "", password: string = "") => {
     setLoading(true);
-    const response = await addShared(ip, username, password);
-    setLoading(false);
-    return response;
+    try {
+      return await addShared(ip, username, password);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const mountSharedStorage = async (devs: string[]) => {
+  const storageMountShared = async (devs: string[]) => {
     setLoading(true);
-    const response = await setMountShared(devs);
-    setLoading(false);
-    return response;
+    try {
+      return await setMountShared(devs);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeLibraryPath = (uri: string) => {
+  const libraryPathRemove = (uri: string) => {
     const filtered_paths = config.local.library_path.filter((path: string) => path !== uri);
     setConfig({ local: { library_path: filtered_paths } });
-    return true;
   };
 
-  const addLibraryPath = (item: Item | StorageItem) => {
+  const libraryPathAdd = (item: Directory) => {
     const library_paths = config.local.library_path;
     const already_exists = library_paths.some((path: string) => path === item.uri);
-
     if (already_exists) {
       dispatch({
         type: INTERNAL_EVENTS.LIBRARY_PATH_EXISTS,
@@ -61,16 +65,59 @@ export function useStorageActions() {
         payload: item,
       });
     }
+  };
 
-    return true;
+  const directoryShare = async (item: Directory) => {
+    if (await setShare(item.uri)) {
+      dispatch({
+        type: INTERNAL_EVENTS.STORAGE_SHARED,
+        payload: item,
+      });
+    }
+  };
+
+  const directoryUnshare = async (item: Directory) => {
+    if (await setUnshare(item.uri)) {
+      dispatch({
+        type: INTERNAL_EVENTS.STORAGE_UNSHARED,
+        payload: item,
+      });
+    }
+  };
+
+  const storageMount = async (item: Storage) => {
+    if (await setMount(item.uri)) {
+      dispatch({
+        type: INTERNAL_EVENTS.STORAGE_MOUNTED,
+        payload: item,
+      });
+    }
+  };
+
+  const storageUnMount = async (item: Storage) => {
+    if (await setUnMount(item.dev)) {
+      dispatch({
+        type: INTERNAL_EVENTS.STORAGE_UNMOUNTED,
+        payload: item,
+      });
+    }
+  };
+
+  const storageUnMountShared = async (item: Storage) => {
+    await setUnMountShared(item.dev);
   };
 
   return {
-    fetchStorages,
-    connectStorage,
-    mountSharedStorage,
-    addLibraryPath,
-    removeLibraryPath,
+    libraryPathAdd,
+    libraryPathRemove,
+    directoryShare,
+    directoryUnshare,
+    storageFetch,
+    storageConnect,
+    storageMount,
+    storageUnMount,
+    storageMountShared,
+    storageUnMountShared,
     loading,
   };
 }

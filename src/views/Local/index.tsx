@@ -1,43 +1,41 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useLocalService } from "@/services/local";
-import { Item } from "@/types";
-import { getArtists } from "@/util";
-import { FolderSimpleIcon, GearIcon, MusicNotesIcon, UserIcon, VinylRecordIcon } from "@phosphor-icons/react";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { REF } from "@/constants/refs";
-import { ViewMode } from "@/types";
-import { usePlayNow } from "@/hooks/usePlayNow";
-
 import Page from "@/components/Page";
-import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import Grid from "../../components/InfiniteScroll/Grid";
 import List from "../../components/InfiniteScroll/List";
 import ListMenu from "@/components/ListMenu";
 import ButtonIcon from "@/components/Button/ButtonIcon";
-import Cover from "@/components/Item/GridItem";
 import TruncateText from "@/components/TruncateText";
 import ButtonPlayAll from "@/components/Button/ButtonPlayAll";
 import ButtonAddToQueue from "@/components/Button/ButtonAddToQueue";
-import FavouriteButton from "@/components/Player/FavouriteButton";
-import ButtonAddToPlaylist from "@/components/Button/ButtonAddToPlaylist";
-import ButtonInfo from "@/components/Button/ButtonInfo";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Spinner from "@/components/Spinner";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
-import ListItem from "@/components/Item";
+import ListItem from "@/components/Item/ListItem";
+import CoverArt from "@/components/CoverArt";
+import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
+
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useLocalService } from "@/services/local";
+import { Album, AnyItem, Artist, Track, ViewMode } from "@/types";
+import { FolderSimpleIcon, GearIcon, MusicNotesIcon, UserIcon, VinylRecordIcon } from "@phosphor-icons/react";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { MODEL, REF } from "@/constants/refs";
+import ActionMenu from "@/components/Actions";
+import { useMenuActions } from "@/hooks/useMenuActions";
+import { getImage } from "@/util";
+import ScrollingText from "@/components/ScrollingText";
 
 const Local = () => {
   const navigate = useNavigate();
-  const { handlePlayNow } = usePlayNow();
 
   const { view, id } = useParams<{ view: REF; id: string }>();
   const { getDirectory } = useLocalService();
+  const { itemsMenu } = useMenuActions();
 
   const listType = !view ? "directory" : id ? "detail" : "listing";
 
   const [layout, setLayout] = useState<ViewMode>("grid");
-  const [item, setItem] = useState<Item>();
+  const [item, setItem] = useState<AnyItem>();
   const [itemsDetailList, setItemsDetailList] = useState<any[]>([]);
   const [isItemDetailLoading, setIsItemDetailLoading] = useState<boolean>(true);
 
@@ -90,8 +88,8 @@ const Local = () => {
     }
   }, [listType, view, id]);
 
-  const onClickItem = async (item: Item) => {
-    if (item.type === REF.TRACK) return;
+  const onClickItem = async (item: AnyItem) => {
+    if (item.__model__ === MODEL.TRACK) return;
     const [view, id] = item.uri.split(":");
     setItem(undefined);
     setIsItemDetailLoading(true);
@@ -105,83 +103,63 @@ const Local = () => {
   return (
     <>
       <div className={`${listType === "detail" ? "show" : "hide"}`}>
-        <Page title={item?.name} backButtonOnClick={() => navigate(`/local/${view}`)} backButton>
+        <Page title={""} backButtonOnClick={() => navigate(`/local/${view}`)} backButton>
           {isItemDetailLoading ? (
             <LayoutHeightWrapper>
               <Spinner />
             </LayoutHeightWrapper>
           ) : (
             <LayoutHeightWrapper>
-              <div className="w-full">
-                <div className="bg-neutral-950 p-5 lg:rounded-lg">
-                {item && (
-                  <div className="flex">
-                    <div className="justify-center flex w-2/5">
-                      <div className="mr-4 w-full">
-                        <Cover item={item} cover_only />
+              <div className="">
+                <div>
+                  {item && (
+                    <div className="text-center">
+                      <div className="justify-center flex mb-3">
+                        <div className="w-60">
+                          <CoverArt src={getImage((item as Track).images?.[0]?.uri)} type={item.__model__} />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="w-3/5 text-white">
-                      {item?.performers.length ? (
-                        <div className="mb-1">
-                          <TruncateText>Performers : {getArtists(item.artists)}</TruncateText>
-                        </div>
-                      ) : null}
+                      <div className="px-3">
+                        <h2 className="lg:text-4xl text-3xl font-semibold">
+                          {(item as Album | Artist)?.name && <ScrollingText text={(item as Album | Artist)?.name} />}
+                        </h2>
 
-                      {item?.date && (
-                        <div className="mb-1">
-                          <TruncateText>Released on {item.date}</TruncateText>
-                        </div>
-                      )}
+                        {item.__model__ === MODEL.ARTIST && (item as Artist)?.country && <div className="mb-1">{(item as Artist).country}</div>}
+                        
+                        {(item as Album | Artist) && <div className="mb-1">{(item as Album | Artist)?.genre}</div>}
 
-                      {item?.genre && (
-                        <div className="mb-1">
-                          <TruncateText><b>Genre</b> : {item.genre}</TruncateText>
-                        </div>
-                      )}
+                        {item.__model__ === MODEL.ALBUM && (item as Album)?.date && <div className="mb-1">Released {(item as Album).date}</div>}
 
-                      {item?.country && (
-                        <div className="mb-1">
-                          <TruncateText>Country : {item.country}</TruncateText>
-                        </div>
-                      )}
-                        <div className="text-sm text-secondary mt-1 mb-3">
-                          <TruncateText limit={120}>{item?.comment ? item.comment : 'No Information'}</TruncateText>
-                        </div>
-
-                      <div className="flex items-center mt-2">
-                        <div className="mr-1 -ml-3">
-                          <ButtonPlayAll item={item} />
-                        </div>
-
-                        <div className="mr-1">
-                          <ButtonAddToQueue item={item} />
-                        </div>
-
-                        <div className="mr-1">
-                          <FavouriteButton />
-                        </div>
-
-                        <div className="mr-1">
-                          <ButtonAddToPlaylist item={item} />
-                        </div>
-
-                        {view === REF.ARTIST && (
-                          <div className="mr-1">
-                            <ButtonInfo item={item} />
+                        {item.__model__ === MODEL.ARTIST && (
+                          <div className="text-sm text-secondary mt-1 mb-3">
+                            <TruncateText limit={120}>{(item as Artist).bio ? (item as Artist).bio : "No Information"}</TruncateText>
                           </div>
                         )}
+
+                        <div className="flex items-center justify-center my-3">
+                          <div className="mr-2 -ml-3">
+                            <ButtonPlayAll item={item} />
+                          </div>
+
+                          <div className="mr-2">
+                            <ButtonAddToQueue item={item} />
+                          </div>
+
+                          <div className="mr-1">
+                            <ActionMenu items={itemsMenu(item)} />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div></div>
+                  )}
+                </div>
+              </div>
               <div className="w-full">
                 {itemsDetailList.length > 0 &&
-                  itemsDetailList.map((item: any, index: number) => (
+                  itemsDetailList.map((item: Track, index: number) => (
                     <ItemWrapper key={index}>
-                      <ListItem type="list" key={item.uri} item={item} index={index} onClickCallback={handlePlayNow}/>
+                      <ListItem item={item} />
                     </ItemWrapper>
                   ))}
               </div>

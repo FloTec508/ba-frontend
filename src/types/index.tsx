@@ -1,13 +1,17 @@
-import { EVENTS } from "@/constants/events";
-import { MODEL, REF } from "@/constants/refs";
-import { PLAYBACK_STATE, REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
 import { SelectProps } from "antd";
+import { PLAYBACK_STATE, REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
+import { EVENTS } from "@/constants/events";
+import { MODEL } from "@/constants/refs";
 
 export interface Artist {
   __model__: MODEL.ARTIST;
   uri: string;
   name: string;
+  albums?: Album[];
   sortname: string | null;
+  genre:string | null;
+  country: string | null;
+  bio: string | null;
   musicbrainz_id: string | null;
 }
 
@@ -18,6 +22,7 @@ export interface Album {
   artists: Artist[];
   num_tracks: number | null;
   num_discs: number | null;
+  genre:string | null;
   date: string | null;
   musicbrainz_id: string | null;
 }
@@ -52,45 +57,25 @@ export interface Track {
   sample_rate: number;
   channels: number;
   bit_depth: any;
+  size: number | null;
 }
 
 export interface TlTrack {
-  __model__: "TlTrack";
+  __model__: MODEL.TLTRACK;
   tlid: number;
   track: Track;
 }
 
-export interface Playlist {
-  __model__: "Playlist";
-  uri: string;
-  name: string;
-  tracks: TlTrack[];
-  last_modified: string;
+export interface TlTrackExt extends TlTrack, Omit<Track, "__model__"> {
+  __model__: MODEL.TLTRACK;
 }
 
-export interface Item {
-  __model__: MODEL.ITEM;
+export interface Playlist {
+  __model__: MODEL.PLAYLIST;
   uri: string;
   name: string;
-  type: REF;
-  artists: Artist[];
-  albums: Album[];
-  composers: Artist[];
-  performers: Artist[];
-  genre: string;
-  track_no: number;
-  country: string;
-  disc_no: number;
-  date: string;
   length: number;
-  bitrate: number;
-  comment: string;
-  musicbrainz_id: string | null;
   last_modified: string;
-  images: Image[];
-  shared?: boolean;
-  status?: string;
-  usage?: StorageUsage;
 }
 
 export interface MediaPlayer {
@@ -449,4 +434,4 @@ export interface Config {
   command: Record<string, never>;
 }
 
-export type AnyItem = Item | Track | Album | Artist | File | Directory | Storage;
+export type AnyItem = Track | TlTrack | Album | Artist | File | Directory | Storage | Playlist;

@@ -119,7 +119,7 @@ const Start = () => {
     <Page
       title="Source"
       rightComponent={
-        <div className="flex h-[50px] items-center mr-4">
+        <div className="flex h-12.5 items-center mr-4">
           <ButtonStandby />
         </div>
       }
@@ -165,12 +165,12 @@ const Start = () => {
                     key={item.alias}
                     disabled={item.disabled}
                     onClick={() => onClickHandler(item)}
-                    className={`hover:bg-black/40 touch-pan-x rounded-lg flex items-center justify-center aspect-square overflow-hidden w-full transition-all duration-200
+                    className={`hover:bg-button-hover touch-pan-x rounded-lg flex items-center justify-center aspect-square overflow-hidden w-full transition-all duration-200
                 cursor-pointer ${item.disabled ? "opacity-30" : source.uri === item.alias ? "text-primary bg-selected" : ""}`}
                   >
                     {loadingItem === item.alias && (
-                      <div className="absolute bg-black/80 w-full h-full rounded-lg">
-                        <Spinner />
+                      <div className="absolute bg-button-hover w-full h-full rounded-lg">
+                        <Spinner mode="light"/>
                       </div>
                     )}
 

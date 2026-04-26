@@ -1,4 +1,4 @@
-import { CouchIcon, FolderSimpleIcon, MusicNoteSimpleIcon, PlaylistIcon, UserIcon, VinylRecordIcon } from "@phosphor-icons/react";
+import { CouchIcon, FolderSimpleIcon, MusicNoteSimpleIcon, PlaylistIcon, UserIcon, VinylRecordIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { MODEL } from "@/constants/refs";
 
@@ -17,11 +17,11 @@ const Placeholder = ({
     switch (type) {
       case MODEL.DIRECTORY:
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case MODEL.FILE:
-        return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.ARTIST:
         return <UserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+      case MODEL.TLTRACK:
       case MODEL.TRACK:
+      case MODEL.FILE:
         return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.ALBUM:
         return <VinylRecordIcon weight={ICON_WEIGHT} size={ICON_SM} />;
@@ -30,7 +30,7 @@ const Placeholder = ({
       case MODEL.ROOM:
         return <CouchIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       default:
-        return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+        return <WarningCircleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
     }
   };
 

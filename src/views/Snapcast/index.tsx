@@ -76,7 +76,7 @@ const Snapcast = () => {
 
     return (
       <div className={`w-full`}>
-        <div className="flex justify-between items-center border-b-1 border-background py-3 px-4">
+        <div className="flex justify-between items-center border-b border-background py-3 px-4">
           <div className="flex items-center">
             <div className="text-lg font-medium">
               <div className="w-full flex mt-1 ">

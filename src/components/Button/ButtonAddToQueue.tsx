@@ -1,18 +1,18 @@
-import { Item } from "@/types";
+import { AnyItem } from "@/types";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useAddToQueue } from "@/hooks/useAddToQueue";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { ICON_WEIGHT, ICON_XS } from "@/constants";
 
-import ButtonIcon from "@/components/Button/ButtonIcon";
 import Spinner from "@/components/Spinner";
+import Button from ".";
 
-const ButtonAddToQueue = ({ item }: { item: Item }) => {
+const ButtonAddToQueue = ({ item }: { item: AnyItem }) => {
   const { handleAddToQueue, loading } = useAddToQueue();
 
   return (
-    <ButtonIcon onClick={() => handleAddToQueue(item)} className="mr-1">
-      {loading ? <Spinner /> : <PlusIcon weight={ICON_WEIGHT} size={ICON_SM} />}
-    </ButtonIcon>
+    <Button type="primary" size="sm" onClick={() => handleAddToQueue(item)}>
+      {loading ?<Spinner mode="light" /> : <PlusIcon weight={ICON_WEIGHT} size={ICON_XS} />} <div className="ml-2 text-sm"> Add to Queue</div>
+    </Button>
   );
 };
 

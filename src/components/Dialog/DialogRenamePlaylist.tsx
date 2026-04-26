@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Item } from "@/types";
+import { AnyItem } from "@/types";
 import { Input } from "@/components/Form/Input";
 import { usePlaylistService } from "@/services/playlist";
 import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
-const DialogRenamePlaylist = ({ item }: { item: Item }) => {
+const DialogRenamePlaylist = ({ item }: { item: AnyItem }) => {
   const dispatch = useDispatch();
 
   const { editItem } = usePlaylistService();

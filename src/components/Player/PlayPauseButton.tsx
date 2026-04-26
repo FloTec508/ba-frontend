@@ -25,14 +25,14 @@ const PlayPauseButton = () => {
 
   return (
     <ButtonIcon
-      className="w-16 h-16 bg-black"
+      className="w-16 h-16 dark:bg-black bg-neutral-900 hover:bg-black! dark:hover:bg-neutral-800! text-white"
       onClick={onClickPlayPause}
       disabled={!source?.controls?.includes("play")}
     >
       {playback_state === PLAYBACK_STATE.PLAYING ? (
-        <PauseIcon size={ICON_SM + 7} weight={ICON_WEIGHT} className="text-white"/>
+        <PauseIcon size={ICON_SM + 7} weight={ICON_WEIGHT} />
       ) : (
-         <PlayIcon size={ICON_SM + 7} weight={ICON_WEIGHT} className="text-white"/>
+         <PlayIcon size={ICON_SM + 7} weight={ICON_WEIGHT} />
       )}
     </ButtonIcon>
   );

@@ -4,6 +4,7 @@ const Button = ({
   loading,
   children,
   type = "ghost",
+  size ="md",
   onClick,
   disabled,
   className = "",
@@ -11,6 +12,7 @@ const Button = ({
   loading?: boolean;
   children: React.ReactNode;
   type: "ghost" | "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
   onClick?: () => void;
   disabled?: boolean;
   className?:string;
@@ -20,8 +22,8 @@ const Button = ({
       type="submit"
       onClick={onClick}
       disabled={disabled}
-      className={`px-6 py-4 transition flex rounded-4xl ${className} ${type === "ghost" && " hover:bg-button-hover disabled:opacity-50 "}  ${
-        type === "primary" && " hover:bg-primary"
+      className={`${size === "md" && "px-6 py-4"}  ${size === "sm" && "px-5 py-3"}  transition flex items-center rounded-full ${className} ${type === "ghost" && " hover:bg-button-hover disabled:opacity-50 "}  ${
+        type === "primary" && "bg-primary hover:bg-primary/90 text-white"
       } cursor-pointer ${loading ? "disabled:opacity-50" : ""}`}
     >
       {loading && (

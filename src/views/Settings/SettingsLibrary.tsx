@@ -13,7 +13,7 @@ import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import NoItems from "@/components/Item/NoItems";
 
 const SettingsLocal = () => {
-  const { removeLibraryPath } = useStorageActions();
+  const { libraryPathRemove } = useStorageActions();
   const { config } = useSelector((state: any) => state.config);
 
   const paths = config.local.library_path;
@@ -45,7 +45,7 @@ const SettingsLocal = () => {
                   <FolderIcon weight={ICON_WEIGHT} size={ICON_SM} className="mr-2" />
                   <TruncateText>{uri}</TruncateText>
                 </div>
-                <ButtonIcon className="text-right ml-5" onClick={() => removeLibraryPath(uri)}>
+                <ButtonIcon className="text-right ml-5" onClick={() => libraryPathRemove(uri)}>
                   <TrashSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />
                 </ButtonIcon>
               </div>
