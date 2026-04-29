@@ -16,7 +16,7 @@ import SettingsGeneral from "./views/Settings/SettingsGeneral";
 import SettingsNetwork from "./views/Settings/SettingsNetwork";
 import Snapcast from "./views/Snapcast";
 import SettingsMultiroom from "./views/Settings/SettingsMultiroom";
-import Bluetooth from "./views/Bluetooth";
+import BluetoothView from "./views/Bluetooth";
 import SettingsLocal from "./views/Settings/SettingsLibrary";
 import SettingsDisplay from "./views/Settings/SettingsDisplay";
 import SettingsStorage from "./views/Settings/SettingsStorage";
@@ -49,7 +49,7 @@ const App = () => {
           <Layout>
             <Routes key={location.pathname}>
               <Route path="/" element={<Start />} />
-              <Route path="/bluetooth" element={<Bluetooth />} />
+              <Route path="/bluetooth" element={<BluetoothView />} />
               <Route path="/spotify" element={<Start />} />
               <Route path="/shairportsync" element={<Start />} />
               <Route path="/linein" element={<Start />} />
@@ -67,7 +67,7 @@ const App = () => {
               <Route path="/settings/general/" element={<SettingsGeneral />} />
               <Route path="/settings/mixer/" element={<SettingsMixer />} />
               <Route path="/settings/local/" element={<SettingsLocal />} />
-              <Route path="/settings/bluetooth/" element={<Bluetooth />} />
+              <Route path="/settings/bluetooth/" element={<BluetoothView />} />
               <Route path="/settings/network/" element={<SettingsNetwork />} />
               <Route path="/settings/storage/" element={<SettingsStorage />} />
               <Route path="/settings/linein/" element={<SettingsLinein />} />

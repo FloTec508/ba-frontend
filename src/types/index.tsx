@@ -1,6 +1,5 @@
 import { SelectProps } from "antd";
 import { PLAYBACK_STATE, REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
-import { EVENTS } from "@/constants/events";
 import { MODEL } from "@/constants/refs";
 
 export interface Artist {
@@ -9,7 +8,7 @@ export interface Artist {
   name: string;
   albums?: Album[];
   sortname: string | null;
-  genre:string | null;
+  genre: string | null;
   country: string | null;
   bio: string | null;
   musicbrainz_id: string | null;
@@ -22,7 +21,7 @@ export interface Album {
   artists: Artist[];
   num_tracks: number | null;
   num_discs: number | null;
-  genre:string | null;
+  genre: string | null;
   date: string | null;
   musicbrainz_id: string | null;
 }
@@ -39,8 +38,7 @@ export interface Track {
   uri: string;
   name: string;
   artists: Artist[];
-  album: Album;
-  albums?: Album[];
+  albums: Album[];
   composers: Artist[];
   performers: Artist[];
   genre: string | null;
@@ -60,14 +58,26 @@ export interface Track {
   size: number | null;
 }
 
-export interface TlTrack {
-  __model__: MODEL.TLTRACK;
-  tlid: number;
-  track: Track;
+export interface Tuner {
+  __model__: MODEL.TUNER;
+  uri: string;
+  name: string;
+  frequency: number;
+  audio_codec: string;
+  channels?: number;
+  sample_rate: number;
+  bit_depth: string;
 }
 
-export interface TlTrackExt extends TlTrack, Omit<Track, "__model__"> {
+export interface TlTrack {
   __model__: MODEL.TLTRACK;
+  uri: string | undefined;
+  tlid: number;
+  track: Track | Tuner;
+}
+
+export interface TracklistState {
+  tl_tracks: TlTrack[];
 }
 
 export interface Playlist {
@@ -78,19 +88,22 @@ export interface Playlist {
   last_modified: string;
 }
 
+export interface PlTrack {
+  __model__: MODEL.PLTRACK;
+  uri: string;
+  tlid: number;
+  track: Track | Tuner;
+}
+
 export interface MediaPlayer {
   source: Source;
   playback_state: PLAYBACK_STATE;
+  current_track: TlTrack | undefined;
+  elapsed_ms: number;
   repeat_mode: REPEAT_MODE;
   shuffle_mode: SHUFFLE_MODE;
   volume: number | undefined;
   mute: boolean;
-  elapsed_ms: number;
-  current_track: TlTrack;
-  current_track_cover: string | undefined;
-  current_playlist: TlTrack[];
-  current_playlist_loading: boolean;
-  is_standby: boolean;
 }
 
 export interface Source {
@@ -108,7 +121,8 @@ export interface Source {
   };
 }
 
-export interface BluetoothDevice {
+export interface Bluetooth {
+  __model__: MODEL.BLUETOOTH;
   address: string;
   name: string;
   profile: string | null;
@@ -130,12 +144,12 @@ export interface AdapterState {
   powered: boolean;
   discoverable: boolean;
   pairable: boolean;
-  connected: boolean | BluetoothDevice;
+  connected: boolean | Bluetooth;
 }
 
 export interface BluetoothState {
   adapter_state: AdapterState;
-  devices: BluetoothDevice[];
+  devices: Bluetooth[];
 }
 
 export interface SnapcastServer {
@@ -158,7 +172,6 @@ export interface SnapcastState {
 }
 
 export interface StorageState {
-  last_shared_event: { event: EVENTS; uri: string } | {};
   storages: Storage[];
 }
 
@@ -170,7 +183,7 @@ export interface StorageUsage {
 
 export interface Storage {
   __model__: MODEL.STORAGE;
-  type: "internal" | "removable" | "nas" | "directory";
+  type: "internal" | "removable" | "nas";
   uri: string;
   size: number | null;
   name: string;
@@ -191,6 +204,11 @@ export interface Directory {
   uri: string;
   name: string;
   shared: boolean;
+  read_only: boolean | null;
+  guest_allowed: boolean | null;
+  user: string | null;
+  create_permissions: string | null;
+  directory_permissions: string | null;
 }
 
 export interface File {
@@ -434,4 +452,4 @@ export interface Config {
   command: Record<string, never>;
 }
 
-export type AnyItem = Track | TlTrack | Album | Artist | File | Directory | Storage | Playlist;
+export type AnyItem = Track | Tuner | TlTrack | Album | Artist | File | Directory | Storage | Playlist | Bluetooth;

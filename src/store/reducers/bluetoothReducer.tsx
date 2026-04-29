@@ -1,4 +1,4 @@
-import { BluetoothDevice, BluetoothState } from "@/types";
+import { Bluetooth, BluetoothState } from "@/types";
 import { INTERNAL_EVENTS } from "../constants";
 import { EVENTS } from "@/constants/events";
 
@@ -15,7 +15,7 @@ export const bluetoothReducer = (state = initialState, action: any): BluetoothSt
     case INTERNAL_EVENTS.BLUETOOTH_LIST:
       return {
         ...state,
-        devices: payload?.sort((a: BluetoothDevice, b: BluetoothDevice) => a.name.localeCompare(b.name)),
+        devices: payload?.sort((a: Bluetooth, b: Bluetooth) => a.name.localeCompare(b.name)),
       };
     case EVENTS.BLUETOOTH_DISCOVERABLE:
       return { ...state, adapter_state: { ...state.adapter_state, discoverable: payload.state } };
@@ -31,13 +31,13 @@ export const bluetoothReducer = (state = initialState, action: any): BluetoothSt
       const filter_devices = state.devices.filter((device) => device.address !== payload.device.address);
       return {
         ...state,
-        devices: [...filter_devices, { ...payload.device }].sort((a: BluetoothDevice, b: BluetoothDevice) => a.name.localeCompare(b.name)),
+        devices: [...filter_devices, { ...payload.device }].sort((a: Bluetooth, b: Bluetooth) => a.name.localeCompare(b.name)),
       };
     case EVENTS.BLUETOOTH_REMOVED:
       const filter_removed_devices = state.devices.filter((device) => device.address !== payload.device.address);
       return {
         ...state,
-        devices: [...filter_removed_devices].sort((a: BluetoothDevice, b: BluetoothDevice) => a.name.localeCompare(b.name)),
+        devices: [...filter_removed_devices].sort((a: Bluetooth, b: Bluetooth) => a.name.localeCompare(b.name)),
       };
     default:
       return state;

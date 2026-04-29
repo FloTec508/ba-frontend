@@ -1,21 +1,41 @@
-import { useDispatch } from "react-redux";
 import { TlTrack } from "@/types";
-import { INTERNAL_EVENTS } from "@/store/constants";
 import { useTracklistService } from "@/services/tracklist";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 export function useTracklistActions() {
   const dispatch = useDispatch();
+  const { removeTrack, getTracklist } = useTracklistService();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const tracklistRemove = async (item: TlTrack) => {
-    const { remove } = useTracklistService();
-
-    if (await remove(item.tlid)) {
-      dispatch({
-        type: INTERNAL_EVENTS.TRACKLIST_TRACK_REMOVED,
-        payload: item,
-      });
+    setLoading(true);
+    try {
+      await removeTrack(item.tlid);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { tracklistRemove };
+  const tracklistFetch = async () => {
+    setLoading(true);
+    try {
+      const response = await getTracklist();
+      dispatch({
+        type: INTERNAL_EVENTS.TRACKLIST_LIST,
+        payload: response,
+      });
+      return response;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { tracklistFetch, tracklistRemove, loading };
 }

@@ -1,4 +1,4 @@
-import { BluetoothDevice } from "@/types";
+import { Bluetooth } from "@/types";
 import { BluetoothDeviceIcon } from "@/util";
 import { useSelector } from "react-redux";
 
@@ -9,7 +9,7 @@ const BluetoothStatus = () => {
 
   return (
     <ButtonIcon onClick={undefined}>
-      {devices.map((device: BluetoothDevice) => device.connected && <BluetoothDeviceIcon type={device.icon} />)}
+      {devices.map((device: Bluetooth) => device.connected && <BluetoothDeviceIcon type={device.icon} />)}
     </ButtonIcon>
   );
 };

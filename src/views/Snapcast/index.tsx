@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSnapcastService } from "@/services/snapcast";
 import { useSnapcastActions } from "@/hooks/useSnapcastActions";
-import { SnapcastServer } from "@/types";
+import { Album, SnapcastServer } from "@/types";
 import { timeAgo } from "@/util";
 import { Slider } from "@/components/Form/Slider";
 import {
@@ -17,8 +17,8 @@ import {
 } from "@phosphor-icons/react";
 import { EVENTS } from "@/constants/events";
 import { INTERNAL_EVENTS } from "@/store/constants";
-import { ICON_SM, ICON_WEIGHT, ICON_XS, LOCAL_IP } from "@/constants";
 import { MODEL } from "@/constants/refs";
+import { ICON_SM, ICON_WEIGHT, ICON_XS, LOCAL_IP } from "@/constants";
 
 import Page from "@/components/Page";
 import ActionMenu from "@/components/Actions";
@@ -81,7 +81,7 @@ const Snapcast = () => {
             <div className="text-lg font-medium">
               <div className="w-full flex mt-1 ">
                 <div className={`overflow-hidden rounded-sm mr-3 min-w-13 w-13 h-13  ${item?.connected ? "text-primary" : ""}`}>
-                  <Placeholder type={MODEL.ROOM} variant={item?.connected ? "primary" : ""} />
+                  <Placeholder item={{__model__: MODEL.ALBUM} as Album} variant={item?.connected ? "primary" : ""} />
                 </div>
                 <div>
                   <div className="flex items-center text-xl font-medium">

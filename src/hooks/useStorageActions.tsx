@@ -36,9 +36,10 @@ export function useStorageActions() {
     }
   };
 
-  const storageMountShared = async (devs: string[]) => {
+  const storageMountShared = async (storages: Storage[]) => {
     setLoading(true);
     try {
+      const devs = storages.map((storage) => storage.dev);
       return await setMountShared(devs);
     } finally {
       setLoading(false);
@@ -86,7 +87,7 @@ export function useStorageActions() {
   };
 
   const storageMount = async (item: Storage) => {
-    if (await setMount(item.uri)) {
+    if (await setMount(item.dev)) {
       dispatch({
         type: INTERNAL_EVENTS.STORAGE_MOUNTED,
         payload: item,

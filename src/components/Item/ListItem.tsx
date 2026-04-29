@@ -4,8 +4,8 @@ import CoverArt from "../CoverArt";
 import ActionMenu from "../Actions";
 
 import { MusicNotesIcon } from "@phosphor-icons/react";
-import { formatNo, getImage, getDuration, getSubtitle } from "@/util";
-import { AnyItem, Storage, Track } from "@/types";
+import { formatNo, getImage, getDuration, getSubtitle, getTitle } from "@/util";
+import { AnyItem, Storage } from "@/types";
 import { SharedUnsharedIcon } from "../Icons";
 import { usePlayNow } from "@/hooks/usePlayNow";
 import { useState } from "react";
@@ -20,10 +20,10 @@ interface ListItem {
 }
 
 const ListItem = ({ no, item, selected = false, onClick }: ListItem) => {
-  const title = (item as Track).name;
+  const title = getTitle(item);
   const subtitle = getSubtitle(item);
   const duration = getDuration(item);
-  const src = getImage((item as Track).images?.[0]?.uri);
+  const src = getImage(item);
 
   const { handlePlayNow } = usePlayNow();
   const { itemsMenu } = useMenuActions();
@@ -57,7 +57,7 @@ const ListItem = ({ no, item, selected = false, onClick }: ListItem) => {
             {no && <div className="-ml-1 mr-4 text-sm text-secondary w-2.5 text-center">{formatNo(no)}</div>}
             <ListImageWrapper>
               <CoverArt
-                type={item.__model__}
+                item={item}
                 src={src}
                 title={title}
                 loading={loadingCover || loading}

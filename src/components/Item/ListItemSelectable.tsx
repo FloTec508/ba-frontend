@@ -4,22 +4,21 @@ import CoverArt from "../CoverArt";
 
 import { CheckCircleIcon, CircleIcon } from "@phosphor-icons/react";
 import { getImage, getDuration, getSubtitle } from "@/util";
-import { AnyItem, Storage, Track } from "@/types";
+import { AnyItem, Directory, Playlist } from "@/types";
 import { SharedUnsharedIcon } from "../Icons";
 import { ICON_SM } from "@/constants";
 
 interface ListItemSelectable {
   item: AnyItem;
-  image?: string;
-  selected?: boolean;
+  selected: boolean;
   onClick?: () => void;
 }
 
 const ListItemSelectable = ({ item, selected = false, onClick }: ListItemSelectable) => {
-  const title = (item as Track).name;
+  const title = (item as Playlist | Directory | Storage).name;
   const subtitle = getSubtitle(item);
   const duration = getDuration(item);
-  const src = getImage((item as Track).images?.[0]?.uri);
+  const src = getImage(item);
 
   return (
     <>
@@ -27,8 +26,8 @@ const ListItemSelectable = ({ item, selected = false, onClick }: ListItemSelecta
         <div className="py-3 px-4 flex justify-between w-full relative items-center">
           <div className="flex items-center w-full">
             <ListImageWrapper>
-              <CoverArt type={item.__model__} src={src} title={title} />
-              <SharedUnsharedIcon shared={(item as Storage).shared} classname="absolute -top-1 left-8" />
+              <CoverArt item={item} src={src} title={title} />
+              <SharedUnsharedIcon shared={(item as Directory).shared} classname="absolute -top-1 left-8" />
             </ListImageWrapper>
             <div className="grow pr-5">
               <div className="flex items-center text-left">

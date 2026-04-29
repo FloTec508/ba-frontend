@@ -3,14 +3,14 @@ import { useDispatch } from "react-redux";
 import { useLocalService } from "@/services/local";
 import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
-import { AnyItem, TlTrack, TlTrackExt, Track } from "@/types";
+import { AnyItem, TlTrack, Track } from "@/types";
 import { INTERNAL_EVENTS } from "@/store/constants";
 import { MODEL } from "@/constants/refs";
 
 export function useAddToQueue() {
   const dispatch = useDispatch();
 
-  const { add } = useTracklistService();
+  const { addTrack } = useTracklistService();
   const { getDirectory: getLibraryDirectory } = useLocalService();
   const { getDirectory: getPlaylistDirectory } = usePlaylistService();
 
@@ -28,7 +28,7 @@ export function useAddToQueue() {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
         dispatch({
-          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
           payload: tracks,
         });
         break;
@@ -41,24 +41,25 @@ export function useAddToQueue() {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
         dispatch({
-          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
           payload: tracks,
         });
         break;
       }
       case MODEL.TLTRACK:
-        tracksUris.push((item as TlTrackExt).uri);
+        tracksUris.push(item.track.uri);
         dispatch({
-          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
-          payload: item,
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
+          payload: item.track,
         });
         break;
 
       case MODEL.FILE:
       case MODEL.TRACK:
+      case MODEL.TUNER:
         tracksUris.push(item.uri);
         dispatch({
-          type: INTERNAL_EVENTS.ADD_TO_QUEUE,
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
           payload: item,
         });
         break;
@@ -66,7 +67,7 @@ export function useAddToQueue() {
         break;
     }
     try {
-      await add(tracksUris);
+      await addTrack(tracksUris);
     } finally {
       setLoading(false);
     }

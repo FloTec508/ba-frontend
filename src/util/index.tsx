@@ -1,7 +1,7 @@
 import { ICON_SM, ICON_WEIGHT, SERVER_URL } from "@/constants";
 import { MODEL } from "@/constants/refs";
 import { REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
-import { Album, AnyItem, Artist, TlTrackExt, Track } from "@/types";
+import { Album, AnyItem, Artist, TlTrack, Track, Tuner } from "@/types";
 import { BluetoothIcon, DeviceMobileIcon, HeadphonesIcon, LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
 
 /**
@@ -151,11 +151,6 @@ export const arrayToText = (array: []) => {
   return array?.map((item: any) => item).join(", ");
 };
 
-export const getImage = (imageUri: string) => {
-  const isRemote = isHttpUrl(imageUri);
-  return imageUri ? (isRemote ? imageUri : `${SERVER_URL}/${imageUri}`) : undefined;
-};
-
 /**
  * Returns MB or GB
  */
@@ -291,12 +286,63 @@ export const BluetoothDeviceIcon = ({ type, className }: { type: string; classNa
   }
 };
 
-export const getSubtitle = (item: AnyItem): string | undefined => {
+export const build_image_url = (imageUri: string) => {
+  const isRemote = isHttpUrl(imageUri);
+  return imageUri ? (isRemote ? imageUri : `${SERVER_URL}/${imageUri}`) : undefined;
+};
+
+export const getImage = (item: AnyItem): string | undefined => {
+  if (!item) return;
   switch (item.__model__) {
     case MODEL.ALBUM:
     case MODEL.TRACK:
+    case MODEL.TUNER:
+    case MODEL.FILE:
+    case MODEL.ARTIST:
+    case MODEL.PLAYLIST:
+      return build_image_url((item as Track).images?.[0]?.uri);
     case MODEL.TLTRACK:
-      return (item as TlTrackExt).artists?.map((artist: Artist) => artist.name).join(",") || "";
+      return build_image_url(((item as TlTrack).track as Track).images?.[0]?.uri);
+    default:
+      return undefined;
+  }
+};
+
+export const getTitle = (item: AnyItem): string | undefined => {
+  if (!item) return;
+  switch (item.__model__) {
+    case MODEL.ALBUM:
+    case MODEL.TRACK:
+    case MODEL.TUNER:
+    case MODEL.FILE:
+    case MODEL.ARTIST:
+    case MODEL.PLAYLIST:
+    case MODEL.DIRECTORY:
+    case MODEL.BLUETOOTH:
+      return item.name;
+    case MODEL.TLTRACK:
+      return item.track.name;
+    default:
+      return undefined;
+  }
+};
+
+export const getSubtitle = (item: AnyItem): string | undefined => {
+  if (!item) return;
+  switch (item.__model__) {
+    case MODEL.ALBUM:
+    case MODEL.TRACK:
+      return item.artists?.map((artist: Artist) => artist.name).join(",") || "";
+    case MODEL.TLTRACK:
+      if (item.track.__model__ === MODEL.TRACK) {
+        return item.track?.artists?.map((artist: Artist) => artist.name).join(",") || "";
+      }
+      if (item.track.__model__ === MODEL.TUNER) {
+        return `FM ${item.track.frequency / 10} MHz`;
+      }
+      return undefined;
+    case MODEL.TUNER:
+      return `FM ${(item as Tuner).frequency / 10} MHz`;
     case MODEL.FILE:
       return formatBytes(item.size);
     case MODEL.ARTIST:

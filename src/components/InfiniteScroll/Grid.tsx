@@ -1,22 +1,22 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FolderSimpleIcon } from "@phosphor-icons/react";
+import { AnyItem } from "@/types";
+import { REF } from "@/constants/refs";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { DIALOG_EVENTS } from "@/store/constants";
+
 import Spinner from "@/components/Spinner";
 import NoItems from "@/components/Item/NoItems";
 import useVirtual from "react-cool-virtual";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import GridItem from "../Item/GridItem";
 
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FolderSimpleIcon } from "@phosphor-icons/react";
-import { AnyItem, Directory } from "@/types";
-import { REF } from "@/constants/refs";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
-import { EVENTS } from "@/constants/events";
-
 interface Grid {
   uri: string;
   getDirectory: (uri?: string, limit?: number, offset?: number) => Promise<[]>;
   onClickCallback?: (item: AnyItem) => void;
+  onEvent?: (event: string, payload: any, setItems: React.Dispatch<React.SetStateAction<AnyItem[]>>) => void;
   emptyComponent?: React.ReactNode;
 }
 
@@ -29,12 +29,11 @@ const calculateCols = () => {
   else return 8;
 };
 
-const Grid = ({ uri, getDirectory, onClickCallback, emptyComponent }: Grid) => {
+const Grid = ({ uri, getDirectory, onClickCallback, onEvent, emptyComponent }: Grid) => {
   const dispatch = useDispatch();
 
   const loadMoreCount = 6;
   const action = useSelector((state: any) => state.event);
-  const { last_shared_event } = useSelector((state: any) => state.storage);
 
   const [items, setItems] = useState<AnyItem[]>([]);
   const [startOffset, setStartOffset] = useState<number>(0);
@@ -62,44 +61,24 @@ const Grid = ({ uri, getDirectory, onClickCallback, emptyComponent }: Grid) => {
     },
   });
 
-  const fetch = async () => {
-    setIsLoading(true);
-
-    const response = (await getDirectory(uri, loadMoreCount * columns, 0)) || [];
-    if (!response.length && [REF.ARTIST, REF.ALBUM, REF.GENRE, REF.TRACK].includes(uri as REF)) {
-      dispatch({ type: DIALOG_EVENTS.DIALOG_ADD_LIBRARY });
-    }
-
-    setItems(response);
-    setStartOffset(0);
-    scrollTo(0);
-    setIsLoading(false);
-  };
-
-  // todo als in Grid to move to a common place
   useEffect(() => {
-    if (!last_shared_event) return;
-    setItems((prev) =>
-      prev.map((item) => {
-        if ((item as Directory).uri !== last_shared_event.uri) return item;
-        return { ...item, shared: last_shared_event.event === EVENTS.STORAGE_SHARED };
-      }),
-    );
-  }, [last_shared_event]);
-
-  useEffect(() => {
-    const PLAYLIST_EVENTS = [
-      EVENTS.PLAYLIST_UPDATED,
-      INTERNAL_EVENTS.PLAYLIST_CREATED,
-      INTERNAL_EVENTS.PLAYLIST_REMOVED,
-      INTERNAL_EVENTS.PLAYLIST_UPDATED,
-    ];
-    if (PLAYLIST_EVENTS.includes(action.event)) {
-      fetch();
+    if (action.event && onEvent) {
+      onEvent(action.event, action.payload, setItems);
     }
   }, [action]);
 
   useEffect(() => {
+    const fetch = async () => {
+      setIsLoading(true);
+      const response = (await getDirectory(uri, loadMoreCount * columns, 0)) || [];
+      if (!response.length && [REF.ARTIST, REF.ALBUM, REF.GENRE, REF.TRACK].includes(uri as REF)) {
+        dispatch({ type: DIALOG_EVENTS.DIALOG_ADD_LIBRARY });
+      }
+      setItems(response);
+      setStartOffset(0);
+      scrollTo(0);
+      setIsLoading(false);
+    };
     fetch();
   }, [uri]);
 
@@ -132,7 +111,11 @@ const Grid = ({ uri, getDirectory, onClickCallback, emptyComponent }: Grid) => {
           return (
             <div key={index} className="flex items-start">
               {rowItems.map((item: any, index: number) => (
-                <div key={index} className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200" style={{ width: `${100 / columns}%` }}>
+                <div
+                  key={index}
+                  className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200"
+                  style={{ width: `${100 / columns}%` }}
+                >
                   <GridItem item={item} onClick={() => onClickCallback?.(item)} />
                 </div>
               ))}

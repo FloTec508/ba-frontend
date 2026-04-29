@@ -10,17 +10,9 @@ export enum PLAYER_EVENTS {
 }
 
 export enum INTERNAL_EVENTS {
-  // Playlist
-  PLAYLIST_CREATED = "event/playlist/create",
-  PLAYLIST_UPDATED = "event/playlist/update",
-  PLAYLIST_REMOVED = "event/playlist/removed",
-  PLAYLIST_TRACK_ADDED = "event/playlist/track/add",
-  PLAYLIST_TRACK_REMOVED = "event/playlist/track/removed",
-
-  // Queue
-  ADD_TO_QUEUE = "event/queue/add",
-  CLEAR_QUEUE = "event/queue/clear",
-  TRACKLIST_TRACK_REMOVED = "event/tracklist/track/removed",
+  // Tracklist
+  TRACKLIST_ADD_TO_QUEUE = "event/tracklist/add",
+  TRACKLIST_LIST = "event/tracklist/list",
 
   // Library
   LIBRARY_SCAN_COMPLETED = "event/library/scan/completed",
@@ -54,7 +46,7 @@ export enum INTERNAL_EVENTS {
   //States
   CONFIG_STATE = "event/config/state",
   MIXER_STATE = "event/mixer/muted/state",
-  SOURCE_STATE = "event/source/state"
+  SOURCE_STATE = "event/source/state",
 }
 
 export enum DIALOG_EVENTS {

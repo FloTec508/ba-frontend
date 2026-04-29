@@ -10,6 +10,7 @@ import { bluetoothReducer } from "./bluetoothReducer";
 import { snapcastReducer } from "./snapcastReducer";
 import { scanReducer } from "./scanReducer";
 import { networkReducer } from "./networkReducer";
+import { tracklistReducer } from "./tracklistReducer";
 import { configReducer } from "./configReducer";
 
 export const rootReducer = combineReducers({
@@ -24,5 +25,6 @@ export const rootReducer = combineReducers({
   bluetooth: bluetoothReducer,
   snapcast: snapcastReducer,
   network: networkReducer,
+  tracklist: tracklistReducer,
   config: configReducer,
 });

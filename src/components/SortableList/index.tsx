@@ -18,13 +18,16 @@ const reorder = (list: TlTrack[], startIndex: number, endIndex: number) => {
 export default function SortableList({
   tracks,
   onMoveCallback,
+  onEvent,
 }: {
   tracks: TlTrack[];
   onMoveCallback?: (start: number, end: number, to_position: number) => void;
+  onEvent?: (event: string, payload: any, setItems: React.Dispatch<React.SetStateAction<TlTrack[]>>) => void;
 }) {
+  const action = useSelector((state: any) => state.event);
   const { current_track } = useSelector((state: any) => state.player);
 
-  const [items, setItems] = useState(tracks);
+  const [items, setItems] = useState<TlTrack[]>(tracks);
   const [selectedTlid, setSelectedTlid] = useState<number | null>(current_track?.tlid);
 
   useEffect(() => {
@@ -32,14 +35,18 @@ export default function SortableList({
   }, [tracks]);
 
   useEffect(() => {
+    if (action.event && onEvent) {
+      onEvent(action.event, action.payload, setItems);
+    }
+  }, [action]);
+
+  useEffect(() => {
     setSelectedTlid(current_track?.tlid);
   }, [current_track?.tlid]);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-
     onMoveCallback?.(result.source.index, result.source.index + 1, result.destination.index);
-
     const newItems: any = reorder(items, result.source.index, result.destination.index);
     setItems(newItems);
   };
@@ -60,7 +67,7 @@ export default function SortableList({
                   >
                     <ItemWrapper>
                       <DotsSixVerticalIcon weight={ICON_WEIGHT} size={ICON_SM} className="-mr-3 ml-1" />
-                      <ListItem item={{ ...item.track, ...item }} selected={item.tlid === selectedTlid} />
+                      <ListItem item={item} selected={item.tlid === selectedTlid} />
                     </ItemWrapper>
                   </div>
                 )}

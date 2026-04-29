@@ -1,3 +1,16 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useStorageService } from "@/services/storage";
+import { useStorageActions } from "@/hooks/useStorageActions";
+import { useMenuActions } from "@/hooks/useMenuActions";
+import { FolderOpenIcon, GearIcon, HardDriveIcon, NetworkIcon, UsbIcon } from "@phosphor-icons/react";
+import { Storage, ViewMode, Directory, AnyItem } from "@/types";
+import { formatBytes } from "@/util";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { MODEL } from "@/constants/refs";
+import { EVENTS } from "@/constants/events";
+
 import Page from "@/components/Page";
 import Spinner from "@/components/Spinner";
 import ActionMenu from "@/components/Actions";
@@ -10,18 +23,6 @@ import Grid from "@/components/InfiniteScroll/Grid";
 import NoItems from "@/components/Item/NoItems";
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import ButtonAddSmb from "@/components/Button/ButtonAddSmb";
-
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useStorageService } from "@/services/storage";
-import { useStorageActions } from "@/hooks/useStorageActions";
-import { useMenuActions } from "@/hooks/useMenuActions";
-import { FolderOpenIcon, GearIcon, HardDriveIcon, NetworkIcon, UsbIcon } from "@phosphor-icons/react";
-import { Storage, ViewMode, AnyItem, Directory } from "@/types";
-import { formatBytes } from "@/util";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { MODEL } from "@/constants/refs";
 
 const StorageView = () => {
   const navigate = useNavigate();
@@ -53,6 +54,15 @@ const StorageView = () => {
     if (item.__model__ === MODEL.FILE) return;
     const path = (item as Directory).uri.replace("storage:", "");
     navigate(`/storage${path}`);
+  };
+
+  const handleEvent = (event: string, payload: any, setItems: React.Dispatch<React.SetStateAction<AnyItem[]>>) => {
+    switch (event) {
+      case EVENTS.STORAGE_SHARED:
+      case EVENTS.STORAGE_UNSHARED:
+        setItems((prev) => prev.map((item) => ((item as Directory).uri === payload.directory.uri ? { ...item, ...payload.directory } : item)));
+        break;
+    }
   };
 
   const ListItemStorage = ({ item }: { item: Storage }) => {
@@ -130,6 +140,7 @@ const StorageView = () => {
                 uri={`storage:/${path}`}
                 getDirectory={getDirectory}
                 onClickCallback={onClickItem}
+                onEvent={handleEvent}
                 emptyComponent={<NoItems title="Empty Folder" desc="No files here" icon={<FolderOpenIcon weight={ICON_WEIGHT} size={ICON_SM} />} />}
               />
             )}
@@ -138,6 +149,7 @@ const StorageView = () => {
                 uri={`storage:/${path}`}
                 getDirectory={getDirectory}
                 onClickCallback={onClickItem}
+                onEvent={handleEvent}
                 emptyComponent={<NoItems title="Empty Folder" desc="No files here" icon={<FolderOpenIcon weight={ICON_WEIGHT} size={ICON_SM} />} />}
               />
             )}

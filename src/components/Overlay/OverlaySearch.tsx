@@ -102,12 +102,12 @@ const OverlaySearch = () => {
               />
             </LayoutHeightWrapper>
           ) : (
-            results && Object.entries(results).map(([table, items]: [string, Item[]]) => (
+            results && Object.entries(results).map(([table, items]: [string, AnyItem[]]) => (
               <div key={table} className="mt-4">
                 <h2 className="pl-5 font-bold text-lg">{title[table]}</h2>
                 <ul className="list-disc">
                   {results[table] &&
-                    items.map((item: Item, index: number) => (
+                    items.map((item: AnyItem, index: number) => (
                       <ItemWrapper key={index}>
                         <ListItem
                           item={item}

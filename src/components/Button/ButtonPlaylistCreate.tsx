@@ -1,38 +1,27 @@
-import { useState } from "react";
-import { ListPlusIcon } from "@phosphor-icons/react";
-import { useDispatch, useSelector } from "react-redux";
-import { usePlaylistService } from "@/services/playlist";
-import { Input } from "@/components/Form/Input";
-import { INTERNAL_EVENTS } from "@/store/constants";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
-
 import Modal from "@/components/Modal";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 
-const ButtonPlaylistCreate = ({ fromQueue = false }: { fromQueue?: boolean }) => {
-  const dispatch = useDispatch();
+import { useState } from "react";
+import { usePlaylistActions } from "@/hooks/usePlaylistActions";
+import { useSelector } from "react-redux";
+import { ListPlusIcon } from "@phosphor-icons/react";
+import { Input } from "@/components/Form/Input";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
-  const { createItem } = usePlaylistService();
-  const { current_playlist } = useSelector((state: any) => state.player);
+const ButtonPlaylistCreate = ({ fromQueue = false }: { fromQueue?: boolean }) => {
+  const { playlistCreate, loading } = usePlaylistActions();
+  const { tl_tracks } = useSelector((state: any) => state.tracklist);
 
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [playlistName, setPlaylistName] = useState<string>("My Mix");
-  const [isLoading, setIsloading] = useState<boolean>(false);
 
   const onClickCreateHandler = async () => {
-    setIsloading(true);
-    const tl_tracks = fromQueue ? current_playlist : [];
-    if (await createItem(playlistName, tl_tracks)) {
-      dispatch({
-        type: INTERNAL_EVENTS.PLAYLIST_CREATED,
-        payload: { name: playlistName },
-      });
-      setShowCreateModal(false);
-    }
-    setIsloading(false);
+    const _tl_tracks = fromQueue ? tl_tracks : [];
+    await playlistCreate(playlistName, _tl_tracks);
+    setShowCreateModal(false);
   };
 
-  const disabled = fromQueue && current_playlist.length <= 0;
+  const disabled = fromQueue && tl_tracks.length <= 0;
 
   return (
     <>
@@ -45,7 +34,7 @@ const ButtonPlaylistCreate = ({ fromQueue = false }: { fromQueue?: boolean }) =>
         onClose={() => setShowCreateModal(false)}
         isOpen={showCreateModal}
         buttonText="Create"
-        buttonLoading={isLoading}
+        buttonLoading={loading}
         buttonOnClick={onClickCreateHandler}
         buttonDisabled={playlistName === ""}
       >

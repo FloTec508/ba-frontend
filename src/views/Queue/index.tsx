@@ -5,14 +5,23 @@ import NoItems from "@/components/Item/NoItems";
 import Page from "@/components/Page";
 import ButtonQueueClear from "@/components/Button/ButtonQueueClear";
 
-import { QueueIcon } from "@phosphor-icons/react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useTracklistActions } from "@/hooks/useTracklistActions";
 import { useTracklistService } from "@/services/tracklist";
+import { useSelector } from "react-redux";
+import { QueueIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
 const Queue = () => {
-  const { current_playlist } = useSelector((state: any) => state.player);
-  const { move } = useTracklistService();
+  const { moveTrack } = useTracklistService();
+  const { tracklistFetch } = useTracklistActions();
+  const { tl_tracks } = useSelector((state: any) => state.tracklist);
+
+  useEffect(() => {
+    (async () => {
+      await tracklistFetch();
+    })();
+  }, []);
 
   return (
     <Page
@@ -29,8 +38,8 @@ const Queue = () => {
         </div>
       }
     >
-      {current_playlist?.length ? (
-        <SortableList tracks={current_playlist} onMoveCallback={move} />
+      {tl_tracks?.length ? (
+        <SortableList tracks={tl_tracks} onMoveCallback={moveTrack} />
       ) : (
         <LayoutHeightWrapper>
           <NoItems title="No tracks in queue" desc={"Add some music"} icon={<QueueIcon weight={ICON_WEIGHT} size={ICON_SM} />} />

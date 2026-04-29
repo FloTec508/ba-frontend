@@ -3,6 +3,7 @@ import { CaretDownIcon, CaretLeftIcon, CaretRightIcon, UserIcon, VinylRecordIcon
 import { useDispatch, useSelector } from "react-redux";
 import { useTunerService } from "@/services/tuner";
 import { getAlbums, getArtists, getImage } from "@/util";
+import { Album } from "@/types";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { PLAYBACK_STATE } from "@/constants/states";
 import { OVERLAY_EVENTS } from "@/store/constants";
@@ -37,10 +38,10 @@ const OverlayNowPlaying = () => {
 
   const [freq, setFreq] = useState<number>(0);
 
-  const image = getImage(current_track?.track.images?.[0]?.uri);
+  const image = getImage(current_track);
   const isTuner = ["tuner"].includes(source.uri);
   const isRenderer = ["bluetooth", "spotify", "shairportsync", "snapcast"].includes(source.uri);
-  const hasArtist = current_track?.track.artists.length > 0;
+  const hasArtist = current_track?.track.artists?.length > 0;
   const hasAlbum = current_track?.track?.albums?.length > 0;
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const OverlayNowPlaying = () => {
                 {image ? (
                   <img src={image} alt={current_track?.track.album?.name} width={"160px"} className={"object-cover rounded-xs h-full w-full "} />
                 ) : (
-                  <Placeholder width={"100%"} height={"100%"} type={MODEL.ALBUM} variant="primary" />
+                  <Placeholder width={"100%"} height={"100%"} item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
                 )}
               </div>
             </div>
@@ -221,7 +222,7 @@ const OverlayNowPlaying = () => {
                 {image ? (
                   <img src={image} alt={current_track?.track.album?.name} className={"object-cover rounded-xs h-full w-full "} />
                 ) : (
-                  <Placeholder width={"100%"} height={"100%"} type={MODEL.ALBUM} variant="primary" />
+                  <Placeholder width={"100%"} height={"100%"} item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
                 )}
               </div>
             </div>

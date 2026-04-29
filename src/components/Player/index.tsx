@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePlaybackService } from "@/services/playback";
 import { usePlayerActions } from "@/hooks/usePlayerActions";
 import { getArtists, getImage } from "@/util";
+import { Album } from "@/types";
 import { PLAYBACK_STATE } from "@/constants/states";
 import { MODEL } from "@/constants/refs";
 import { PLAYER_EVENTS } from "@/store/constants";
@@ -27,7 +28,7 @@ const Player = () => {
 
   const { source } = useSelector((state: any) => state.player);
   const { current_track, playback_state } = useSelector((state: any) => state.player);
-  const image = getImage(current_track?.track.images?.[0]?.uri);
+  const image = getImage(current_track);
 
   const fetch_pos = async () => {
     const elapsed_ms = await getCurrentTrackPos();
@@ -62,7 +63,7 @@ const Player = () => {
                   {image ? (
                     <img src={image} alt={current_track?.track.album?.name} className={"object-cover aspect-square w-full"} />
                   ) : (
-                    <Placeholder type={MODEL.ALBUM} variant="primary" />
+                    <Placeholder item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
                   )}
                 </div>
                 {source.uri && (
@@ -71,7 +72,7 @@ const Player = () => {
                       {current_track?.track.name ? <ScrollingText text={current_track?.track.name} /> : source.name}
                     </h2>
                     <div className="text-secondary overflow-hidden">
-                      {current_track?.track.artists.length ? (
+                      {current_track?.track.artists?.length  ? (
                         <ScrollingText
                           text={`${getArtists(current_track?.track.artists)} ${
                             current_track?.track.album?.name ? " · " + current_track?.track.album?.name : ""
@@ -117,7 +118,7 @@ const Player = () => {
                   {image ? (
                     <img src={image} alt={current_track?.track.album?.name} className={`object-cover aspect-square w-full`} />
                   ) : (
-                    <Placeholder type={MODEL.ALBUM} variant="primary" />
+                    <Placeholder item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
                   )}
                 </div>
                 {source.uri && (
@@ -126,7 +127,7 @@ const Player = () => {
                       {current_track?.track.name ? <ScrollingText text={current_track?.track.name} /> : source.name}
                     </h2>
                     <div className=" text-secondary -mt-0.5 lg:-mt-1 text-sm">
-                      {current_track?.track.artists.length ? (
+                      {current_track?.track.artists?.length  ? (
                         <ScrollingText
                           text={`${getArtists(current_track?.track.artists)} ${
                             current_track?.track.album?.name ? " · " + current_track?.track.album?.name : ""

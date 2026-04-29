@@ -3,14 +3,14 @@ import { useLocalService } from "@/services/local";
 import { usePlaybackService } from "@/services/playback";
 import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
-import { AnyItem, TlTrack, TlTrackExt, Track } from "@/types";
+import { AnyItem, TlTrack, Track } from "@/types";
 import { MODEL } from "@/constants/refs";
 
 export function usePlayNow() {
-  const { add, clear } = useTracklistService();
+  const { addTrack, clear } = useTracklistService();
   const { getDirectory: getLibraryDirectory } = useLocalService();
   const { getDirectory: getPlaylistDirectory } = usePlaylistService();
-  const { play, next } = usePlaybackService();
+  const { play } = usePlaybackService();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -30,11 +30,12 @@ export function usePlayNow() {
       }
       case MODEL.FILE:
       case MODEL.TRACK:
+      case MODEL.TUNER:
         await play(item.uri);
         break;
 
       case MODEL.TLTRACK:
-        await play((item as TlTrackExt).uri, item.tlid);
+        await play(item.track.uri, item.tlid);
         break;
 
       case MODEL.PLAYLIST: {
@@ -43,13 +44,11 @@ export function usePlayNow() {
         if (tltracks?.length) {
           tracks.push(...tltracks.map((tltrack: TlTrack) => tltrack.track));
           tracksUris.push(...tracks.map((track: Track) => track.uri));
-        }else{
+        } else {
           break;
         }
         await clear();
-        await add(tracksUris);
-        await next();
-        await play();
+        await addTrack(tracksUris, true);
         break;
       }
       default:

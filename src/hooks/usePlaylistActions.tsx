@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { AnyItem, Playlist, TlTrack, TlTrackExt, Track } from "@/types";
-import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
+import { AnyItem, Playlist, TlTrack, Track } from "@/types";
+import { DIALOG_EVENTS } from "@/store/constants";
 import { useState } from "react";
 import { usePlaylistService } from "@/services/playlist";
 import { MODEL } from "@/constants/refs";
@@ -9,18 +9,24 @@ import { useLocalService } from "@/services/local";
 export function usePlaylistActions() {
   const dispatch = useDispatch();
 
-  const { getDirectory, move, onAdd } = usePlaylistService();
   const { getDirectory: getLibraryDirectory } = useLocalService();
-  const { getDirectory: getPlaylistDirectory } = usePlaylistService();
+  const {
+    getDirectory: getPlaylistDirectory,
+    removePlaylistTrack,
+    deletePlaylist,
+    editPlaylist,
+    addPlaylistTrack,
+    createPlaylist,
+  } = usePlaylistService();
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const playlistFetch = async (id?: string) => {
     setLoading(true);
     try {
-      return await getDirectory(`playlist${id ? `:${id}` : ""}`);
+      return await getPlaylistDirectory(`playlist${id ? `:${id}` : ""}`);
     } catch (err) {
-      console.error("Failed to fetch playlist:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -29,9 +35,9 @@ export function usePlaylistActions() {
   const playlistFetchTracks = async (id: string) => {
     setLoading(true);
     try {
-      return await getDirectory(`playlist:${id}:tracks`);
+      return await getPlaylistDirectory(`playlist:${id}:tracks`);
     } catch (err) {
-      console.error("Failed to fetch playlist tracks:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -41,29 +47,65 @@ export function usePlaylistActions() {
     dispatch({ type: DIALOG_EVENTS.DIALOG_PLAYLISTS, payload: item });
   };
 
-  const playlistMove = async (id: string, start: number, end: number, to_position: number) => {
+  const playlistRemoveTrack = async (item: TlTrack) => {
+    if (!item.uri) return;
     setLoading(true);
     try {
-      return await move(`playlist:${id}`, start, end, to_position);
+      await removePlaylistTrack(item.uri, item.tlid);
     } catch (err) {
-      console.error("Failed to fetch playlist tracks:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const playlistRename = (item: AnyItem) => {
+  const playlistCreate = async (name: string, tl_tracks: TlTrack[]) => {
+    setLoading(true);
+    try {
+      await createPlaylist(name, tl_tracks);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const playlistRenameDialog = (item: Playlist) => {
     dispatch({
       type: DIALOG_EVENTS.DIALOG_PLAYLIST_RENAME,
       payload: item,
     });
   };
 
-  const playlistDelete = (item: AnyItem) => {
+  const playlistRename = async (name: string, item: Playlist) => {
+    setLoading(true);
+    try {
+      editPlaylist(item.uri, name);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
+      setLoading(false);
+    }
+  };
+
+  const playlistDeleteDialog = (item: Playlist) => {
     dispatch({
       type: DIALOG_EVENTS.DIALOG_PLAYLIST_DELETE,
       payload: item,
     });
+  };
+
+  const playlistDelete = async (item: Playlist) => {
+    setLoading(true);
+    try {
+      await deletePlaylist(item?.uri);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
+      setLoading(false);
+    }
   };
 
   const playlistAdd = async (item: AnyItem, playlists: Playlist[]) => {
@@ -90,11 +132,12 @@ export function usePlaylistActions() {
         break;
       }
       case MODEL.TLTRACK:
-        trackUris.push((item as TlTrackExt).uri);
+        trackUris.push(item.track.uri);
         break;
 
       case MODEL.FILE:
       case MODEL.TRACK:
+      case MODEL.TUNER:
         trackUris.push(item.uri);
         break;
       default:
@@ -103,19 +146,27 @@ export function usePlaylistActions() {
 
     playlists.forEach(async (playlist: Playlist) => {
       try {
-        await onAdd([playlist.uri], trackUris);
-        dispatch({
-          type: INTERNAL_EVENTS.PLAYLIST_TRACK_ADDED,
-          payload: { ...item, tracks: trackUris },
-        });
+        await addPlaylistTrack([playlist.uri], trackUris);
         dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
       } catch (err) {
-        console.error("Failed to fetch playlist tracks:", err);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     });
   };
 
-  return { playlistFetch, playlistFetchTracks, playlistAdd, playlistAddDialog, playlistMove, playlistRename, playlistDelete, loading };
+  return {
+    playlistCreate,
+    playlistFetch,
+    playlistFetchTracks,
+    playlistAdd,
+    playlistAddDialog,
+    playlistRemoveTrack,
+    playlistRename,
+    playlistRenameDialog,
+    playlistDelete,
+    playlistDeleteDialog,
+    loading,
+  };
 }

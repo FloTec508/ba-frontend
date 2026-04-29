@@ -9,7 +9,7 @@ export function useGoToArtist() {
 
   const handleGoToArtist = (item: AnyItem) => {
     if (!(item as Track)?.artists?.length) return;
-    const [view, id] = item?.artists[0].uri.split(":");
+    const [view, id] = (item as Track)?.artists[0].uri.split(":");
     dispatch({ type: OVERLAY_EVENTS.OVERLAY_CLOSE });
     navigate(`/local/${view}/${id}`);
   };

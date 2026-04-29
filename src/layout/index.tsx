@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: any }) {
   const dispatch = useDispatch();
   const connected = useSelector((state: any) => state.socket.connected);
 
-  const { getRepeat, getSingle, getRandom, getTracklist } = useTracklistService();
+  const { getRepeat, getSingle, getRandom } = useTracklistService();
   const { getState, getCurrentTlTrack } = usePlaybackService();
   const { getMixerVolume, getMixerMute } = useMixerService();
   const { getSystemTime, getPowerState } = useSystemService();
@@ -42,7 +42,6 @@ export default function Layout({ children }: { children: any }) {
           _getState,
           _getAudioSource,
           _tl_track,
-          _tl_tracks,
           _value,
           _getRepeat,
           _getSingle,
@@ -56,7 +55,6 @@ export default function Layout({ children }: { children: any }) {
           getState(),
           getSource(),
           getCurrentTlTrack(),
-          getTracklist(),
           getSystemTime(),
           getRepeat(),
           getSingle(),
@@ -93,11 +91,6 @@ export default function Layout({ children }: { children: any }) {
         dispatch({
           type: EVENTS.TRACK_META_UPDATED,
           payload: { tl_track: _tl_track },
-        });
-
-        dispatch({
-          type: EVENTS.TRACKLIST_CHANGED,
-          payload: { tl_tracks: _tl_tracks },
         });
 
         dispatch({

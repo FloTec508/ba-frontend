@@ -7,11 +7,13 @@ import TruncateText from "@/components/TruncateText";
 import ButtonPlayAll from "@/components/Button/ButtonPlayAll";
 import ButtonAddToQueue from "@/components/Button/ButtonAddToQueue";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
+import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import Spinner from "@/components/Spinner";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
 import ListItem from "@/components/Item/ListItem";
 import CoverArt from "@/components/CoverArt";
-import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
+import ActionMenu from "@/components/Actions";
+import ScrollingText from "@/components/ScrollingText";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,10 +22,8 @@ import { Album, AnyItem, Artist, Track, ViewMode } from "@/types";
 import { FolderSimpleIcon, GearIcon, MusicNotesIcon, UserIcon, VinylRecordIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { MODEL, REF } from "@/constants/refs";
-import ActionMenu from "@/components/Actions";
 import { useMenuActions } from "@/hooks/useMenuActions";
 import { getImage } from "@/util";
-import ScrollingText from "@/components/ScrollingText";
 
 const Local = () => {
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ const Local = () => {
 
   const onClickItem = async (item: AnyItem) => {
     if (item.__model__ === MODEL.TRACK) return;
-    const [view, id] = item.uri.split(":");
+    const [view, id] = (item as Artist | Album)?.uri.split(":");
     setItem(undefined);
     setIsItemDetailLoading(true);
     navigate(`/local/${view}/${id}`);
@@ -116,7 +116,7 @@ const Local = () => {
                     <div className="text-center">
                       <div className="justify-center flex mb-3">
                         <div className="w-60">
-                          <CoverArt src={getImage((item as Track).images?.[0]?.uri)} type={item.__model__} />
+                          <CoverArt src={getImage(item)} item={item} />
                         </div>
                       </div>
 
@@ -126,7 +126,7 @@ const Local = () => {
                         </h2>
 
                         {item.__model__ === MODEL.ARTIST && (item as Artist)?.country && <div className="mb-1">{(item as Artist).country}</div>}
-                        
+
                         {(item as Album | Artist) && <div className="mb-1">{(item as Album | Artist)?.genre}</div>}
 
                         {item.__model__ === MODEL.ALBUM && (item as Album)?.date && <div className="mb-1">Released {(item as Album).date}</div>}

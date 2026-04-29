@@ -21,7 +21,7 @@ interface GridItem {
 const GridItem = ({ item, shadow = false, onClick }: GridItem) => {
   const title = (item as Track).name;
   const subtitle = getSubtitle(item);
-  const src = getImage((item as Track).images?.[0]?.uri);
+  const src = getImage(item);
 
   const { handlePlayNow } = usePlayNow();
   const { itemsMenu } = useMenuActions();
@@ -51,7 +51,7 @@ const GridItem = ({ item, shadow = false, onClick }: GridItem) => {
     <div className="w-full">
       <div className="relative">
         <CoverArt
-          type={item.__model__}
+          item={item}
           src={src}
           title={title}
           shadow={shadow}

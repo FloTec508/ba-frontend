@@ -1,29 +1,16 @@
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { useTracklistService } from "@/services/tracklist";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
+import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { useSelector } from "react-redux";
 
 import ButtonIcon from "@/components/Button/ButtonIcon";
-import { useDispatch } from "react-redux";
-import { INTERNAL_EVENTS } from "@/store/constants";
 
-/**
- * A button component that clears the current queue.
- *
- * @returns {JSX.Element} The rendered clear playlist button.
- */
 const ButtonQueueClear = () => {
-  const dispatch = useDispatch();
+  const { tl_tracks } = useSelector((state: any) => state.tracklist);
   const { clear } = useTracklistService();
 
-  const onClickHandler = () => {
-    clear();
-    dispatch({
-      type: INTERNAL_EVENTS.CLEAR_QUEUE,
-    });
-  };
-
   return (
-    <ButtonIcon onClick={onClickHandler}>
+    <ButtonIcon onClick={() => clear()} disabled={!tl_tracks.length}>
       <TrashSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />
     </ButtonIcon>
   );

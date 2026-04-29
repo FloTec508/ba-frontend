@@ -1,4 +1,6 @@
 import {
+  BluetoothConnectedIcon,
+  BluetoothSlashIcon,
   EjectSimpleIcon,
   HardDriveIcon,
   InfoIcon,
@@ -11,6 +13,7 @@ import {
   StackPlusIcon,
   StarIcon,
   TrashIcon,
+  TrashSimpleIcon,
   UserIcon,
   VinylRecordIcon,
 } from "@phosphor-icons/react";
@@ -21,10 +24,11 @@ import { useGoToAlbum } from "./useGoToAlbum";
 import { useStorageActions } from "./useStorageActions";
 import { usePlaylistActions } from "./usePlaylistActions";
 import { useTracklistActions } from "./useTracklistActions";
-import { AnyItem, TlTrackExt, Track } from "@/types";
+import { AnyItem } from "@/types";
 import { ICON_WEIGHT, ICON_XS } from "@/constants";
 import { MODEL } from "@/constants/refs";
 import { useLibraryInfo } from "./useLibraryInfo";
+import { useBluetoothService } from "@/services/bluetooth";
 
 export interface MenuItem {
   name: string;
@@ -39,10 +43,11 @@ export const useMenuActions = () => {
   const { handlePlayNow } = usePlayNow();
   const { handleGoToArtist } = useGoToArtist();
   const { handleGoToAlbum } = useGoToAlbum();
-   const { handleArtistInfo } = useLibraryInfo();
-  const { playlistAddDialog, playlistRename, playlistDelete } = usePlaylistActions();
-  const { tracklistRemove } = useTracklistActions();
+  const { handleArtistInfo } = useLibraryInfo();
   const { libraryPathAdd, directoryShare, directoryUnshare, storageMount, storageUnMount, storageUnMountShared } = useStorageActions();
+  const { playlistAddDialog, playlistRemoveTrack, playlistRenameDialog, playlistDeleteDialog } = usePlaylistActions();
+  const { removeDevice, disconnectDevice, connectDevice } = useBluetoothService();
+  const { tracklistRemove } = useTracklistActions();
 
   const itemsMenu = (item: AnyItem): MenuItem[] => {
     switch (item.__model__) {
@@ -159,6 +164,7 @@ export const useMenuActions = () => {
 
       case MODEL.FILE:
       case MODEL.TRACK:
+      case MODEL.TUNER:
         return [
           {
             name: "Play Now",
@@ -170,18 +176,23 @@ export const useMenuActions = () => {
             icon: <QueueIcon size={ICON_XS} weight={ICON_WEIGHT} />,
             action: () => handleAddToQueue(item),
           },
-          {
-            name: "Go to Artist",
-            icon: <UserIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            disabled: !(item as Track)?.artists?.[0]?.uri,
-            action: () => handleGoToArtist(item),
-          },
-          {
-            name: "Go to Album",
-            icon: <VinylRecordIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            disabled: !(item as Track)?.albums?.[0]?.uri,
-            action: () => handleGoToAlbum(item),
-          },
+          ...(item.__model__ === MODEL.TRACK
+            ? [
+                {
+                  name: "Go to Artist",
+                  icon: <UserIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  disabled: !item?.artists?.[0]?.uri,
+                  action: () => handleGoToArtist(item),
+                },
+                {
+                  name: "Go to Album",
+                  icon: <VinylRecordIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  disabled: !item?.albums?.[0]?.uri,
+                  action: () => handleGoToAlbum(item),
+                },
+              ]
+            : []),
+
           {
             name: "Favourite",
             icon: <StarIcon size={ICON_XS} weight={ICON_WEIGHT} />,
@@ -207,35 +218,48 @@ export const useMenuActions = () => {
             icon: <QueueIcon size={ICON_XS} weight={ICON_WEIGHT} />,
             action: () => handleAddToQueue(item),
           },
-          {
-            name: "Go to Artist",
-            icon: <UserIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            disabled: !(item as TlTrackExt)?.artists?.[0]?.uri,
-            action: () => handleGoToArtist(item),
-          },
-          {
-            name: "Go to Album",
-            icon: <VinylRecordIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            disabled: !(item as TlTrackExt)?.albums?.[0]?.uri,
-            action: () => handleGoToAlbum(item),
-          },
+          ...(item.track.__model__ === MODEL.TRACK
+            ? [
+                {
+                  name: "Go to Artist",
+                  icon: <UserIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  disabled: !item.track?.artists?.[0]?.uri,
+                  action: () => handleGoToArtist(item.track),
+                },
+                {
+                  name: "Go to Album",
+                  icon: <VinylRecordIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  disabled: !item.track?.albums?.[0]?.uri,
+                  action: () => handleGoToAlbum(item.track),
+                },
+              ]
+            : []),
           {
             name: "Favourite",
             icon: <StarIcon size={ICON_XS} weight={ICON_WEIGHT} />,
             action: () => undefined,
             disabled: true,
           },
-
           {
             name: "Add to Playlist",
             icon: <PlaylistIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => playlistAddDialog(item),
+            action: () => playlistAddDialog(item.track),
           },
-          {
-            name: "Remove",
-            icon: <TrashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => tracklistRemove(item),
-          },
+          ...(item.uri
+            ? [
+                {
+                  name: "Remove",
+                  icon: <TrashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => playlistRemoveTrack(item),
+                },
+              ]
+            : [
+                {
+                  name: "Remove",
+                  icon: <TrashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => tracklistRemove(item),
+                },
+              ]),
         ];
 
       case MODEL.PLAYLIST:
@@ -253,12 +277,33 @@ export const useMenuActions = () => {
           {
             name: "Rename",
             icon: <PenIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => playlistRename(item),
+            action: () => playlistRenameDialog(item),
           },
           {
             name: "Delete",
             icon: <TrashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => playlistDelete(item),
+            action: () => playlistDeleteDialog(item),
+          },
+        ];
+
+      case MODEL.BLUETOOTH:
+        return [
+          {
+            name: "Connect",
+            icon: <BluetoothConnectedIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: () => connectDevice(item.address),
+            hide: item.connected,
+          },
+          {
+            name: "Disconnect",
+            icon: <BluetoothSlashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: async () => disconnectDevice(item.address),
+            hide: !item.connected,
+          },
+          {
+            name: "Forget",
+            icon: <TrashSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: async () => removeDevice(item.address),
           },
         ];
       default:
