@@ -22,7 +22,8 @@ export function useAddToQueue() {
 
     switch (item.__model__) {
       case MODEL.ARTIST:
-      case MODEL.ALBUM: {
+      case MODEL.ALBUM:
+      case MODEL.CATEGORY: {
         const tracks = await getLibraryDirectory(`${item.uri}:tracks`);
         if (tracks?.length) {
           tracksUris.push(...tracks.map((track: Track) => track.uri));

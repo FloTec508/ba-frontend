@@ -1,4 +1,4 @@
-import { useSnapcastActions } from "@/hooks/useSnapcastActions";
+import { useMultiroomActions } from "@/hooks/useMultiroomActions";
 import { ArrowsClockwiseIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
@@ -6,7 +6,7 @@ import ButtonIcon from "@/components/Button/ButtonIcon";
 import Spinner from "@/components/Spinner";
 
 const ButtonSnapcastScan = () => {
-  const { fetchServers, loading } = useSnapcastActions();
+  const { fetchServers, loading } = useMultiroomActions();
 
   return (
     <ButtonIcon onClick={() => fetchServers(true)} className="mr-1">

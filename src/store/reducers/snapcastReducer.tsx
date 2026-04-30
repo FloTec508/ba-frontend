@@ -1,14 +1,14 @@
-import { SnapcastState } from "@/types";
+import { RoomState } from "@/types";
 import { INTERNAL_EVENTS } from "../constants";
 import { EVENTS } from "@/constants/events";
 
-const initialState: SnapcastState = {
+const initialState: RoomState = {
   status: {},
   servers: [],
   dragging: false,
 };
 
-export const snapcastReducer = (state = initialState, action: any): SnapcastState => {
+export const snapcastReducer = (state = initialState, action: any): RoomState => {
   const { type, payload } = action;
 
   switch (type) {

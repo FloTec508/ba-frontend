@@ -318,6 +318,7 @@ export const getTitle = (item: AnyItem): string | undefined => {
     case MODEL.ARTIST:
     case MODEL.PLAYLIST:
     case MODEL.DIRECTORY:
+    case MODEL.CATEGORY:
     case MODEL.BLUETOOTH:
       return item.name;
     case MODEL.TLTRACK:
@@ -346,7 +347,7 @@ export const getSubtitle = (item: AnyItem): string | undefined => {
     case MODEL.FILE:
       return formatBytes(item.size);
     case MODEL.ARTIST:
-      return item.albums?.map((album: Album) => album.name).join(",") || "...";
+      return item.albums?.map((album: Album) => album.name).join(",") || undefined;
     case MODEL.PLAYLIST:
       return item.length ? `${String(item.length)} Tracks` : "Empty playlist";
     default:

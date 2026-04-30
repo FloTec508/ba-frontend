@@ -17,7 +17,7 @@ const ButtonQueue = () => {
 
   const onClickHandler = () => {
     dispatch({ type: OVERLAY_EVENTS.OVERLAY_CLOSE });
-    navigate("/queue");
+    navigate("/tracklist");
   };
 
   return (

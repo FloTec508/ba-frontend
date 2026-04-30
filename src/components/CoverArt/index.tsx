@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { AnyItem, Bluetooth } from "@/types";
+import { getImage, getTitle } from "@/util";
+import { Album, AnyItem, Bluetooth } from "@/types";
 import { PlayCircleIcon } from "@phosphor-icons/react";
 import { ICON_LG } from "@/constants";
 import { MODEL } from "@/constants/refs";
@@ -9,15 +10,21 @@ import Spinner from "../Spinner";
 
 interface CoverArt {
   item: AnyItem;
-  src?: string;
-  title?: string;
   shadow?: boolean;
   loading?: boolean;
+  disable?: boolean;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const CoverArt = ({ item, src = "", title = "", shadow = false, loading = false, onClick }: CoverArt) => {
+const CoverArt = ({ item, shadow = false, loading = false, disable = false, onClick }: CoverArt) => {
+  const title = getTitle(item);
+  const src = getImage(item);
+
   const [imgError, setImgError] = useState(false);
+
+  if (!item) {
+    return <Placeholder item={{ __model__: MODEL.ALBUM } as Album} />;
+  }
 
   return (
     <div className="w-full  shadow-1xl relative">
@@ -33,14 +40,15 @@ const CoverArt = ({ item, src = "", title = "", shadow = false, loading = false,
           <Placeholder item={item} variant={(item as Bluetooth).connected ? "" : "primary"} />
         )}
 
-        {[MODEL.ALBUM, MODEL.ARTIST, MODEL.FILE, MODEL.TRACK, MODEL.TUNER, MODEL.TLTRACK, MODEL.PLAYLIST].includes(item.__model__) && (
-          <button
-            onClick={onClick}
-            className={`absolute top-0 cursor-pointer left-0 w-full h-full rounded-md flex items-center justify-center z-2 ${loading ? "opacity-100" : "opacity-0 hover:opacity-100"}  hover:bg-black/50 transition duration-150`}
-          >
-            {loading ? <Spinner mode="light" /> : <PlayCircleIcon size={ICON_LG} weight={"fill"} className="text-white" />}
-          </button>
-        )}
+        {[MODEL.ALBUM, MODEL.ARTIST, MODEL.CATEGORY, MODEL.FILE, MODEL.TRACK, MODEL.TUNER, MODEL.TLTRACK, MODEL.PLAYLIST].includes(item.__model__) &&
+          !disable && (
+            <button
+              onClick={onClick}
+              className={`absolute top-0 cursor-pointer left-0 w-full h-full rounded-md flex items-center justify-center z-2 ${loading ? "opacity-100" : "opacity-0 hover:opacity-100"}  hover:bg-black/50 transition duration-150`}
+            >
+              {loading ? <Spinner mode="light" /> : <PlayCircleIcon size={ICON_LG} weight={"fill"} className="text-white" />}
+            </button>
+          )}
       </div>
     </div>
   );

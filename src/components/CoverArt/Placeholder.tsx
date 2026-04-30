@@ -1,8 +1,9 @@
 import {
   BluetoothIcon,
-  // CouchIcon,
+  CouchIcon,
   DeviceMobileIcon,
   FolderSimpleIcon,
+  FolderSimpleUserIcon,
   HeadphonesIcon,
   HeadsetIcon,
   LaptopIcon,
@@ -32,11 +33,22 @@ const Placeholder = ({
   const getIconByType = (item: AnyItem) => {
     switch (item.__model__) {
       case MODEL.DIRECTORY:
+        if (item.shared) {
+          return <FolderSimpleUserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+        }
+        return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.STORAGE:
+      case MODEL.CATEGORY:
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.ARTIST:
         return <UserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.TLTRACK:
+        switch (item.track.__model__) {
+          case MODEL.TRACK:
+            return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+          case MODEL.TUNER:
+            return <RadioIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+        }
       case MODEL.TRACK:
       case MODEL.FILE:
         return <MusicNoteSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
@@ -46,8 +58,8 @@ const Placeholder = ({
         return <VinylRecordIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.PLAYLIST:
         return <PlaylistIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      // case MODEL.ROOM:
-      //   return <CouchIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+      case MODEL.ROOM:
+        return <CouchIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.BLUETOOTH:
         switch (item.icon) {
           case BLUETOOTH_ICON.AUDIO_HEADSET:

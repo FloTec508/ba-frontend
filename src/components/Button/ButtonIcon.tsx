@@ -9,7 +9,7 @@ const ButtonIcon = ({
   children: React.ReactNode;
   className?: string;
   disabled?:boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <button

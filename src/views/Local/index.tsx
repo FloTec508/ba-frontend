@@ -116,7 +116,7 @@ const Local = () => {
                     <div className="text-center">
                       <div className="justify-center flex mb-3">
                         <div className="w-60">
-                          <CoverArt src={getImage(item)} item={item} />
+                          <CoverArt src={getImage(item)} item={item} disable/>
                         </div>
                       </div>
 

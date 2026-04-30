@@ -166,7 +166,7 @@ const Start = () => {
                     disabled={item.disabled}
                     onClick={() => onClickHandler(item)}
                     className={`hover:bg-button-hover touch-pan-x rounded-lg flex items-center justify-center aspect-square overflow-hidden w-full transition-all duration-200
-                cursor-pointer ${item.disabled ? "opacity-30" : source.uri === item.alias ? "text-primary bg-selected" : ""}`}
+                cursor-pointer ${item.disabled ? "opacity-30" : source.uri === item.alias ? "text-primary" : ""}`}
                   >
                     {loadingItem === item.alias && (
                       <div className="absolute bg-button-hover w-full h-full rounded-lg">

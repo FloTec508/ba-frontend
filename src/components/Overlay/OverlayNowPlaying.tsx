@@ -3,12 +3,10 @@ import { CaretDownIcon, CaretLeftIcon, CaretRightIcon, UserIcon, VinylRecordIcon
 import { useDispatch, useSelector } from "react-redux";
 import { useTunerService } from "@/services/tuner";
 import { getAlbums, getArtists, getImage } from "@/util";
-import { Album } from "@/types";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { PLAYBACK_STATE } from "@/constants/states";
 import { OVERLAY_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
-import { MODEL } from "@/constants/refs";
 import { Menu } from "../Menu";
 
 import PositionSlider from "../Player/PositionSlider";
@@ -26,7 +24,7 @@ import ButtonIcon from "@/components/Button/ButtonIcon";
 import ButtonQueue from "../Button/ButtonQueue";
 import Ruler from "../ui/ruler";
 import StreamInfo from "../Player/StreamInfo";
-import Placeholder from "../CoverArt/Placeholder";
+import CoverArt from "../CoverArt";
 
 const OverlayNowPlaying = () => {
   const dispatch = useDispatch();
@@ -109,11 +107,7 @@ const OverlayNowPlaying = () => {
                 }`}
               />
               <div className="shadow-[1px_14px_21px_-6px_rgba(0,0,0,0.2)] absolute top-0 rounded-lg overflow-hidden h-full aspect-square">
-                {image ? (
-                  <img src={image} alt={current_track?.track.album?.name} width={"160px"} className={"object-cover rounded-xs h-full w-full "} />
-                ) : (
-                  <Placeholder width={"100%"} height={"100%"} item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
-                )}
+                <CoverArt item={current_track?.track} loading={current_track ? false : true} disable />
               </div>
             </div>
           </div>
@@ -219,11 +213,7 @@ const OverlayNowPlaying = () => {
                 }`}
               />
               <div className="shadow-[1px_14px_21px_-6px_rgba(0,0,0,0.2)] absolute top-0 rounded-lg overflow-hidden h-full aspect-square">
-                {image ? (
-                  <img src={image} alt={current_track?.track.album?.name} className={"object-cover rounded-xs h-full w-full "} />
-                ) : (
-                  <Placeholder width={"100%"} height={"100%"} item={{__model__: MODEL.ALBUM} as Album} variant="primary" />
-                )}
+                <CoverArt item={current_track?.track} loading={current_track ? false : true} disable />
               </div>
             </div>
 

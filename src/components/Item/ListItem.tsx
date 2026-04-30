@@ -4,9 +4,8 @@ import CoverArt from "../CoverArt";
 import ActionMenu from "../Actions";
 
 import { MusicNotesIcon } from "@phosphor-icons/react";
-import { formatNo, getImage, getDuration, getSubtitle, getTitle } from "@/util";
-import { AnyItem, Storage } from "@/types";
-import { SharedUnsharedIcon } from "../Icons";
+import { formatNo, getDuration, getSubtitle, getTitle } from "@/util";
+import { AnyItem } from "@/types";
 import { usePlayNow } from "@/hooks/usePlayNow";
 import { useState } from "react";
 import { useMenuActions } from "@/hooks/useMenuActions";
@@ -23,7 +22,6 @@ const ListItem = ({ no, item, selected = false, onClick }: ListItem) => {
   const title = getTitle(item);
   const subtitle = getSubtitle(item);
   const duration = getDuration(item);
-  const src = getImage(item);
 
   const { handlePlayNow } = usePlayNow();
   const { itemsMenu } = useMenuActions();
@@ -52,21 +50,18 @@ const ListItem = ({ no, item, selected = false, onClick }: ListItem) => {
   return (
     <>
       <div onClick={onClickItem} className="flex items-center w-full cursor-pointer justify-between relative">
-        <div className="py-3 px-4 flex justify-between w-full relative items-center">
+        <div className="py-3 px-4 flex justify-between w-full items-center">
           <div className="flex items-center w-full">
             {no && <div className="-ml-1 mr-4 text-sm text-secondary w-2.5 text-center">{formatNo(no)}</div>}
             <ListImageWrapper>
               <CoverArt
                 item={item}
-                src={src}
-                title={title}
                 loading={loadingCover || loading}
                 onClick={(e: React.MouseEvent<HTMLElement>) => {
                   e.stopPropagation();
                   onClickCoverArt();
                 }}
               />
-              <SharedUnsharedIcon shared={(item as Storage).shared} classname="absolute -top-1 left-8" />
             </ListImageWrapper>
             <div className="grow ">
               <div className="flex items-center text-left">

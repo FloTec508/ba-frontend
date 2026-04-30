@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useSnapcastService } from "@/services/snapcast";
+import { useMultiroomService } from "@/services/snapcast";
 import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
-export function useSnapcastActions() {
+export function useMultiroomActions() {
   const dispatch = useDispatch();
-  const { getServers, getStatus } = useSnapcastService();
+  const { getServers, getStatus } = useMultiroomService();
 
   const [loading, setLoading] = useState<boolean>(false);
 

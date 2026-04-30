@@ -8,13 +8,13 @@ import Local from "./views/Local";
 import StorageView from "./views/Storage";
 import Start from "./views/Start";
 import Layout from "./layout";
-import Queue from "./views/Queue";
+import Tracklist from "./views/Tracklist";
 import Settings from "./views/Settings";
 import Radio from "./views/Radio";
 import Playlists from "./views/Playlist/Playlists";
 import SettingsGeneral from "./views/Settings/SettingsGeneral";
 import SettingsNetwork from "./views/Settings/SettingsNetwork";
-import Snapcast from "./views/Snapcast";
+import Multiroom from "./views/Multiroom";
 import SettingsMultiroom from "./views/Settings/SettingsMultiroom";
 import BluetoothView from "./views/Bluetooth";
 import SettingsLocal from "./views/Settings/SettingsLibrary";
@@ -53,8 +53,8 @@ const App = () => {
               <Route path="/spotify" element={<Start />} />
               <Route path="/shairportsync" element={<Start />} />
               <Route path="/linein" element={<Start />} />
-              <Route path="/multiroom" element={<Snapcast />} />
-              <Route path="/queue" element={<Queue />} />
+              <Route path="/multiroom" element={<Multiroom />} />
+              <Route path="/tracklist" element={<Tracklist />} />
               <Route path="/playlist/" element={<Playlists />} />
               <Route path="/playlist/:id" element={<PlaylistView />} />
               <Route path="/local/:view?/:id?" element={<Local />} />

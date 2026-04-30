@@ -48,7 +48,7 @@ const ActionMenu = ({ items }: { items: MenuItem[] }) => {
         }`}
         disabled={item.disabled}
       >
-        <div className="mr-2">{loading.has(idx) ? <Spinner mode="light"/> : item.icon}</div>
+        <div className="mr-2">{loading.has(idx) ? <Spinner mode="light" /> : item.icon}</div>
         <div>{item.name}</div>
       </button>
     );
@@ -57,7 +57,12 @@ const ActionMenu = ({ items }: { items: MenuItem[] }) => {
     <div>
       {/* Desktop */}
       <div className="hidden md:block relative" ref={dropdownRef}>
-        <ButtonIcon onClick={() => setDropdownOpen((o) => !o)}>
+        <ButtonIcon
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            setDropdownOpen((o) => !o);
+          }}
+        >
           <DotsThreeIcon size={ICON_SM} />
         </ButtonIcon>
 

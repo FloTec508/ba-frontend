@@ -2,9 +2,9 @@ import TruncateText from "../TruncateText";
 import CoverArt from "../CoverArt";
 import ActionMenu from "../Actions";
 
-import { AnyItem, Storage, Track } from "@/types";
-import { getImage, getSubtitle } from "@/util";
-import { SharedUnsharedIcon } from "../Icons";
+import type { CSSProperties } from "react";
+import { AnyItem, Track } from "@/types";
+import { getSubtitle } from "@/util";
 import { useState } from "react";
 import { usePlayNow } from "@/hooks/usePlayNow";
 import { useMenuActions } from "@/hooks/useMenuActions";
@@ -16,12 +16,12 @@ interface GridItem {
   onClickCoverArt?: () => void;
   onClick?: () => void;
   cover_only?: boolean;
+  style?: CSSProperties;
 }
 
-const GridItem = ({ item, shadow = false, onClick }: GridItem) => {
+const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
   const title = (item as Track).name;
   const subtitle = getSubtitle(item);
-  const src = getImage(item);
 
   const { handlePlayNow } = usePlayNow();
   const { itemsMenu } = useMenuActions();
@@ -48,36 +48,39 @@ const GridItem = ({ item, shadow = false, onClick }: GridItem) => {
   };
 
   return (
-    <div className="w-full">
-      <div className="relative">
-        <CoverArt
-          item={item}
-          src={src}
-          title={title}
-          shadow={shadow}
-          loading={loading || loadingCover}
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            e.stopPropagation();
-            onClickCoverArt();
-          }}
-        />
-        <SharedUnsharedIcon shared={(item as Storage).shared} classname="absolute top-2 right-2" />
-      </div>
-      <div className="flex justify-between mt-2">
-        <div className="overflow-hidden text-left" onClick={onClickItem}>
-          {title && (
-            <h2 className={`text-lg font-medium tracking-tight `}>
-              <TruncateText>{title}</TruncateText>
-            </h2>
-          )}
-          {subtitle && (
-            <div className="text-secondary font-medium">
-              <TruncateText>{subtitle}</TruncateText>
-            </div>
-          )}
+    <div
+      className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200"
+      onClick={onClickItem}
+      style={style}
+    >
+      <div className="w-full">
+        <div>
+          <CoverArt
+            item={item}
+            shadow={shadow}
+            loading={loading || loadingCover}
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              e.stopPropagation();
+              onClickCoverArt();
+            }}
+          />
         </div>
-        <div className="-mr-2">
-          <ActionMenu items={itemsMenu(item)} />
+        <div className="flex justify-between mt-2">
+          <div className="overflow-hidden text-left">
+            {title && (
+              <h2 className={`text-lg font-medium tracking-tight `}>
+                <TruncateText>{title}</TruncateText>
+              </h2>
+            )}
+            {subtitle && (
+              <div className="text-secondary font-medium">
+                <TruncateText>{subtitle}</TruncateText>
+              </div>
+            )}
+          </div>
+          <div className="-mr-2">
+            <ActionMenu items={itemsMenu(item)} />
+          </div>
         </div>
       </div>
     </div>

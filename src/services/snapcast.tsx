@@ -1,6 +1,6 @@
 import { useSocketRequest } from "@/store/useSocketRequest";
 
-export const useSnapcastService = () => {
+export const useMultiroomService = () => {
   const { request } = useSocketRequest();
 
   return {

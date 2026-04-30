@@ -123,7 +123,24 @@ export const useMenuActions = () => {
             action: () => playlistAddDialog(item),
           },
         ];
-
+      case MODEL.CATEGORY:
+       return [
+          {
+            name: "Play Now",
+            icon: <PlayIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: () => handlePlayNow(item),
+          },
+          {
+            name: "Add to Queue",
+            icon: <QueueIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: () => handleAddToQueue(item),
+          },
+          {
+            name: "Add to Playlist",
+            icon: <PlaylistIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+            action: () => playlistAddDialog(item),
+          },
+        ];
       case MODEL.ARTIST:
         return [
           {

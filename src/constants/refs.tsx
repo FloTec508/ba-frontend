@@ -13,21 +13,23 @@ export enum REF {
 }
 
 export enum MODEL {
+  ARTIST = "Artist",
+  ALBUM = "Album",
+  GENRE = "Genre",
+  CATEGORY = "Category",
+  TRACK = "Track",
+  TLTRACK = "TlTrack",
+  PLAYLIST = "Playlist",
+  PLTRACK = "PlTrack",
+  STORAGE = "Storage",
   DIRECTORY = "Directory",
   FILE = "File",
   IMAGE = "Image",
-  ARTIST = "Artist",
-  ALBUM = "Album",
-  TRACK = "Track",
-  TLTRACK = "TlTrack",
-  PLTRACK = "PlTrack",
-  ROOM = "Room",
-  PLAYLIST = "Playlist",
-  GENRE = "Genre",
   TUNER = "Tuner",
-  STORAGE = "Storage",
-  CATEGORY = "Category",
   BLUETOOTH = "Bluetooth",
+  SHAIRPORT = "Shairport",
+  SPOTIFY = "Spotify",
+  ROOM = "Room",
 }
 
 export enum BLUETOOTH_ICON {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSnapcastService } from "@/services/snapcast";
-import { useSnapcastActions } from "@/hooks/useSnapcastActions";
-import { Album, SnapcastServer } from "@/types";
+import { useMultiroomService } from "@/services/snapcast";
+import { useMultiroomActions } from "@/hooks/useMultiroomActions";
+import { Room } from "@/types";
 import { timeAgo } from "@/util";
 import { Slider } from "@/components/Form/Slider";
 import {
@@ -30,13 +30,13 @@ import ButtonSnapcastScan from "@/components/Button/ButtonSnapcastScan";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import Placeholder from "@/components/CoverArt/Placeholder";
 
-const Snapcast = () => {
+const Multiroom = () => {
   const navigate = useNavigate();
   const connected = useSelector((state: any) => state.socket.connected);
   const { servers, status } = useSelector((state: any) => state.snapcast, shallowEqual);
 
-  const { connect, disconnect, setVolume } = useSnapcastService();
-  const { fetchServers, getServerStatus, loading } = useSnapcastActions();
+  const { connect, disconnect, setVolume } = useMultiroomService();
+  const { fetchServers, getServerStatus, loading } = useMultiroomActions();
 
   useEffect(() => {
     if (!connected) return;
@@ -45,7 +45,7 @@ const Snapcast = () => {
     getServerStatus();
   }, [connected]);
 
-  const ListServer = ({ item }: { item: SnapcastServer }) => {
+  const ListServer = ({ item }: { item: Room }) => {
     const actionItems = [
       {
         name: "Join Room",
@@ -81,7 +81,7 @@ const Snapcast = () => {
             <div className="text-lg font-medium">
               <div className="w-full flex mt-1 ">
                 <div className={`overflow-hidden rounded-sm mr-3 min-w-13 w-13 h-13  ${item?.connected ? "text-primary" : ""}`}>
-                  <Placeholder item={{__model__: MODEL.ALBUM} as Album} variant={item?.connected ? "primary" : ""} />
+                  <Placeholder item={{__model__: MODEL.ROOM} as Room} variant={item?.connected ? "primary" : ""} />
                 </div>
                 <div>
                   <div className="flex items-center text-xl font-medium">
@@ -226,7 +226,7 @@ const Snapcast = () => {
       ) : (
         <>
           {servers.length ? (
-            servers.map((item: SnapcastServer, index: number) => (
+            servers.map((item: Room, index: number) => (
               <ItemWrapper key={index} highlight={item?.connected}>
                   <ListServer item={item} />
               </ItemWrapper>
@@ -246,4 +246,4 @@ const Snapcast = () => {
   );
 };
 
-export default Snapcast;
+export default Multiroom;

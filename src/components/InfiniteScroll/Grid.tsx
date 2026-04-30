@@ -111,13 +111,7 @@ const Grid = ({ uri, getDirectory, onClickCallback, onEvent, emptyComponent }: G
           return (
             <div key={index} className="flex items-start">
               {rowItems.map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200"
-                  style={{ width: `${100 / columns}%` }}
-                >
-                  <GridItem item={item} onClick={() => onClickCallback?.(item)} />
-                </div>
+                <GridItem key={index} item={item} onClick={() => onClickCallback?.(item)} style={{ width: `${100 / columns}%` }} />
               ))}
             </div>
           );

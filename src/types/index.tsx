@@ -26,6 +26,12 @@ export interface Album {
   musicbrainz_id: string | null;
 }
 
+export interface Category {
+  __model__: MODEL.CATEGORY;
+  uri: string;
+  name: string;
+}
+
 export interface Image {
   __model__: MODEL.IMAGE;
   uri: string;
@@ -152,7 +158,8 @@ export interface BluetoothState {
   devices: Bluetooth[];
 }
 
-export interface SnapcastServer {
+export interface Room {
+  __model__: MODEL.ROOM;
   service_name: string;
   name: string;
   ip: string;
@@ -161,13 +168,13 @@ export interface SnapcastServer {
   status: "playing" | "idle" | "unavailable";
 }
 
-export interface SnapcastState {
+export interface RoomState {
   status: {
     groups?: [];
     server?: {};
     streams?: [];
   };
-  servers: SnapcastServer[];
+  servers: Room[];
   dragging: boolean;
 }
 
@@ -452,4 +459,4 @@ export interface Config {
   command: Record<string, never>;
 }
 
-export type AnyItem = Track | Tuner | TlTrack | Album | Artist | File | Directory | Storage | Playlist | Bluetooth;
+export type AnyItem = Track | Tuner | TlTrack | Album | Artist | Category | File | Directory | Storage | Playlist | Bluetooth | Room;

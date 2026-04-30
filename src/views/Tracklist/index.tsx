@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { QueueIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
-const Queue = () => {
+const Tracklist = () => {
   const { moveTrack } = useTracklistService();
   const { tracklistFetch } = useTracklistActions();
   const { tl_tracks } = useSelector((state: any) => state.tracklist);
@@ -49,4 +49,4 @@ const Queue = () => {
   );
 };
 
-export default Queue;
+export default Tracklist;
