@@ -34,7 +34,6 @@ const PlaylistView = () => {
   const handleEvent = (event: string, payload: any, setItems: React.Dispatch<React.SetStateAction<TlTrack[]>>) => {
     switch (event) {
       case EVENTS.PLAYLIST_TRACK_REMOVED:
-        console.log("jhrtrrtr");
         setItems((prev) => prev.filter((item) => item.tlid !== payload.tl_track.tlid));
         break;
     }

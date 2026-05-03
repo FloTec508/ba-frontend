@@ -39,3 +39,9 @@ export enum BLUETOOTH_ICON {
   COMPUTER = "computer",
   PHONE = "phone",
 }
+
+export enum STORAGE_ICON {
+  INTERNAL = "internal",
+  REMOVABLE = "removable",
+  NAS = "nas",
+}

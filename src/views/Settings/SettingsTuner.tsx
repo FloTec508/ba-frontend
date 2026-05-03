@@ -9,6 +9,7 @@ import Page from "@/components/Page";
 import ButtonSave from "@/components/Button/ButtonSave";
 import SelectSampleRate from "@/components/Form/SelectSampleRate";
 import SelectAlsaDevices from "@/components/Form/SelectAlsaDevices";
+import { Input } from "@/components/ui/input";
 
 export const formSchema = z.object({
   tuner: z.object({
@@ -47,7 +48,9 @@ const SettingsTuner = () => {
                 render={() => (
                   <FormItem>
                     <FormLabel className="text-md block font-medium">Tuner</FormLabel>
-                    <FormControl>Select Tuner Device</FormControl>
+                    <FormControl>
+                      <Input placeholder="Si470x" value="Si4703" disabled/>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

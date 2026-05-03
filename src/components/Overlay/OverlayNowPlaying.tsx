@@ -38,7 +38,7 @@ const OverlayNowPlaying = () => {
 
   const image = getImage(current_track);
   const isTuner = ["tuner"].includes(source.uri);
-  const isRenderer = ["bluetooth", "spotify", "shairportsync", "snapcast"].includes(source.uri);
+  const isRenderer = ["bluetooth", "spotify", "shairportsync", "multiroom"].includes(source.uri);
   const hasArtist = current_track?.track.artists?.length > 0;
   const hasAlbum = current_track?.track?.albums?.length > 0;
 
@@ -82,7 +82,7 @@ const OverlayNowPlaying = () => {
   return (
     <Overlay show={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING} full zindex={50}>
       {config.playback.background_albumart && (
-        <div className="w-full h-full absolute bg-neutral-950">
+        <div className="w-full h-full absolute ">
           <div
             className="h-full bg-cover blur-3xl opacity-80"
             style={overlay === OVERLAY_EVENTS.OVERLAY_NOWPLAYING ? { backgroundImage: `url(${image})` } : {}}

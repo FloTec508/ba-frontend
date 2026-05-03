@@ -8,36 +8,36 @@ const initialState: RoomState = {
   dragging: false,
 };
 
-export const snapcastReducer = (state = initialState, action: any): RoomState => {
+export const multiroomReducer = (state = initialState, action: any): RoomState => {
   const { type, payload } = action;
 
   switch (type) {
-    case INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING:
+    case INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING:
       return {
         ...state,
         dragging: payload,
       };
 
-    case INTERNAL_EVENTS.SNAPCAST_SCAN_COMPLETED:
-    case INTERNAL_EVENTS.SNAPCAST_LIST:
+    case INTERNAL_EVENTS.MULTIROOM_SCAN_COMPLETED:
+    case INTERNAL_EVENTS.MULTIROOM_LIST:
       return {
         ...state,
         servers: payload,
       };
 
-    case EVENTS.SNAPCAST_STATE_CHANGED:
+    case EVENTS.MULTIROOM_STATE_CHANGED:
       return { ...state, status: payload.server };
 
-    case EVENTS.SNAPCAST_CONNECTED:
-    case EVENTS.SNAPCAST_DISCONNECTED:
-    case EVENTS.SNAPCAST_REMOVED:
-    case EVENTS.SNAPCAST_ADDED:
+    case EVENTS.MULTIROOM_CONNECTED:
+    case EVENTS.MULTIROOM_DISCONNECTED:
+    case EVENTS.MULTIROOM_REMOVED:
+    case EVENTS.MULTIROOM_ADDED:
       return {
         ...state,
         servers: [...state.servers.filter((server) => server?.ip !== payload.server?.ip), payload.server],
       };
 
-    case EVENTS.SNAPCAST_NOTIFICATION: {
+    case EVENTS.MULTIROOM_NOTIFICATION: {
       switch (payload.method) {
         case "Stream.OnUpdate": {
           return {

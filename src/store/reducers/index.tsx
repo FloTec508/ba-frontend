@@ -5,13 +5,12 @@ import { eventReducer } from "./eventReducer";
 import { playerReducer } from "./playerReducer";
 import { systemReducer } from "./systemReducer";
 import { overlayReducer } from "./overlayReducer";
-import { storageReducer } from "./storageReducer";
 import { bluetoothReducer } from "./bluetoothReducer";
-import { snapcastReducer } from "./snapcastReducer";
 import { scanReducer } from "./scanReducer";
 import { networkReducer } from "./networkReducer";
 import { tracklistReducer } from "./tracklistReducer";
 import { configReducer } from "./configReducer";
+import { multiroomReducer } from "./multiroomReducer";
 
 export const rootReducer = combineReducers({
   socket: socketReducer,
@@ -20,10 +19,9 @@ export const rootReducer = combineReducers({
   overlay: overlayReducer,
   player: playerReducer,
   system: systemReducer,
-  storage: storageReducer,
   scan: scanReducer,
   bluetooth: bluetoothReducer,
-  snapcast: snapcastReducer,
+  multiroom: multiroomReducer,
   network: networkReducer,
   tracklist: tracklistReducer,
   config: configReducer,

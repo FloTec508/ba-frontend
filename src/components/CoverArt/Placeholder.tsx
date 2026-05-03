@@ -4,19 +4,22 @@ import {
   DeviceMobileIcon,
   FolderSimpleIcon,
   FolderSimpleUserIcon,
+  HardDriveIcon,
   HeadphonesIcon,
   HeadsetIcon,
   LaptopIcon,
   MusicNoteSimpleIcon,
+  NetworkIcon,
   PlaylistIcon,
   RadioIcon,
   SpeakerHifiIcon,
+  UsbIcon,
   UserIcon,
   VinylRecordIcon,
   WarningCircleIcon,
 } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { BLUETOOTH_ICON, MODEL } from "@/constants/refs";
+import { BLUETOOTH_ICON, MODEL, STORAGE_ICON } from "@/constants/refs";
 import { AnyItem } from "@/types";
 
 const Placeholder = ({
@@ -37,7 +40,6 @@ const Placeholder = ({
           return <FolderSimpleUserIcon weight={ICON_WEIGHT} size={ICON_SM} />;
         }
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
-      case MODEL.STORAGE:
       case MODEL.CATEGORY:
         return <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />;
       case MODEL.ARTIST:
@@ -74,6 +76,17 @@ const Placeholder = ({
             return <DeviceMobileIcon weight={ICON_WEIGHT} size={ICON_SM} />;
           default:
             return <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+        }
+      case MODEL.STORAGE:
+        switch (item.icon) {
+          case STORAGE_ICON.INTERNAL:
+            return <HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+          case STORAGE_ICON.REMOVABLE:
+            return <UsbIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+          case STORAGE_ICON.NAS:
+            return <NetworkIcon weight={ICON_WEIGHT} size={ICON_SM} />;
+          default:
+            return <HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} />;
         }
       default:
         return <WarningCircleIcon weight={ICON_WEIGHT} size={ICON_SM} />;

@@ -38,10 +38,10 @@ export enum INTERNAL_EVENTS {
   WLAN_LIST = "event/wlan/list",
   WLAN_STATE_UPDATED = "event/wlan/state/updated",
 
-  // Snapcast
-  SNAPCAST_SCAN_COMPLETED = "event/snapcast/scan/completed",
-  SNAPCAST_LIST = "event/snapcast/list",
-  SNAPCAST_VOLUME_DRAGGING = "event/snapcast/volume/dragging",
+  // Mulitroom
+  MULTIROOM_SCAN_COMPLETED = "event/multiroom/scan/completed",
+  MULTIROOM_LIST = "event/multiroom/list",
+  MULTIROOM_VOLUME_DRAGGING = "event/multiroom/volume/dragging",
 
   //States
   CONFIG_STATE = "event/config/state",
@@ -66,7 +66,7 @@ export enum DIALOG_EVENTS {
   DIALOG_EDIT_NETWORK = "dialog/network/edit",
   DIALOG_REBOOT = "dialog/system/reboot",
   DIALOG_POWER_OPTIONS = "dialog/system/power",
-  DIALOG_SNAPCAST_INFO = "dialog/snapcast/info",
+  DIALOG_MULTIROOM_INFO = "dialog/multiroom/info",
 }
 
 export enum OVERLAY_EVENTS {

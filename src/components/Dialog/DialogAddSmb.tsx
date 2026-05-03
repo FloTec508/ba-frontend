@@ -10,7 +10,7 @@ import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import Modal from "@/components/Modal";
 import ItemWrapper from "../Wrapper/ItemWrapper";
 import NoItems from "../Item/NoItems";
-import ListItemSelectable from "../Item/ListItemSelectable";
+import ListItem from "../Item/ListItem";
 
 type smbShared = {
   ip: String;
@@ -63,7 +63,7 @@ const DialogAddSmb = () => {
               </div>
               {smbResponse.shares.map((item: Storage) => (
                 <ItemWrapper key={item.uri}>
-                  <ListItemSelectable item={item} selected={selectedItems.some((i) => i.dev === item.dev)} onClick={() => onClickSelectSmbs(item)} />
+                  <ListItem item={item} selected={selectedItems.some((i) => i.dev === item.dev)} onClick={() => onClickSelectSmbs(item)} selectable />
                 </ItemWrapper>
               ))}
             </>

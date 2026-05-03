@@ -90,28 +90,26 @@ const Grid = ({ uri, getDirectory, onClickCallback, onEvent, emptyComponent }: G
     return () => window.removeEventListener("resize", handler);
   }, []);
 
-  return isLoading ? (
-    <LayoutHeightWrapper>
-      <Spinner />
-    </LayoutHeightWrapper>
-  ) : !items?.length ? (
-    <LayoutHeightWrapper>
-      {emptyComponent ? (
-        emptyComponent
-      ) : (
-        <NoItems title="Empty List" desc="Nothing to show here" icon={<FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
-      )}
-    </LayoutHeightWrapper>
-  ) : (
+  return (
     <LayoutHeightWrapper ref={outerRef}>
+      {isLoading ? (
+        <Spinner />
+      ) : !items?.length ? (
+        emptyComponent ? (
+          emptyComponent
+        ) : (
+          <NoItems title="Empty List" desc="Nothing to show here" icon={<FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
+        )
+      ) : null}
+
       <div ref={innerRef} className="px-3">
         {virtualRows.map(({ index }) => {
           const start = index * columns;
           const rowItems = items.slice(start, start + columns) || [];
           return (
             <div key={index} className="flex items-start">
-              {rowItems.map((item: any, index: number) => (
-                <GridItem key={index} item={item} onClick={() => onClickCallback?.(item)} style={{ width: `${100 / columns}%` }} />
+              {rowItems.map((item: any, i: number) => (
+                <GridItem key={i} item={item} onClick={() => onClickCallback?.(item)} style={{ width: `${100 / columns}%` }} />
               ))}
             </div>
           );

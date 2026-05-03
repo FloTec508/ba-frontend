@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useMultiroomService } from "@/services/snapcast";
+import { useMultiroomService } from "@/services/multiroom";
 import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { EVENTS } from "@/constants/events";
 
@@ -16,12 +16,12 @@ export function useMultiroomActions() {
 
     if (rescan) {
       dispatch({
-        type: INTERNAL_EVENTS.SNAPCAST_SCAN_COMPLETED,
+        type: INTERNAL_EVENTS.MULTIROOM_SCAN_COMPLETED,
         payload: response,
       });
     } else {
       dispatch({
-        type: INTERNAL_EVENTS.SNAPCAST_LIST,
+        type: INTERNAL_EVENTS.MULTIROOM_LIST,
         payload: response,
       });
     }
@@ -35,14 +35,14 @@ export function useMultiroomActions() {
     const response = await getStatus();
 
     dispatch({
-      type: EVENTS.SNAPCAST_STATE_CHANGED,
+      type: EVENTS.MULTIROOM_STATE_CHANGED,
       payload: response,
     });
     setLoading(false);
   };
 
   const showServerInfo = () => {
-    dispatch({ type: DIALOG_EVENTS.DIALOG_SNAPCAST_INFO });
+    dispatch({ type: DIALOG_EVENTS.DIALOG_MULTIROOM_INFO });
   };
 
   return {

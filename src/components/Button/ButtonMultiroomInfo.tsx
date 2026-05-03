@@ -4,7 +4,7 @@ import { InfoIcon } from "@phosphor-icons/react";
 
 import ButtonIcon from "@/components/Button/ButtonIcon";
 
-const ButtonSnapcastInfo = () => {
+const ButtonMulitroomInfo = () => {
   const { showServerInfo } = useMultiroomActions();
 
   return (
@@ -14,4 +14,4 @@ const ButtonSnapcastInfo = () => {
   );
 };
 
-export default ButtonSnapcastInfo;
+export default ButtonMulitroomInfo;

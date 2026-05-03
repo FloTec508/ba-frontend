@@ -1,10 +1,3 @@
-import Modal from "@/components/Modal";
-import Spinner from "@/components/Spinner";
-import ItemWrapper from "@/components/Wrapper/ItemWrapper";
-import useVirtual from "react-cool-virtual";
-import NoItems from "../Item/NoItems";
-import ListItemSelectable from "../Item/ListItemSelectable";
-
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { usePlaylistService } from "@/services/playlist";
@@ -14,6 +7,13 @@ import { AnyItem, Playlist } from "@/types";
 import { DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { REF } from "@/constants/refs";
+
+import Modal from "@/components/Modal";
+import Spinner from "@/components/Spinner";
+import ItemWrapper from "@/components/Wrapper/ItemWrapper";
+import useVirtual from "react-cool-virtual";
+import NoItems from "../Item/NoItems";
+import ListItem from "../Item/ListItem";
 
 const DialogAddToPlaylist = ({ item }: { item: AnyItem }) => {
   const dispatch = useDispatch();
@@ -84,7 +84,7 @@ const DialogAddToPlaylist = ({ item }: { item: AnyItem }) => {
                 const isSelected = selectedPlaylists.some((i) => i.uri === item.uri);
                 return (
                   <ItemWrapper key={index}>
-                    <ListItemSelectable item={item} selected={isSelected} onClick={() => onClickSelectPlaylist(item)} />
+                    <ListItem item={item} selected={isSelected} onClick={() => onClickSelectPlaylist(item)} selectable />
                   </ItemWrapper>
                 );
               })

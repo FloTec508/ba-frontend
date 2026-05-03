@@ -53,24 +53,33 @@ export const useMenuActions = () => {
     switch (item.__model__) {
       case MODEL.STORAGE:
         return [
-          {
-            name: "Mount",
-            icon: <HardDriveIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => storageMount(item),
-            hide: item.status == "mounted",
-          },
-          {
-            name: "Eject",
-            icon: <EjectSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => storageUnMount(item),
-            hide: item.status == "unmounted" || item.type === "nas",
-          },
-          {
-            name: "Unmount",
-            icon: <EjectSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => storageUnMountShared(item),
-            hide: item.status == "unmounted" || item.type === "removable",
-          },
+          ...(item.status !== "mounted"
+            ? [
+                {
+                  name: "Mount",
+                  icon: <HardDriveIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => storageMount(item),
+                },
+              ]
+            : []),
+          ...(item.status !== "unmounted" && item.icon !== "nas" && item.icon !== "internal"
+            ? [
+                {
+                  name: "Eject",
+                  icon: <EjectSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => storageUnMount(item),
+                },
+              ]
+            : []),
+          ...(item.status !== "unmounted" && item.icon !== "removable" && item.icon !== "internal"
+            ? [
+                {
+                  name: "Unmount",
+                  icon: <EjectSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => storageUnMountShared(item),
+                },
+              ]
+            : []),
         ];
       case MODEL.DIRECTORY:
         return [
@@ -124,7 +133,7 @@ export const useMenuActions = () => {
           },
         ];
       case MODEL.CATEGORY:
-       return [
+        return [
           {
             name: "Play Now",
             icon: <PlayIcon size={ICON_XS} weight={ICON_WEIGHT} />,
@@ -305,18 +314,21 @@ export const useMenuActions = () => {
 
       case MODEL.BLUETOOTH:
         return [
-          {
-            name: "Connect",
-            icon: <BluetoothConnectedIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: () => connectDevice(item.address),
-            hide: item.connected,
-          },
-          {
-            name: "Disconnect",
-            icon: <BluetoothSlashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
-            action: async () => disconnectDevice(item.address),
-            hide: !item.connected,
-          },
+          ...(!item.connected
+            ? [
+                {
+                  name: "Connect",
+                  icon: <BluetoothConnectedIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: () => connectDevice(item.address),
+                },
+              ]
+            : [
+                {
+                  name: "Disconnect",
+                  icon: <BluetoothSlashIcon size={ICON_XS} weight={ICON_WEIGHT} />,
+                  action: async () => disconnectDevice(item.address),
+                },
+              ]),
           {
             name: "Forget",
             icon: <TrashSimpleIcon size={ICON_XS} weight={ICON_WEIGHT} />,

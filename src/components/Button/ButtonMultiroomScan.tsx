@@ -5,7 +5,7 @@ import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import Spinner from "@/components/Spinner";
 
-const ButtonSnapcastScan = () => {
+const ButtonMulitroomScan = () => {
   const { fetchServers, loading } = useMultiroomActions();
 
   return (
@@ -15,4 +15,4 @@ const ButtonSnapcastScan = () => {
   );
 };
 
-export default ButtonSnapcastScan;
+export default ButtonMulitroomScan;

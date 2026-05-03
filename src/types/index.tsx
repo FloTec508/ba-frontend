@@ -190,7 +190,7 @@ export interface StorageUsage {
 
 export interface Storage {
   __model__: MODEL.STORAGE;
-  type: "internal" | "removable" | "nas";
+  icon: "internal" | "removable" | "nas";
   uri: string;
   size: number | null;
   name: string;

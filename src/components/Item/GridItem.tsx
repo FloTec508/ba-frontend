@@ -30,6 +30,7 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
   const [loadingCover, setLoadingCover] = useState<boolean>(false);
 
   const onClickItem = async () => {
+    console.log("I clicked ht");
     setLoading(true);
     try {
       await Promise.resolve(onClick?.());
@@ -78,7 +79,7 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
               </div>
             )}
           </div>
-          <div className="-mr-2">
+          <div className="-mr-2" onClick={(e) => e.stopPropagation()}>
             <ActionMenu items={itemsMenu(item)} />
           </div>
         </div>

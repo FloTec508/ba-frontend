@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useMultiroomService } from "@/services/snapcast";
+import { useMultiroomService } from "@/services/multiroom";
 import { useMultiroomActions } from "@/hooks/useMultiroomActions";
 import { Room } from "@/types";
 import { timeAgo } from "@/util";
@@ -26,14 +26,14 @@ import ItemWrapper from "@/components/Wrapper/ItemWrapper";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Spinner from "@/components/Spinner";
 import NoItems from "@/components/Item/NoItems";
-import ButtonSnapcastScan from "@/components/Button/ButtonSnapcastScan";
+import ButtonMulitroomScan from "@/components/Button/ButtonMultiroomScan";
 import ButtonIcon from "@/components/Button/ButtonIcon";
 import Placeholder from "@/components/CoverArt/Placeholder";
 
 const Multiroom = () => {
   const navigate = useNavigate();
   const connected = useSelector((state: any) => state.socket.connected);
-  const { servers, status } = useSelector((state: any) => state.snapcast, shallowEqual);
+  const { servers, status } = useSelector((state: any) => state.multiroom, shallowEqual);
 
   const { connect, disconnect, setVolume } = useMultiroomService();
   const { fetchServers, getServerStatus, loading } = useMultiroomActions();
@@ -81,20 +81,20 @@ const Multiroom = () => {
             <div className="text-lg font-medium">
               <div className="w-full flex mt-1 ">
                 <div className={`overflow-hidden rounded-sm mr-3 min-w-13 w-13 h-13  ${item?.connected ? "text-primary" : ""}`}>
-                  <Placeholder item={{__model__: MODEL.ROOM} as Room} variant={item?.connected ? "primary" : ""} />
+                  <Placeholder item={{ __model__: MODEL.ROOM } as Room} variant={item?.connected ? "primary" : ""} />
                 </div>
                 <div>
                   <div className="flex items-center text-xl font-medium">
                     {item?.name} <RenderStatus />
                   </div>
-                  <div className="flex items-center text-muted -mt-0.5">{item?.ip == '127.0.0.1' && 'This room - '} {item?.status} </div>
+                  <div className="flex items-center text-muted -mt-0.5">
+                    {item?.ip == "127.0.0.1" && "This room - "} {item?.status}{" "}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="-mr-2">
-            {item.ip != LOCAL_IP && <ActionMenu items={actionItems} />}
-          </div>
+          <div className="-mr-2">{item.ip != LOCAL_IP && <ActionMenu items={actionItems} />}</div>
         </div>
         {status?.server?.host?.name === item?.name && status?.groups?.length > 0 && (
           <div className="mt-3 pb-3 px-4">
@@ -120,9 +120,9 @@ const Multiroom = () => {
 
     const commitVolume = async (volume: number, muted?: boolean) => {
       try {
-        dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
+        dispatch({ type: INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING, payload: false });
         dispatch({
-          type: EVENTS.SNAPCAST_NOTIFICATION,
+          type: EVENTS.MULTIROOM_NOTIFICATION,
           payload: {
             method: "Client.OnVolumeChanged",
             params: {
@@ -148,17 +148,17 @@ const Multiroom = () => {
     };
 
     const onChangeVolume = ([value]: number[]) => {
-      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
+      dispatch({ type: INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING, payload: true });
       setvolumeLevel(value);
       setVolume(id, value);
     };
 
     const onMouseEnter = () => {
-      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: true });
+      dispatch({ type: INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING, payload: true });
     };
 
     const onMouseLeave = () => {
-      dispatch({ type: INTERNAL_EVENTS.SNAPCAST_VOLUME_DRAGGING, payload: false });
+      dispatch({ type: INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING, payload: false });
     };
 
     useEffect(() => {
@@ -208,7 +208,7 @@ const Multiroom = () => {
       rightComponent={
         <div className="flex">
           <div className="mr-4">
-            <ButtonSnapcastScan />
+            <ButtonMulitroomScan />
           </div>
 
           <div className="mr-4">
@@ -228,7 +228,7 @@ const Multiroom = () => {
           {servers.length ? (
             servers.map((item: Room, index: number) => (
               <ItemWrapper key={index} highlight={item?.connected}>
-                  <ListServer item={item} />
+                <ListServer item={item} />
               </ItemWrapper>
             ))
           ) : (

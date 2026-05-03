@@ -3,9 +3,9 @@ import { DIALOG_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
-const DialogSnapcastInfo = () => {
+const DialogMulitroomInfo = () => {
   const dispatch = useDispatch();
-  const { status } = useSelector((state: any) => state.snapcast);
+  const { status } = useSelector((state: any) => state.multiroom);
 
   const ListItem = ({ title, desc }: { title: string; desc: string }) => {
     return (
@@ -32,4 +32,4 @@ const DialogSnapcastInfo = () => {
   );
 };
 
-export default DialogSnapcastInfo;
+export default DialogMulitroomInfo;

@@ -80,13 +80,13 @@ export const toastMiddleware = () => (next: any) => (action: any) => {
       break;
 
     // Multiroom Notifications
-    case INTERNAL_EVENTS.SNAPCAST_SCAN_COMPLETED:
+    case INTERNAL_EVENTS.MULTIROOM_SCAN_COMPLETED:
       toast.custom((id) => <ToastContent id={id} title="Multiroom Scan Completed" variant="success" />);
       break;
-    case EVENTS.SNAPCAST_CLIENT_CONNECTED:
+    case EVENTS.MULTIROOM_CLIENT_CONNECTED:
       toast.custom((id) => <ToastContent id={id} title={`Room ${payload.name} joined`} variant="success" />);
       break;
-    case EVENTS.SNAPCAST_CLIENT_DISCONNECTED:
+    case EVENTS.MULTIROOM_CLIENT_DISCONNECTED:
       toast.custom((id) => <ToastContent id={id} title={`Room ${payload.name} left`} variant="warning" />);
       break;
 

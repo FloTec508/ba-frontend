@@ -16,7 +16,7 @@ const SourceStatus = () => {
     shairportsync: <AirplayIcon weight={ICON_WEIGHT} size={ICON_SM} />,
     tuner: <RadioIcon weight={ICON_WEIGHT} size={ICON_SM} />,
     bluetooth: <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} />,
-    snapcast: <SpeakerHifiIcon weight={ICON_WEIGHT} size={ICON_SM} />,
+    multiroom: <SpeakerHifiIcon weight={ICON_WEIGHT} size={ICON_SM} />,
   };
 
   return <ButtonIcon onClick={undefined}>{sourceIcon[source.uri]}</ButtonIcon>;

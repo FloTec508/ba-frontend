@@ -245,7 +245,7 @@ export const getNetworkDeviceName = (device: string) => {
 
 /**
  * Converts a Unix timestamp (in seconds) into a human-readable relative time.
- * @param unixSeconds - Unix timestamp in seconds (e.g. Snapcast timestamp)
+ * @param unixSeconds - Unix timestamp in seconds (e.g. Mulitroom timestamp)
  * @returns Human-readable relative time string
  */
 export const timeAgo = (unixSeconds: number): string => {
@@ -320,6 +320,7 @@ export const getTitle = (item: AnyItem): string | undefined => {
     case MODEL.DIRECTORY:
     case MODEL.CATEGORY:
     case MODEL.BLUETOOTH:
+    case MODEL.STORAGE:
       return item.name;
     case MODEL.TLTRACK:
       return item.track.name;
@@ -350,6 +351,20 @@ export const getSubtitle = (item: AnyItem): string | undefined => {
       return item.albums?.map((album: Album) => album.name).join(",") || undefined;
     case MODEL.PLAYLIST:
       return item.length ? `${String(item.length)} Tracks` : "Empty playlist";
+    case MODEL.BLUETOOTH:
+      return [
+        item.audio_codec,
+        item.sample_rate ? getSampleRate(item.sample_rate as number) : null,
+        item.bit_depth ? getBitDepth(item.bit_depth as string) : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    case MODEL.STORAGE:
+      return item.usage
+        ? item.status == "mounted"
+          ? `${formatBytes(item.usage?.free as number)} available of ${formatBytes(item.usage?.total as number)}`
+          : "Unmounted"
+        : undefined;
     default:
       return undefined;
   }

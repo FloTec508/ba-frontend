@@ -14,14 +14,12 @@ export function useStorageActions() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const storageFetch = async () => {
+  const storageFetch = async (uri?: string, limit?: number, offset?: number) => {
     setLoading(true);
     try {
-      const response = await getDirectory();
-      dispatch({
-        type: INTERNAL_EVENTS.STORAGE_UPDATED,
-        payload: response,
-      });
+      const response = await getDirectory(uri, limit, offset);
+      setLoading(false);
+      return response;
     } finally {
       setLoading(false);
     }

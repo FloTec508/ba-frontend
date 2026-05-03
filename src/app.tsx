@@ -4,8 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "sonner";
 
-import Local from "./views/Local";
-import StorageView from "./views/Storage";
+import Storages from "./views/Storage/Storages";
 import Start from "./views/Start";
 import Layout from "./layout";
 import Tracklist from "./views/Tracklist";
@@ -27,6 +26,9 @@ import SettingsLinein from "./views/Settings/SettingsLinein";
 import SettingsTuner from "./views/Settings/SettingsTuner";
 import SettingsMixer from "./views/Settings/SettingsMixer";
 import PlaylistView from "./views/Playlist/PlaylistView";
+import StorageDirectory from "./views/Storage/StorageDirectory";
+import Local from "./views/Local/Local";
+import LocalView from "./views/Local/LocalView";
 import Tuner from "./views/Tuner";
 import Dsp from "./views/Dsp";
 
@@ -47,7 +49,7 @@ const App = () => {
 
         <Router>
           <Layout>
-            <Routes key={location.pathname}>
+            <Routes>
               <Route path="/" element={<Start />} />
               <Route path="/bluetooth" element={<BluetoothView />} />
               <Route path="/spotify" element={<Start />} />
@@ -57,17 +59,18 @@ const App = () => {
               <Route path="/tracklist" element={<Tracklist />} />
               <Route path="/playlist/" element={<Playlists />} />
               <Route path="/playlist/:id" element={<PlaylistView />} />
-              <Route path="/local/:view?/:id?" element={<Local />} />
+              <Route path="/local/" element={<Local />} />
+              <Route path="/local/:view?/:id?" element={<LocalView />} />
               <Route path="/radio" element={<Radio />} />
               <Route path="/tuner" element={<Tuner />} />
-              <Route path="/storage/*" element={<StorageView />} />
+              <Route path="/storage/" element={<Storages />} />
+              <Route path="/storage/*" element={<StorageDirectory />} />
               <Route path="/dsp" element={<Dsp />} />
               <Route path="/settings/" element={<Settings />} />
               <Route path="/settings/system/" element={<SettingsSystem />} />
               <Route path="/settings/general/" element={<SettingsGeneral />} />
               <Route path="/settings/mixer/" element={<SettingsMixer />} />
               <Route path="/settings/local/" element={<SettingsLocal />} />
-              <Route path="/settings/bluetooth/" element={<BluetoothView />} />
               <Route path="/settings/network/" element={<SettingsNetwork />} />
               <Route path="/settings/storage/" element={<SettingsStorage />} />
               <Route path="/settings/linein/" element={<SettingsLinein />} />

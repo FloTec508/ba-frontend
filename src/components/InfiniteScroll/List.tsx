@@ -66,31 +66,24 @@ const List = ({ uri, getDirectory, onClickCallback, onEvent, emptyComponent }: L
   }, [uri]);
 
 
-  return isLoading ? (
-    <LayoutHeightWrapper>
-      <Spinner />
-    </LayoutHeightWrapper>
-  ) : !items?.length ? (
-    <LayoutHeightWrapper>
-      {emptyComponent ? (
-        emptyComponent
-      ) : (
-        <NoItems title="Empty List" desc="Nothing to show here" icon={<FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
-      )}
-    </LayoutHeightWrapper>
-  ) : (
+  return (
     <LayoutHeightWrapper ref={outerRef}>
+      {isLoading && <Spinner />}
+
+      {!isLoading &&
+        !items?.length &&
+        (emptyComponent ? (
+          emptyComponent
+        ) : (
+          <NoItems title="Empty List" desc="Nothing to show here" icon={<FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
+        ))}
+
       <div ref={innerRef}>
         {virtualRows.map(({ index }) => {
           const item = items[index] || [];
           return (
             <ItemWrapper key={index}>
-              {/* Not a button else draggable wont work */}
-              <ListItem
-                // no={index === null ? undefined : index + 1}
-                item={item}
-                onClick={() => onClickCallback?.(item)}
-              />
+              <ListItem item={item} onClick={() => onClickCallback?.(item)} />
             </ItemWrapper>
           );
         })}
