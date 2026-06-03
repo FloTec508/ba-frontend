@@ -39,6 +39,7 @@ const Overlay = ({
 }) => {
   return (
     <div
+      data-overlay="true"
       className={clsx(
         overlay
           ? "bg-background w-full h-[100vh] absolute flex justify-center items-center text-center top-0 left-0 right-0"

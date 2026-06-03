@@ -7,7 +7,7 @@ import { CheckCircleIcon, CircleIcon, MusicNotesIcon } from "@phosphor-icons/rea
 import { formatNo, getDuration, getSubtitle, getTitle } from "@/util";
 import { AnyItem, Storage } from "@/types";
 import { usePlayNow } from "@/hooks/usePlayNow";
-import { useState } from "react";
+import { useState, KeyboardEvent } from "react";
 import { useMenuActions } from "@/hooks/useMenuActions";
 import { ICON_SM } from "@/constants";
 
@@ -42,6 +42,13 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
     }
   };
 
+  const onKeyDownItem = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClickItem();
+    }
+  };
+
   const onClickCoverArt = async () => {
     setLoadingCover(true);
     try {
@@ -53,7 +60,13 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
 
   return (
     <>
-      <div onClick={onClickItem} className="flex items-center w-full cursor-pointer justify-between relative">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onClickItem}
+        onKeyDown={onKeyDownItem}
+        className="flex items-center w-full cursor-pointer justify-between relative outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
+      >
         <div className="py-3 px-4 flex justify-between w-full items-center">
           <div className="flex items-center w-full">
             {no && <div className="-ml-1 mr-4 text-sm text-secondary w-2.5 text-center">{formatNo(no)}</div>}

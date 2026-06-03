@@ -2,7 +2,7 @@ import TruncateText from "../TruncateText";
 import CoverArt from "../CoverArt";
 import ActionMenu from "../Actions";
 
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent } from "react";
 import { AnyItem, Track } from "@/types";
 import { getSubtitle } from "@/util";
 import { useState } from "react";
@@ -30,12 +30,18 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
   const [loadingCover, setLoadingCover] = useState<boolean>(false);
 
   const onClickItem = async () => {
-    console.log("I clicked ht");
     setLoading(true);
     try {
       await Promise.resolve(onClick?.());
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onKeyDownItem = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClickItem();
     }
   };
 
@@ -50,8 +56,11 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
 
   return (
     <div
-      className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200"
+      role="button"
+      tabIndex={0}
       onClick={onClickItem}
+      onKeyDown={onKeyDownItem}
+      className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200 outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
       style={style}
     >
       <div className="w-full">

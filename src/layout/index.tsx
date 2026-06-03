@@ -18,6 +18,7 @@ import OverlayStandby from "@/components/Overlay/OverlayStandby";
 import OverlayOffline from "@/components/Overlay/OverlayOffline";
 import Dialog from "@/components/Dialog";
 import OverlayVolume from "@/components/Overlay/OverlayVolume";
+import EncoderNavigationProvider from "@/contexts/EncoderNavigationProvider";
 import { INTERNAL_EVENTS } from "@/store/constants";
 
 export default function Layout({ children }: { children: any }) {
@@ -116,17 +117,20 @@ export default function Layout({ children }: { children: any }) {
   }, [connected]);
 
   return connected ? (
-    <div className="flex flex-col h-full relative">
-      <Menu />
-      <div className="flex-1 overflow-hidden">{children}</div>
-      <Player />
-      <Dialog />
-      <OverlaySearch />
-      <OverlayNowPlaying />
-      <OverlayStandby />
-      <OverlayOffline />
-      <OverlayVolume />
-    </div>
+    <EncoderNavigationProvider>
+      <div className="flex flex-col h-full">
+        <Menu />
+        <div className="flex-1 overflow-hidden">{children}</div>
+        <Player />
+        <Dialog />
+        <OverlaySearch />
+        <OverlayNowPlaying />
+        <OverlayStandby />
+        <OverlayOffline />
+        <OverlayVolume />
+      </div>
+    </EncoderNavigationProvider>
+    
   ) : (
     <Spinner />
   );

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRadioService } from "@/services/radio";
 import { REF } from "@/constants/refs";
-import { ViewMode } from "@/types";
+import { ViewMode, AnyItem } from "@/types";
+import { usePlayNow } from "@/hooks/usePlayNow";
 
 import ButtonLayoutToggle from "@/components/Button/ButtonLayoutToggle";
 import List from "@/components/InfiniteScroll/List";
@@ -13,7 +14,12 @@ const Radio = () => {
   const navigate = useNavigate();
 
   const { getDirectory } = useRadioService();
+  const { handlePlayNow } = usePlayNow();
   const [layout, setLayout] = useState<ViewMode>("grid");
+
+  const onClickItem = async (item: AnyItem) => {
+    await handlePlayNow(item);
+  };
 
   return (
     <Page
@@ -28,7 +34,7 @@ const Radio = () => {
       backButton
     >
       {layout === "list" && <List uri={REF.RADIO} getDirectory={getDirectory} />}
-      {layout === "grid" && <Grid uri={REF.RADIO} getDirectory={getDirectory} />}
+      {layout === "grid" && <Grid uri={REF.RADIO} getDirectory={getDirectory} onClickCallback={onClickItem} />}
     </Page>
   );
 };
