@@ -1,5 +1,5 @@
 import { EVENTS } from "@/constants/events";
-import { INFO_EVENTS } from "../constants";
+import { INTERNAL_EVENTS } from "../constants";
 
 interface State {
   event: string | null;
@@ -18,13 +18,13 @@ export const scanReducer = (state = initialState, action: any): State => {
     case EVENTS.SCAN_UPDATED:
       return {
         ...state, 
-        event: INFO_EVENTS.SCAN_UPDATED,
+        event: INTERNAL_EVENTS.SCAN_UPDATED,
         progress: payload.progress,
       };
     case EVENTS.SCAN_ARTIST_UPDATED:
       return {
         ...state, 
-        event: INFO_EVENTS.SCAN_ARTIST_UPDATED,
+        event: INTERNAL_EVENTS.SCAN_ARTIST_UPDATED,
         progress: payload.progress,
       };      
     default:

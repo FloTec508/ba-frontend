@@ -1,15 +1,17 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  BluetoothIcon,
-  CpuIcon,
+  FadersIcon,
   FolderSimpleIcon,
   GearIcon,
   HandHeartIcon,
   InfoIcon,
   MonitorIcon,
   NetworkIcon,
+  RadioButtonIcon,
+  RadioIcon,
   SpeakerHifiIcon,
+  SpeakerHighIcon,
   StackIcon,
 } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
@@ -32,18 +34,19 @@ const SettingsItems: SettingsItem[] = [
     icon: <GearIcon weight={ICON_WEIGHT} size={ICON_SM} />,
     url: "/settings/general",
   },
+    {
+    name: "Mixer",
+    alias: "mixer",
+    icon: <SpeakerHighIcon weight={ICON_WEIGHT} size={ICON_SM} />,
+    url: "/settings/mixer",
+  },
   {
     name: "Library",
     alias: "local",
     icon: <StackIcon weight={ICON_WEIGHT} size={ICON_SM} />,
     url: "/settings/local",
   },
-  {
-    name: "Bluetooth",
-    alias: "bluetooth",
-    icon: <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} />,
-    url: "/settings/bluetooth",
-  },
+
   {
     name: "Network",
     alias: "network",
@@ -51,18 +54,11 @@ const SettingsItems: SettingsItem[] = [
     url: "/settings/network",
   },
   {
-    name: "Sharing",
+    name: "Storage & Sharing",
     alias: "sharing",
     icon: <FolderSimpleIcon weight={ICON_WEIGHT} size={ICON_SM} />,
-    url: "/settings/sharing",
+    url: "/settings/storage",
   },
-  {
-    name: "Camilla DSP",
-    alias: "camilladsp",
-    icon: <CpuIcon weight={ICON_WEIGHT} size={ICON_SM} />,
-    url: "/settings/dsp",
-  },
-
   {
     name: "Multiroom",
     alias: "multiroom",
@@ -74,6 +70,24 @@ const SettingsItems: SettingsItem[] = [
     alias: "display",
     icon: <MonitorIcon weight={ICON_WEIGHT} size={ICON_SM} />,
     url: "/settings/display",
+  },
+  {
+    name: "Line-in",
+    alias: "linein",
+    icon: <RadioButtonIcon weight={ICON_WEIGHT} size={ICON_SM} />,
+    url: "/settings/linein",
+  },
+  {
+    name: "Tuner",
+    alias: "tuner",
+    icon: <RadioIcon weight={ICON_WEIGHT} size={ICON_SM} />,
+    url: "/settings/tuner",
+  },
+  {
+    name: "DSP",
+    alias: "dsp",
+    icon: <FadersIcon weight={ICON_WEIGHT} size={ICON_SM} />,
+    url: "/settings/dsp",
   },
   {
     name: "System",

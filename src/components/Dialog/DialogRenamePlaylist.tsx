@@ -1,27 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Item } from "@/types";
+import { usePlaylistActions } from "@/hooks/usePlaylistActions";
 import { Input } from "@/components/Form/Input";
-import { usePlaylistService } from "@/services/playlist";
-import { INFO_EVENTS, DIALOG_EVENTS } from "@/store/constants";
+import { Playlist } from "@/types";
+import { DIALOG_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
-const DialogRenamePlaylist = ({ item }: { item: Item }) => {
+const DialogRenamePlaylist = ({ item }: { item: Playlist }) => {
   const dispatch = useDispatch();
 
-  const { editItem } = usePlaylistService();
-
+  const { playlistRename, loading } = usePlaylistActions();
   const [playlistName, setPlaylistName] = useState<string>(item?.name ?? "");
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-
-  const onClickEditPlaylist = async () => {
-    setButtonLoading(true);
-    await editItem(item?.uri as string, playlistName);
-    dispatch({ type: INFO_EVENTS.PLAYLISTS_UPDATED });
-    setButtonLoading(false);
-    dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
-  };
 
   useEffect(() => {
     setPlaylistName(item?.name);
@@ -33,8 +23,8 @@ const DialogRenamePlaylist = ({ item }: { item: Item }) => {
       onClose={() => dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE })}
       isOpen={true}
       buttonText="Rename"
-      buttonLoading={buttonLoading}
-      buttonOnClick={onClickEditPlaylist}
+      buttonLoading={loading}
+      buttonOnClick={() => playlistRename(playlistName, item)}
       buttonDisabled={playlistName === ""}
     >
       <Input

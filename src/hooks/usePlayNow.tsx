@@ -1,50 +1,58 @@
 import { useState } from "react";
-import { REF } from "@/constants/refs";
 import { useLocalService } from "@/services/local";
 import { usePlaybackService } from "@/services/playback";
 import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
-import { Item, TlTrack, Track } from "@/types";
+import { AnyItem, TlTrack, Track } from "@/types";
+import { MODEL } from "@/constants/refs";
 
 export function usePlayNow() {
-  const { add, clear } = useTracklistService();
-  const { getDirectory } = useLocalService();
-  const { getPlaylistItem } = usePlaylistService();
-  const { play, next } = usePlaybackService();
+  const { addTrack, clear } = useTracklistService();
+  const { getDirectory: getLibraryDirectory } = useLocalService();
+  const { getDirectory: getPlaylistDirectory } = usePlaylistService();
+  const { play } = usePlaybackService();
 
-   const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handlePlayNow = async (item: Item) => {
+  const handlePlayNow = async (item: AnyItem) => {
     setLoading(true);
     const tracksUris: string[] = [];
-    switch (item.type) {
-      case REF.CATEGORY:
-      case REF.ARTIST:
-      case REF.ALBUM:
-      case REF.GENRE: {
-        const tracks = await getDirectory(`${item.uri}:tracks`);
+
+    switch (item.__model__) {
+      case MODEL.ARTIST:
+      case MODEL.ALBUM:
+      case MODEL.CATEGORY: {
+        const tracks = await getLibraryDirectory(`${item.uri}:tracks`);
         if (tracks.length) {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
         await play(tracksUris[0]);
         break;
       }
-      case REF.PLAYLIST: {
-        const playlist = await getPlaylistItem(item.uri);
-        if (playlist.tracks.length) {
-          tracksUris.push(
-            ...playlist.tracks.map((track: TlTrack) => track.track.uri)
-          );
+      case MODEL.FILE:
+      case MODEL.TRACK:
+      case MODEL.TUNER:
+        await play(item.uri);
+        break;
+
+      case MODEL.TLTRACK:
+        await play(item.track.uri, item.tlid);
+        break;
+
+      case MODEL.PLAYLIST: {
+        const tltracks = await getPlaylistDirectory(`${item.uri}:tracks`);
+        const tracks: Track[] = [];
+        if (tltracks?.length) {
+          tracks.push(...tltracks.map((tltrack: TlTrack) => tltrack.track));
+          tracksUris.push(...tracks.map((track: Track) => track.uri));
+        } else {
+          break;
         }
         await clear();
-        await add(tracksUris);
-        await next();
-        await play();
+        await addTrack(tracksUris, true);
         break;
       }
       default:
-        tracksUris.push(item.uri);
-        await play(tracksUris[0]);
         break;
     }
     setLoading(false);

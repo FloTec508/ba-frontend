@@ -6,7 +6,7 @@ export function usePlayerActions() {
   const { source } = useSelector((state: any) => state.player);
 
   const openNowPlayingOverlay = () => {
-    if (!source.type) return;
+    if (!source.uri) return;
     dispatch({ type: OVERLAY_EVENTS.OVERLAY_NOWPLAYING });
   };
 

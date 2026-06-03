@@ -1,7 +1,8 @@
 import { ICON_SM, ICON_WEIGHT, SERVER_URL } from "@/constants";
+import { MODEL } from "@/constants/refs";
 import { REPEAT_MODE, SHUFFLE_MODE } from "@/constants/states";
-import { Album, Artist } from "@/types";
-import { LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
+import { Album, AnyItem, Artist, TlTrack, Track, Tuner } from "@/types";
+import { BluetoothIcon, DeviceMobileIcon, HeadphonesIcon, LaptopIcon, NetworkIcon, WifiHighIcon } from "@phosphor-icons/react";
 
 /**
  * Checks if url contains http, https.
@@ -73,6 +74,11 @@ export const getPosition = (position: number) => convertMillisecondstoTime(posit
 export const getBitrate = (bitrate: number) => `${Math.floor((bitrate ?? 0) / 1000)}kbps`;
 
 /**
+ * Returns the channels in text.
+ */
+export const getChannels = (channels: number) => `${channels === 2 ? "Stereo" : "Mono"}`;
+
+/**
  * Returns the track's sample rate in khz.
  */
 export const getSampleRate = (samplerate: number) => `${Math.floor((samplerate ?? 0) / 1000)}kHz`;
@@ -105,9 +111,9 @@ export const getCodecName = (format: string) => {
     "MPEG-4 AAC": "AAC",
     "MPEG-2 AAC": "AAC",
     "Free Lossless Audio Codec (FLAC)": "FLAC",
-    "Opus (low-latency lossy audio codec)": "Opus",
-    "Ogg Opus (Opus audio in Ogg container)": "Opus",
-    "Ogg Vorbis (lossy audio codec)": "Ogg Vorbis",
+    "Opus (low-latency lossy audio codec)": "OPUS",
+    "Ogg Opus (Opus audio in Ogg container)": "OPUS",
+    "Ogg Vorbis (lossy audio codec)": "OGG",
   };
 
   return mapping[format as CodecFormat] || format;
@@ -119,11 +125,12 @@ export const getCodecName = (format: string) => {
 export const getBitDepth = (format: string) => {
   if (!format) return "";
 
-  type AudioFormat = "S16_LE" | "S24_32LE" | "S16" | "S24_LE" | "S32_LE" | "S16_BE" | "S24_BE" | "S32_BE" | "S16LE" | "S24LE" | "F32LE";
+  type AudioFormat = "S16_LE" | "S24_32LE" | "S16" | "S32" | "S24_LE" | "S32_LE" | "S16_BE" | "S24_BE" | "S32_BE" | "S16LE" | "S24LE" | "F32LE";
 
   const mapping: Record<AudioFormat, string> = {
     S16_LE: "16bit",
     S16: "16bit",
+    S32: "32bit",
     S24_LE: "24bit",
     S24_32LE: "32bit",
     S32_LE: "32bit",
@@ -142,11 +149,6 @@ export const getBitDepth = (format: string) => {
  */
 export const arrayToText = (array: []) => {
   return array?.map((item: any) => item).join(", ");
-};
-
-export const getImage = (imageUri: string) => {
-  const isRemote = isHttpUrl(imageUri);
-  return imageUri ? (isRemote ? imageUri : `${SERVER_URL}/${imageUri}`) : undefined;
 };
 
 /**
@@ -243,7 +245,7 @@ export const getNetworkDeviceName = (device: string) => {
 
 /**
  * Converts a Unix timestamp (in seconds) into a human-readable relative time.
- * @param unixSeconds - Unix timestamp in seconds (e.g. Snapcast timestamp)
+ * @param unixSeconds - Unix timestamp in seconds (e.g. Mulitroom timestamp)
  * @returns Human-readable relative time string
  */
 export const timeAgo = (unixSeconds: number): string => {
@@ -268,4 +270,113 @@ export const timeAgo = (unixSeconds: number): string => {
 
   const days = Math.floor(hours / 24);
   return `${days} day${days !== 1 ? "s" : ""} ago`;
+};
+
+export const BluetoothDeviceIcon = ({ type, className }: { type: string; className?: string }) => {
+  switch (type) {
+    case "audio-headset":
+    case "audio-headphones":
+      return <HeadphonesIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    case "phone":
+      return <DeviceMobileIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    case "computer":
+      return <LaptopIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+    default:
+      return <BluetoothIcon weight={ICON_WEIGHT} size={ICON_SM} className={className ?? ""} />;
+  }
+};
+
+export const build_image_url = (imageUri: string) => {
+  const isRemote = isHttpUrl(imageUri);
+  return imageUri ? (isRemote ? imageUri : `${SERVER_URL}/${imageUri}`) : undefined;
+};
+
+export const getImage = (item: AnyItem): string | undefined => {
+  if (!item) return;
+  switch (item.__model__) {
+    case MODEL.ALBUM:
+    case MODEL.TRACK:
+    case MODEL.TUNER:
+    case MODEL.FILE:
+    case MODEL.ARTIST:
+    case MODEL.PLAYLIST:
+      return build_image_url((item as Track).images?.[0]?.uri);
+    case MODEL.TLTRACK:
+      return build_image_url(((item as TlTrack).track as Track).images?.[0]?.uri);
+    default:
+      return undefined;
+  }
+};
+
+export const getTitle = (item: AnyItem): string | undefined => {
+  if (!item) return;
+  switch (item.__model__) {
+    case MODEL.ALBUM:
+    case MODEL.TRACK:
+    case MODEL.TUNER:
+    case MODEL.FILE:
+    case MODEL.ARTIST:
+    case MODEL.PLAYLIST:
+    case MODEL.DIRECTORY:
+    case MODEL.CATEGORY:
+    case MODEL.BLUETOOTH:
+    case MODEL.STORAGE:
+      return item.name;
+    case MODEL.TLTRACK:
+      return item.track.name;
+    default:
+      return undefined;
+  }
+};
+
+export const getSubtitle = (item: AnyItem): string | undefined => {
+  if (!item) return;
+  switch (item.__model__) {
+    case MODEL.ALBUM:
+    case MODEL.TRACK:
+      return item.artists?.map((artist: Artist) => artist.name).join(",") || "";
+    case MODEL.TLTRACK:
+      if (item.track.__model__ === MODEL.TRACK) {
+        return item.track?.artists?.map((artist: Artist) => artist.name).join(",") || "";
+      }
+      if (item.track.__model__ === MODEL.TUNER) {
+        return `FM ${item.track.frequency / 10} MHz`;
+      }
+      return undefined;
+    case MODEL.TUNER:
+      return `FM ${(item as Tuner).frequency / 10} MHz`;
+    case MODEL.FILE:
+      return formatBytes(item.size);
+    case MODEL.ARTIST:
+      return item.albums?.map((album: Album) => album.name).join(",") || undefined;
+    case MODEL.PLAYLIST:
+      return item.length ? `${String(item.length)} Tracks` : "Empty playlist";
+    case MODEL.BLUETOOTH:
+      return [
+        item.audio_codec,
+        item.sample_rate ? getSampleRate(item.sample_rate as number) : null,
+        item.bit_depth ? getBitDepth(item.bit_depth as string) : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    case MODEL.STORAGE:
+      return item.usage
+        ? item.status == "mounted"
+          ? `${formatBytes(item.usage?.free as number)} available of ${formatBytes(item.usage?.total as number)}`
+          : "Unmounted"
+        : undefined;
+    default:
+      return undefined;
+  }
+};
+
+export const getDuration = (item: AnyItem): string | undefined => {
+  switch (item.__model__) {
+    case MODEL.TRACK:
+      return item.length ? convertMillisecondstoTime((item as Track).length) : undefined;
+    case MODEL.PLAYLIST:
+      return `${formatDate(item?.last_modified)}`;
+    default:
+      return undefined;
+  }
 };

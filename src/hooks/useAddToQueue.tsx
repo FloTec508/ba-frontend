@@ -1,47 +1,78 @@
 import { useState } from "react";
-import { REF } from "@/constants/refs";
+import { useDispatch } from "react-redux";
 import { useLocalService } from "@/services/local";
 import { usePlaylistService } from "@/services/playlist";
 import { useTracklistService } from "@/services/tracklist";
-import { Item, TlTrack, Track } from "@/types";
+import { AnyItem, TlTrack, Track } from "@/types";
+import { INTERNAL_EVENTS } from "@/store/constants";
+import { MODEL } from "@/constants/refs";
 
 export function useAddToQueue() {
-  const { add } = useTracklistService();
-  const { getDirectory } = useLocalService();
-  const { getPlaylistItem } = usePlaylistService();
+  const dispatch = useDispatch();
+
+  const { addTrack } = useTracklistService();
+  const { getDirectory: getLibraryDirectory } = useLocalService();
+  const { getDirectory: getPlaylistDirectory } = usePlaylistService();
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleAddToQueue = async (item: Item) => {
+  const handleAddToQueue = async (item: AnyItem) => {
     const tracksUris: string[] = [];
     setLoading(true);
-    switch (item.type) {
-      case REF.CATEGORY:
-      case REF.ARTIST:
-      case REF.ALBUM:
-      case REF.GENRE: {
-        const tracks = await getDirectory(`${item.uri}:tracks`);
+
+    switch (item.__model__) {
+      case MODEL.ARTIST:
+      case MODEL.ALBUM:
+      case MODEL.CATEGORY: {
+        const tracks = await getLibraryDirectory(`${item.uri}:tracks`);
         if (tracks?.length) {
           tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
+        dispatch({
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
+          payload: tracks,
+        });
         break;
       }
-      case REF.PLAYLIST: {
-        const playlist = await getPlaylistItem(item.uri);
-        if (playlist?.tracks?.length) {
-          tracksUris.push(
-            ...playlist.tracks.map((track: TlTrack) => track.track.uri)
-          );
+      case MODEL.PLAYLIST: {
+        const tltracks = await getPlaylistDirectory(`${item.uri}:tracks`);
+        const tracks: Track[] = [];
+        if (tltracks?.length) {
+          tracks.push(...tltracks.map((tltrack: TlTrack) => tltrack.track));
+          tracksUris.push(...tracks.map((track: Track) => track.uri));
         }
+        dispatch({
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
+          payload: tracks,
+        });
         break;
       }
-      default:
+      case MODEL.TLTRACK:
+        tracksUris.push(item.track.uri);
+        dispatch({
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
+          payload: item.track,
+        });
+        break;
+
+      case MODEL.FILE:
+      case MODEL.TRACK:
+      case MODEL.TUNER:
         tracksUris.push(item.uri);
+        dispatch({
+          type: INTERNAL_EVENTS.TRACKLIST_ADD_TO_QUEUE,
+          payload: item,
+        });
+        break;
+      default:
         break;
     }
-    await add(tracksUris);
-    setLoading(false);
+    try {
+      await addTrack(tracksUris);
+    } finally {
+      setLoading(false);
+    }
   };
 
-return { handleAddToQueue, loading };
+  return { handleAddToQueue, loading };
 }

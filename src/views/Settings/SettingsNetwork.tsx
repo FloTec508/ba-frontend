@@ -10,7 +10,7 @@ import Page from "@/components/Page";
 import ActionMenu from "@/components/Actions";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
 import ItemPadding from "@/components/Wrapper/ItemPadding";
-import NoItems from "@/components/ListItem/NoItems";
+import NoItems from "@/components/Item/NoItems";
 import ButtonWifiScan from "@/components/Button/ButtonWifiScan";
 import Spinner from "@/components/Spinner";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";

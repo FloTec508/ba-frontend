@@ -11,14 +11,14 @@ export const useTracklistService = () => {
     getRandom: () => request("tracklist.get_random"),
     setRandom: (value: boolean) => request("tracklist.set_random", { value }),
     getTracklist: () => request("tracklist.get_tltracks"),
-    move: (start: number, end: number, to_position: number) =>
-      request("tracklist.move", {
+    moveTrack: (start: number, end: number, to_position: number) =>
+      request("tracklist.move_track", {
         start,
         end,
         to_position,
       }),
-    remove: (tlid: any) => request("tracklist.remove", { tlid }),
+    removeTrack: (tlid: any) => request("tracklist.remove_track", { tlid }),
+    addTrack: (uris: string[], play?:boolean) => request("tracklist.add_track", { uris, play }),
     clear: () => request("tracklist.clear"),
-    add: (value: string[]) => request("tracklist.add", { uris: value }),
   };
 };

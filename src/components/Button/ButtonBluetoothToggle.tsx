@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useBluetoothService } from "@/services/bluetooth";
 import { BluetoothIcon, BluetoothSlashIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
-import { INFO_EVENTS } from "@/store/constants";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 import ButtonIcon from "@/components/Button/ButtonIcon";
 
@@ -14,17 +14,13 @@ const ButtonBluetoothToggle = () => {
   const { getAdapterState, setAdapterState } = useBluetoothService();
 
   const toggleBluetooth = async () => {
-    const res = await setAdapterState(!adapter_state.powered);
-    dispatch({
-      type: INFO_EVENTS.BLUETOOTH_STATE_UPDATED,
-      payload: res,
-    });
+    await setAdapterState(!adapter_state.powered);
   };
 
   const fetchAdapterState = async () => {
     const res = await getAdapterState();
     dispatch({
-      type: INFO_EVENTS.BLUETOOTH_STATE_UPDATED,
+      type: INTERNAL_EVENTS.BLUETOOTH_STATE_UPDATED,
       payload: res,
     });
   };

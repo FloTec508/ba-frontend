@@ -9,6 +9,7 @@ interface ModalProps {
   buttonOnClick?: () => void;
   isOpen: boolean;
   onClose: () => void;
+  hideClose?: boolean;
   title?: string;
   children?: ReactNode;
   padding?: boolean;
@@ -21,6 +22,7 @@ const Modal: React.FC<ModalProps> = ({
   buttonOnClick,
   isOpen,
   onClose,
+  hideClose = false,
   title,
   children,
   padding = false,
@@ -32,25 +34,20 @@ const Modal: React.FC<ModalProps> = ({
         {/* Header */}
         <div className="flex justify-between items-center p-5">
           {title && <h2 className="text-2xl font-light">{title}</h2>}
-          <ButtonIcon className="-right-4" onClick={onClose}>
-            ✕
-          </ButtonIcon>
+          {!hideClose && (
+            <ButtonIcon className="-right-4" onClick={onClose}>
+              ✕
+            </ButtonIcon>
+          )}
         </div>
 
         {/* Body */}
-        <div className={`overflow-auto max-h-[50vh] ${!padding ? "px-5" : ""}`}>
-          {children}
-        </div>
+        <div className={`overflow-auto max-h-[50vh] ${!padding ? "px-5" : ""}`}>{children}</div>
 
         {/* Footer */}
         <div className="flex justify-end p-5">
           {buttonShow && (
-            <Button
-              type="ghost"
-              onClick={buttonOnClick}
-              disabled={buttonLoading || buttonDisabled}
-              loading={buttonLoading}
-            >
+            <Button type="ghost" onClick={buttonOnClick} disabled={buttonLoading || buttonDisabled} loading={buttonLoading}>
               {buttonText ? buttonText : "Ok"}
             </Button>
           )}

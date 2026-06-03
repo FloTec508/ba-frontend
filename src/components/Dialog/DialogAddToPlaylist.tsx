@@ -1,65 +1,34 @@
-import { CheckCircleIcon, CircleIcon, PlaylistIcon } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { usePlaylistService } from "@/services/playlist";
-import { useLocalService } from "@/services/local";
-import { Item, Track } from "@/types";
+import { usePlaylistActions } from "@/hooks/usePlaylistActions";
+import { PlaylistIcon } from "@phosphor-icons/react";
+import { AnyItem, Playlist } from "@/types";
 import { DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 import { REF } from "@/constants/refs";
 
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
-import CoverList from "@/components/ListItem/coverList";
 import ItemWrapper from "@/components/Wrapper/ItemWrapper";
-import ItemPadding from "@/components/Wrapper/ItemPadding";
 import useVirtual from "react-cool-virtual";
-import NoItems from "../ListItem/NoItems";
+import NoItems from "../Item/NoItems";
+import ListItem from "../Item/ListItem";
 
-const DialogAddToPlaylist = ({ item }: { item: Item }) => {
+const DialogAddToPlaylist = ({ item }: { item: AnyItem }) => {
   const dispatch = useDispatch();
   const query = REF.PLAYLIST;
-
-  const { onAdd, getDirectory } = usePlaylistService();
-  const { getDirectory: getDirectoryLocal } = useLocalService();
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-
   const loadMoreCount = 9;
 
-  const [items, setItems] = useState<any[]>([]);
+  const { getDirectory } = usePlaylistService();
+  const { playlistFetch, playlistAdd, loading } = usePlaylistActions();
+
+  const [selectedPlaylists, setSelectedPlaylists] = useState<Playlist[]>([]);
+  const [playlists, setPlaylists] = useState<any[]>([]);
   const [startOffset, setStartOffset] = useState<number>(0);
 
-  const onClickSelectPlaylist = (item: Item) => {
-    setSelectedItems((prev) => (prev.includes(item.uri) ? prev.filter((uri) => uri !== item.uri) : [...prev, item.uri]));
-  };
-
-  const onClickAddHandler = async (item: Item) => {
-    if (!selectedItems.length) return;
-    setIsButtonLoading(true);
-
-    const trackUris: string[] = [];
-
-    switch (item.type) {
-      case REF.CATEGORY:
-      case REF.ARTIST:
-      case REF.ALBUM:
-      case REF.GENRE: {
-        const tracks = await getDirectoryLocal(`${item.uri}:list`);
-        if (tracks.length) {
-          trackUris.push(...tracks.map((track: Track) => track.uri));
-        }
-        break;
-      }
-      default:
-        trackUris.push(item.uri);
-        break;
-    }
-    await onAdd(selectedItems, trackUris);
-    setIsButtonLoading(false);
-    dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
+  const onClickSelectPlaylist = (item: Playlist) => {
+    setSelectedPlaylists((prev) => (prev.some((i) => i.uri === item.uri) ? prev.filter((i) => i.uri !== item.uri) : [...prev, item]));
   };
 
   const {
@@ -68,7 +37,7 @@ const DialogAddToPlaylist = ({ item }: { item: Item }) => {
     items: virtualRows,
     scrollTo,
   } = useVirtual<HTMLDivElement, HTMLDivElement>({
-    itemCount: items?.length,
+    itemCount: playlists?.length,
     itemSize: 70,
     loadMoreCount: loadMoreCount,
     loadMore: async ({ startIndex }) => {
@@ -77,22 +46,17 @@ const DialogAddToPlaylist = ({ item }: { item: Item }) => {
       if (currentOffset > startOffset) {
         setStartOffset(currentOffset);
         const response = await getDirectory(query, loadMoreCount, currentOffset);
-        setItems((prev: any) => [...prev, ...response]);
+        setPlaylists((prev: any) => [...prev, ...response]);
       }
     },
   });
 
-  const fetch = async () => {
-    setIsLoading(true);
-    const response = await getDirectory(query, loadMoreCount, 0);
-    setItems(response);
-    setStartOffset(0);
-    scrollTo(0);
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    fetch();
+    (async () => {
+      setPlaylists(await playlistFetch());
+      setStartOffset(0);
+      scrollTo(0);
+    })();
   }, []);
 
   return (
@@ -101,31 +65,26 @@ const DialogAddToPlaylist = ({ item }: { item: Item }) => {
       onClose={() => dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE })}
       isOpen={true}
       buttonText="Add Selected"
-      buttonOnClick={() => onClickAddHandler(item)}
-      buttonLoading={isButtonLoading}
-      buttonDisabled={!selectedItems.length}
+      buttonOnClick={() => playlistAdd(item, selectedPlaylists)}
+      buttonLoading={loading}
+      buttonDisabled={!selectedPlaylists.length}
       padding
     >
-      {isLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <div ref={outerRef} className="h-[50vh] overflow-auto">
           <div ref={innerRef}>
-            {items.length === 0 ? (
+            {playlists.length === 0 ? (
               <NoItems title="No playlists" icon={<PlaylistIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
             ) : (
               virtualRows.map(({ index }) => {
-                const item = items[index];
+                const item = playlists[index];
                 if (!item) return null;
-                const isSelected = selectedItems.includes(item.uri);
+                const isSelected = selectedPlaylists.some((i) => i.uri === item.uri);
                 return (
                   <ItemWrapper key={index}>
-                    <button className="w-full cursor-pointer" onClick={() => onClickSelectPlaylist(item)}>
-                      <ItemPadding>
-                        <CoverList item={item} />
-                        {isSelected ? <CheckCircleIcon weight="fill" size={ICON_SM} /> : <CircleIcon size={25} className="opacity-50" />}
-                      </ItemPadding>
-                    </button>
+                    <ListItem item={item} selected={isSelected} onClick={() => onClickSelectPlaylist(item)} selectable />
                   </ItemWrapper>
                 );
               })

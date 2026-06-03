@@ -44,6 +44,7 @@ const DialogScanLibrary = () => {
         setScanStatus(false);
         dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
       }}
+      hideClose={scanInProgress}
       isOpen={true}
       buttonText={scanInProgress ? "Scanning" : scanStatus ? "Go to Library" : "Start Scan"}
       buttonLoading={scanInProgress}

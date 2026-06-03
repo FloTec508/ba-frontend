@@ -1,27 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
-import { AnyAction, Dispatch } from "redux";
-import { DotsThreeIcon } from "@phosphor-icons/react";
-import { ICON_SM } from "@/constants";
-
 import Spinner from "../Spinner";
 import ButtonIcon from "../Button/ButtonIcon";
 
-interface MenuItem {
-  name: string;
-  icon?: React.ReactNode;
-  action:
-    | (() => void)
-    | (() => Promise<void>)
-    | ((dispatch: Dispatch<AnyAction>) => void | Promise<void>);
-  disabled?: boolean;
-  hide?: boolean;
-}
+import { useState, useRef, useEffect } from "react";
+import { DotsThreeIcon } from "@phosphor-icons/react";
+import { ICON_SM } from "@/constants";
+import { MenuItem } from "@/hooks/useMenuActions";
 
-interface ActionMenuProps {
-  items: MenuItem[];
-}
-
-const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
+const ActionMenu = ({ items }: { items: MenuItem[] }) => {
   const [loading, setLoading] = useState<Set<number>>(new Set());
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -30,10 +15,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
     };
@@ -41,10 +23,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleAction = async (
-    index: number,
-    action: () => void | Promise<void>
-  ) => {
+  const handleAction = async (index: number, action: () => void | Promise<void>) => {
     setLoading((prev) => new Set(prev).add(index));
     try {
       await Promise.resolve(action());
@@ -69,7 +48,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
         }`}
         disabled={item.disabled}
       >
-        <div className="mr-2">{loading.has(idx) ? <Spinner /> : item.icon}</div>
+        <div className="mr-2">{loading.has(idx) ? <Spinner mode="light" /> : item.icon}</div>
         <div>{item.name}</div>
       </button>
     );
@@ -78,14 +57,17 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
     <div>
       {/* Desktop */}
       <div className="hidden md:block relative" ref={dropdownRef}>
-        <ButtonIcon onClick={() => setDropdownOpen((o) => !o)}>
+        <ButtonIcon
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            setDropdownOpen((o) => !o);
+          }}
+        >
           <DotsThreeIcon size={ICON_SM} />
         </ButtonIcon>
 
         {isDropdownOpen && (
-          <div className="absolute overflow-auto max-h-60 right-0 mt-2 w-48 bg-popover shadow-lg rounded-md z-10">
-            {items.map(renderButton)}
-          </div>
+          <div className="absolute overflow-auto max-h-60 right-0 mt-2 w-48 bg-popover shadow-lg rounded-md z-10">{items.map(renderButton)}</div>
         )}
       </div>
 
@@ -95,15 +77,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ items }) => {
           <DotsThreeIcon size={24} />
         </ButtonIcon>
 
-        {isDrawerOpen && (
-          <div
-            className="fixed inset-0 z-10 -top-[48px]"
-            onClick={() => setDrawerOpen(false)}
-          />
-        )}
+        {isDrawerOpen && <div className="fixed inset-0 z-10 -top-12" onClick={() => setDrawerOpen(false)} />}
 
         <div
-          className={`fixed  z-100 overflow-auto max-h-60 bottom-[-1px] left-0 right-0 z-10 rounded-t-sm shadow-lg transform transition-transform duration-200  ${
+          className={`fixed  z-100 overflow-auto max-h-60 -bottom-px left-0 right-0  rounded-t-sm shadow-lg transform transition-transform duration-200  ${
             isDrawerOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >

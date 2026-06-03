@@ -1,0 +1,103 @@
+import { RoomState } from "@/types";
+import { INTERNAL_EVENTS } from "../constants";
+import { EVENTS } from "@/constants/events";
+
+const initialState: RoomState = {
+  status: {},
+  servers: [],
+  dragging: false,
+};
+
+export const multiroomReducer = (state = initialState, action: any): RoomState => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case INTERNAL_EVENTS.MULTIROOM_VOLUME_DRAGGING:
+      return {
+        ...state,
+        dragging: payload,
+      };
+
+    case INTERNAL_EVENTS.MULTIROOM_SCAN_COMPLETED:
+    case INTERNAL_EVENTS.MULTIROOM_LIST:
+      return {
+        ...state,
+        servers: payload,
+      };
+
+    case EVENTS.MULTIROOM_STATE_CHANGED:
+      return { ...state, status: payload.server };
+
+    case EVENTS.MULTIROOM_CONNECTED:
+    case EVENTS.MULTIROOM_DISCONNECTED:
+    case EVENTS.MULTIROOM_REMOVED:
+    case EVENTS.MULTIROOM_ADDED:
+      return {
+        ...state,
+        servers: [...state.servers.filter((server) => server?.ip !== payload.server?.ip), payload.server],
+      };
+
+    case EVENTS.MULTIROOM_NOTIFICATION: {
+      switch (payload.method) {
+        case "Stream.OnUpdate": {
+          return {
+            ...state,
+            servers: state.servers.map((server) => (server?.connected ? { ...server, status: payload.params.stream.status } : server)),
+          };
+        }
+
+        case "Client.OnConnect":
+        case "Client.OnDisconnect": {
+          const params = payload.params.client;
+
+          const groups: any = state.status?.groups?.map((group: any) => ({
+            ...group,
+            clients: group.clients?.map((client: any) => (client.id === params.id ? params : client)),
+          }));
+
+          return {
+            ...state,
+            status: {
+              ...state.status,
+              groups,
+            },
+          };
+        }
+
+        case "Client.OnVolumeChanged": {
+          if (state.dragging) return state;
+          const params = payload.params;
+
+          const groups: any = state.status?.groups?.map((group: any) => ({
+            ...group,
+            clients: group.clients?.map((client: any) =>
+              client.id === params.id
+                ? {
+                    ...client,
+                    config: {
+                      ...client.config,
+                      volume: { ...params.volume },
+                    },
+                  }
+                : client
+            ),
+          }));
+
+          return {
+            ...state,
+            status: {
+              ...state.status,
+              groups,
+            },
+          };
+        }
+
+        default:
+          return state;
+      }
+    }
+
+    default:
+      return state;
+  }
+};

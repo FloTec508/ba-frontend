@@ -1,25 +1,14 @@
-import { useState } from "react";
+import { usePlaylistActions } from "@/hooks/usePlaylistActions";
 import { useDispatch } from "react-redux";
-import { Item } from "@/types";
-import { usePlaylistService } from "@/services/playlist";
-import { INFO_EVENTS, DIALOG_EVENTS } from "@/store/constants";
+import { Playlist } from "@/types";
+import { DIALOG_EVENTS } from "@/store/constants";
 
 import Modal from "@/components/Modal";
 
-const DialogDeletePlaylist = ({ item }: { item: Item }) => {
+const DialogDeletePlaylist = ({ item }: { item: Playlist }) => {
   const dispatch = useDispatch();
 
-  const { deleteItem } = usePlaylistService();
-
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-
-  const onClickDeletePlaylist = async () => {
-    setButtonLoading(true);
-    await deleteItem(item?.uri as string);
-    dispatch({ type: INFO_EVENTS.PLAYLISTS_UPDATED });
-    setButtonLoading(false);
-    dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
-  };
+  const { playlistDelete, loading } = usePlaylistActions();
 
   return (
     <Modal
@@ -27,8 +16,8 @@ const DialogDeletePlaylist = ({ item }: { item: Item }) => {
       onClose={() => dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE })}
       isOpen={true}
       buttonText="Delete"
-      buttonLoading={buttonLoading}
-      buttonOnClick={onClickDeletePlaylist}
+      buttonLoading={loading}
+      buttonOnClick={() => playlistDelete(item)}
     >
       <span className="text-secondary">
         Are you sure you want to delete playlist <i>{item.name}</i>?

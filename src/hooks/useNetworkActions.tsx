@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { DIALOG_EVENTS, INFO_EVENTS } from "@/store/constants";
+import { DIALOG_EVENTS, INTERNAL_EVENTS } from "@/store/constants";
 import { useNetworkService } from "@/services/network";
 import { WifiNetwork } from "@/types";
 import { useState } from "react";
@@ -34,10 +34,17 @@ export function useNetworkActions() {
     setLoading(true);
     const networks_discovered = await onWifi(rescan);
 
-    dispatch({
-      type: INFO_EVENTS.WLAN_SCAN_COMPLETED,
-      payload: networks_discovered,
-    });
+    if (rescan) {
+      dispatch({
+        type: INTERNAL_EVENTS.WLAN_SCAN_COMPLETED,
+        payload: networks_discovered,
+      });
+    }else{
+       dispatch({
+        type: INTERNAL_EVENTS.WLAN_LIST,
+        payload: networks_discovered,
+      });
+    }
     setLoading(false);
   };
 

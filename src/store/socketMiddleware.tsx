@@ -39,6 +39,7 @@ export const socketMiddleware: Middleware = (store) => {
           store.dispatch({
             type: DIALOG_EVENTS.DIALOG_ERROR,
             payload: data.error,
+            toast: { title: data.error.message || "Unknown error occured" , variant: "error" },
           });
         }
 

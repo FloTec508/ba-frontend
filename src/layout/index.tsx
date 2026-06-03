@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useConfigService } from "@/services/config";
 import { useSourceService } from "@/services/source";
 import { usePlaybackService } from "@/services/playback";
 import { useTracklistService } from "@/services/tracklist";
@@ -17,28 +18,30 @@ import OverlayStandby from "@/components/Overlay/OverlayStandby";
 import OverlayOffline from "@/components/Overlay/OverlayOffline";
 import Dialog from "@/components/Dialog";
 import OverlayVolume from "@/components/Overlay/OverlayVolume";
+import { INTERNAL_EVENTS } from "@/store/constants";
 
 export default function Layout({ children }: { children: any }) {
   const dispatch = useDispatch();
   const connected = useSelector((state: any) => state.socket.connected);
 
-  const { getRepeat, getSingle, getRandom, getTracklist } = useTracklistService();
+  const { getRepeat, getSingle, getRandom } = useTracklistService();
   const { getState, getCurrentTlTrack } = usePlaybackService();
   const { getMixerVolume, getMixerMute } = useMixerService();
   const { getSystemTime, getPowerState } = useSystemService();
   const { getDevices } = useNetworkService();
   const { getSource } = useSourceService();
+  const { getConfig } = useConfigService();
 
   useEffect(() => {
     const initialize = async () => {
       try {
         const [
+          _config,
           _getNetworkDevices,
           _getPowerState,
           _getState,
           _getAudioSource,
           _tl_track,
-          _tl_tracks,
           _value,
           _getRepeat,
           _getSingle,
@@ -46,12 +49,12 @@ export default function Layout({ children }: { children: any }) {
           _volume,
           _mute,
         ] = await Promise.all([
+          getConfig(),
           getDevices(),
           getPowerState(),
           getState(),
           getSource(),
           getCurrentTlTrack(),
-          getTracklist(),
           getSystemTime(),
           getRepeat(),
           getSingle(),
@@ -59,6 +62,11 @@ export default function Layout({ children }: { children: any }) {
           getMixerVolume(),
           getMixerMute(),
         ]);
+
+        dispatch({
+          type: INTERNAL_EVENTS.CONFIG_STATE,
+          payload: { config: _config },
+        });
 
         dispatch({
           type: EVENTS.NETWORK_DEVICES,
@@ -76,18 +84,13 @@ export default function Layout({ children }: { children: any }) {
         });
 
         dispatch({
-          type: EVENTS.SOURCE_CHANGED,
+          type: INTERNAL_EVENTS.SOURCE_STATE,
           payload: { source: _getAudioSource },
         });
 
         dispatch({
           type: EVENTS.TRACK_META_UPDATED,
           payload: { tl_track: _tl_track },
-        });
-
-        dispatch({
-          type: EVENTS.TRACKLIST_CHANGED,
-          payload: { tl_tracks: _tl_tracks },
         });
 
         dispatch({
@@ -99,15 +102,9 @@ export default function Layout({ children }: { children: any }) {
           type: EVENTS.VOLUME_CHANGED,
           payload: { volume: _volume },
         });
-
         dispatch({
-          type: EVENTS.MIXER_MUTE,
+          type: INTERNAL_EVENTS.MIXER_STATE,
           payload: { mute: _mute },
-        });
-
-        dispatch({
-          type: EVENTS.OPTIONS_CHANGED,
-          payload: { single: _getSingle, repeat: _getRepeat, shuffle: _getShuffle },
         });
       } catch (err) {
         console.error("Error initiazing:", err);

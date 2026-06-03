@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fontsource/inter/400.css";
+
+
+@custom-variant dark (&:where(.dark, .dark *)); 
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -27,7 +31,7 @@
 }
 :root {
   --radius: 0.625rem;
-  --background: oklch(94.611% 0.00011 271.152 / 0.958);
+  --background: rgb(245, 245, 245);
   --foreground: oklch(0.145 0 0);
   --selected: #ababab2e;
   --card: oklch(1 0 0);
@@ -41,13 +45,13 @@
   --input: oklch(0.922 0 0);
   --input-foreground: oklch(10.668% 0.00001 271.152);
   --ring: oklch(0.708 0 0);
-  --primary: #e15f41;
+  --primary: #f24f34;
   --primary-foreground: #ffffff;
   --secondary: #737373;
   --secondary-foreground: oklch(0.205 0 0);
-  --accent: #e15f41;
+  --accent: #f24f34;
   --accent-foreground: #ffffff;
-  --button-hover: rgba(189, 189, 189, 0.5);
+  --button-hover: rgba(189, 189, 189, 0.3);
 }
 .dark {
   --background: #1f1f1f;
@@ -66,7 +70,7 @@
   --input: oklch(1 0 0 / 15%);
   --input-foreground: oklch(100% 0.00011 271.152);
   --ring: oklch(0.556 0 0);
-  --button-hover: rgba(0, 0, 0, 0.5);
+  --button-hover: rgba(0, 0, 0, 0.3);
 }
 @layer utilities {
   .bg-button-hover {
@@ -200,6 +204,7 @@
 .seek-slider-mini [data-slot="slider-track"] {
   height: 4px;
 }
+
 .show {
   display: block;
 }
@@ -245,4 +250,14 @@
 .dark * {
   scrollbar-width: thin;
   scrollbar-color: #555 #1a1a1a;
+}
+
+[data-sonner-toaster][data-y-position="bottom"] {
+  bottom: 100px !important; 
+}
+
+@media (max-width: 768px) {
+  [data-sonner-toaster][data-y-position="bottom"] {
+    bottom: 90px !important; 
+  }
 }

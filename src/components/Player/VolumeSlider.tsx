@@ -43,7 +43,7 @@ const VolumeSlider = ({ classname, onValueChange }: { classname?: string; onValu
   }, [volume]);
 
   return (
-    <div className="flex w-full dark ">
+    <div className="flex w-full">
       <div className="mr-2 w-14">
         <ButtonMuteToggle />
       </div>

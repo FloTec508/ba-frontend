@@ -1,15 +1,19 @@
 import { PlayIcon } from "@phosphor-icons/react";
 import { usePlayNow } from "@/hooks/usePlayNow";
-import { Item } from "@/types";
-import { ICON_SM, ICON_WEIGHT } from "@/constants";
+import { AnyItem } from "@/types";
+import { ICON_WEIGHT, ICON_XS } from "@/constants";
 
-import ButtonIcon from "@/components/Button/ButtonIcon";
 import Spinner from "@/components/Spinner";
+import Button from ".";
 
-const ButtonPlayAll = ({ item }: { item: Item }) => {
+const ButtonPlayAll = ({ item }: { item: AnyItem }) => {
   const { handlePlayNow, loading } = usePlayNow();
 
-  return <ButtonIcon onClick={() => handlePlayNow(item)}>{loading ? <Spinner /> : <PlayIcon weight={ICON_WEIGHT} size={ICON_SM} />}</ButtonIcon>;
+  return (
+    <Button type="primary" size="sm" onClick={() => handlePlayNow(item)} >
+      {loading ? <Spinner mode="light"/> : <PlayIcon weight={ICON_WEIGHT} size={ICON_XS} />} <div className="ml-2 text-sm"> Play All</div>
+    </Button>
+  );
 };
 
 export default ButtonPlayAll;

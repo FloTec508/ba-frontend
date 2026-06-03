@@ -9,7 +9,6 @@ import List from "@/components/InfiniteScroll/List";
 import Grid from "@/components/InfiniteScroll/Grid";
 import Page from "@/components/Page";
 
-
 const Radio = () => {
   const navigate = useNavigate();
 
@@ -28,20 +27,8 @@ const Radio = () => {
       backButtonOnClick={() => navigate("/")}
       backButton
     >
-      {layout === "list" && (
-        <List
-          uri={REF.RADIO}
-          getDirectory={getDirectory}
-          onClickCallback={undefined}
-        />
-      )}
-      {layout === "grid" && (
-        <Grid
-          uri={REF.RADIO}
-          getDirectory={getDirectory}
-          onClickCallback={undefined}
-        />
-      )}
+      {layout === "list" && <List uri={REF.RADIO} getDirectory={getDirectory} />}
+      {layout === "grid" && <Grid uri={REF.RADIO} getDirectory={getDirectory} />}
     </Page>
   );
 };

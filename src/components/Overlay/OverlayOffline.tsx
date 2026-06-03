@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { PlugsIcon } from "@phosphor-icons/react";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
-import NoItems from "../ListItem/NoItems";
+import NoItems from "../Item/NoItems";
 import Overlay from ".";
 
 const OverlayOffline = () => {

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useSourceService } from "@/services/source";
@@ -9,6 +9,8 @@ import {
   GearIcon,
   GlobeHemisphereWestIcon,
   PlaylistIcon,
+  RadioButtonIcon,
+  RadioIcon,
   SpeakerHifiIcon,
   SpotifyLogoIcon,
   UsbIcon,
@@ -25,6 +27,7 @@ import "../../../node_modules/swiper/modules/pagination.css";
 import ButtonStandby from "@/components/Button/ButtonStandby";
 import LayoutHeightWrapper from "@/components/Wrapper/LayoutHeightWrapper";
 import Page from "@/components/Page";
+import Spinner from "@/components/Spinner";
 
 type SourceItem = {
   name: string;
@@ -41,15 +44,25 @@ const sources: SourceItem[] = [
     icon: <PlaylistIcon weight={ICON_WEIGHT} size={ICON_LG} />,
     alias: "playlist",
   },
-    {
+  {
     name: "DSP",
     icon: <FadersIcon weight={ICON_WEIGHT} size={ICON_LG} />,
-    alias: "settings/dsp",
+    alias: "dsp",
   },
   {
     name: "Library",
     icon: <VinylRecordIcon weight={ICON_WEIGHT} size={ICON_LG} />,
     alias: "local",
+  },
+  {
+    name: "FM Tuner",
+    icon: <RadioIcon weight={ICON_WEIGHT} size={ICON_LG} />,
+    alias: "tuner",
+  },
+  {
+    name: "Line In",
+    icon: <RadioButtonIcon weight={ICON_WEIGHT} size={ICON_LG} />,
+    alias: "linein",
   },
   {
     name: "Storage",
@@ -93,17 +106,20 @@ const Start = () => {
 
   const { setSource } = useSourceService();
   const { source } = useSelector((state: any) => state.player);
+  const [loadingItem, setLoadingItem] = useState<string | undefined>(undefined);
 
   const onClickHandler = async (item: SourceItem) => {
-    ["spotify", "shairportsync"].includes(item.alias) && (await setSource(item.alias));
+    setLoadingItem(item.alias);
+    ["spotify", "shairportsync", "linein", "tuner"].includes(item.alias) && (await setSource(item.alias));
     navigate(`/${item.alias}`);
+    setLoadingItem(undefined);
   };
 
   return (
     <Page
       title="Source"
       rightComponent={
-        <div className="flex h-[50px] items-center mr-4">
+        <div className="flex h-12.5 items-center mr-4">
           <ButtonStandby />
         </div>
       }
@@ -149,9 +165,15 @@ const Start = () => {
                     key={item.alias}
                     disabled={item.disabled}
                     onClick={() => onClickHandler(item)}
-                    className={`hover:dark:bg-black/40  touch-pan-x rounded-lg flex items-center justify-center aspect-square overflow-hidden w-full transition-all duration-200
-                cursor-pointer ${item.disabled ? "opacity-30" : source.uri === item.alias ? "text-primary bg-selected" : ""}`}
+                    className={`hover:bg-button-hover touch-pan-x rounded-lg flex items-center justify-center aspect-square overflow-hidden w-full transition-all duration-200
+                cursor-pointer ${item.disabled ? "opacity-30" : source.uri === item.alias ? "text-primary" : ""}`}
                   >
+                    {loadingItem === item.alias && (
+                      <div className="absolute bg-button-hover w-full h-full rounded-lg">
+                        <Spinner mode="light"/>
+                      </div>
+                    )}
+
                     <div className="flex flex-col items-center">
                       <div className="mb-2">{item.icon}</div>
                       <div className="flex">{item.name}</div>

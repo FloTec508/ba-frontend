@@ -11,17 +11,19 @@ const ButtonVolume = () => {
 
   return (
     <ButtonIcon onClick={() =>  dispatch({ type: OVERLAY_EVENTS.OVERLAY_VOLUME })} className="w-18">
+      <div className="flex items-center px-3">
       {mute ? (
         <SpeakerSlashIcon
           size={ICON_SM}
           weight={ICON_WEIGHT}
-          className="mr-1 scale-90 opacity-30"
+          className="mr-1 opacity-30"
         />
       ) : (
-        <SpeakerHighIcon size={ICON_SM} weight={ICON_WEIGHT} className="mr-1 scale-90" />
+        <SpeakerHighIcon size={ICON_SM} weight={ICON_WEIGHT} className="mr-1" />
       )}
 
       {volume}
+      </div>
     </ButtonIcon>
   );
 };

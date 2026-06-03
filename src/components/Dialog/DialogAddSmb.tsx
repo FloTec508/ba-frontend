@@ -1,47 +1,46 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Input } from "../Form/Input";
 import { useStorageActions } from "@/hooks/useStorageActions";
-import { StorageItem } from "@/types";
-import { CheckCircleIcon, CircleIcon, HardDriveIcon } from "@phosphor-icons/react";
+import { Input } from "../Form/Input";
+import { Storage } from "@/types";
+import { HardDriveIcon } from "@phosphor-icons/react";
 import { DIALOG_EVENTS } from "@/store/constants";
 import { ICON_SM, ICON_WEIGHT } from "@/constants";
 
 import Modal from "@/components/Modal";
 import ItemWrapper from "../Wrapper/ItemWrapper";
-import ItemPadding from "../Wrapper/ItemPadding";
-import CoverList from "../ListItem/coverList";
-import NoItems from "../ListItem/NoItems";
+import NoItems from "../Item/NoItems";
+import ListItem from "../Item/ListItem";
 
 type smbShared = {
   ip: String;
   hostname: String;
-  shares: StorageItem[];
+  shares: Storage[];
 };
 
 const DialogAddSmb = () => {
   const dispatch = useDispatch();
 
-  const { connectStorage, mountSharedStorage, loading } = useStorageActions();
+  const { storageConnect, storageMountShared, loading } = useStorageActions();
 
   const [smbIpAddress, setSmbIpAddress] = useState<string>("");
   const [smbUsername, setSmbUsername] = useState<string>("");
   const [smbPassword, setSmbPassword] = useState<string>("");
   const [smbResponse, setSmbResponse] = useState<smbShared>();
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Storage[]>([]);
 
   const onClickConnect = async () => {
-    const result = await connectStorage(smbIpAddress, smbUsername, smbPassword);
+    const result = await storageConnect(smbIpAddress, smbUsername, smbPassword);
     setSmbResponse(result);
   };
 
   const onClickMount = async () => {
-    const response = await mountSharedStorage(selectedItems)
+    const response = await storageMountShared(selectedItems);
     response && dispatch({ type: DIALOG_EVENTS.DIALOG_CLOSE });
   };
 
-  const onClickSelectSmbs = (item: StorageItem) => {
-    setSelectedItems((prev) => (prev.includes(item.dev) ? prev.filter((dev) => dev !== item.dev) : [...prev, item.dev]));
+  const onClickSelectSmbs = (item: Storage) => {
+    setSelectedItems((prev) => (prev.some((i) => i.dev === item.dev) ? prev.filter((i) => i.dev !== item.dev) : [...prev, item]));
   };
 
   return (
@@ -54,30 +53,22 @@ const DialogAddSmb = () => {
       buttonOnClick={smbResponse?.ip ? onClickMount : onClickConnect}
       buttonDisabled={smbResponse?.ip ? smbResponse?.ip && !selectedItems.length : smbIpAddress == ""}
       padding
-
     >
       {smbResponse?.ip ? (
         <div className="overflow-auto">
-          {smbResponse?.shares?.length === 0 ? (
-            <NoItems title="No Shared Drives" icon={<HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
-          ) : (
+          {smbResponse?.shares?.length ? (
             <>
-              <div className="pt-2 pb-4 text-secondary px-5">Found {smbResponse?.shares?.length} items. Select the items you want to add and they will appear in your Storage section.</div>
-              {smbResponse?.shares?.map((item: StorageItem) => (
-                <ItemWrapper key={item.dev}>
-                  <button className="w-full cursor-pointer" onClick={() => onClickSelectSmbs(item)}>
-                    <ItemPadding>
-                      <CoverList item={item as any} />
-                      {selectedItems.includes(item.dev) ? (
-                        <CheckCircleIcon weight="fill" size={ICON_SM} />
-                      ) : (
-                        <CircleIcon size={25} className="opacity-50" />
-                      )}
-                    </ItemPadding>
-                  </button>
+              <div className="pt-2 pb-4 text-secondary px-5">
+                Found {smbResponse.shares.length} items. Select the items you want to add and they will appear in your Storage section.
+              </div>
+              {smbResponse.shares.map((item: Storage) => (
+                <ItemWrapper key={item.uri}>
+                  <ListItem item={item} selected={selectedItems.some((i) => i.dev === item.dev)} onClick={() => onClickSelectSmbs(item)} selectable />
                 </ItemWrapper>
               ))}
             </>
+          ) : (
+            <NoItems title="No Shared Drives" icon={<HardDriveIcon weight={ICON_WEIGHT} size={ICON_SM} />} />
           )}
         </div>
       ) : (
