@@ -22,7 +22,7 @@ export function Menu() {
   };
 
   return (
-    <div className="rounded-none px-4 h-12 flex justify-between items-center shadow-none relative text-lg">
+    <div className="rounded-none px-4 h-10 flex justify-between items-center shadow-none relative text-lg">
       <div className="flex items-center ">
         <ButtonIcon onClick={onClickMenuHandler}>
           <HouseIcon size={ICON_SM} weight={ICON_WEIGHT} />

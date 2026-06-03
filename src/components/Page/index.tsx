@@ -33,7 +33,7 @@ const Page = ({ title, backButton = false, backButtonOnClick, rightComponent, wf
 
   return (
     <div className="h-full overflow-auto">
-      <div className="flex justify-between h-12 ">
+      <div className="flex justify-between h-10 ">
         <div className="pl-4 flex items-center flex-1 min-w-0">
           {backButton && (
             <ButtonIcon onClick={backButtonOnClick ? backButtonOnClick : () => navigate(-1)}>
