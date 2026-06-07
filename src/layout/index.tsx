@@ -120,7 +120,7 @@ export default function Layout({ children }: { children: any }) {
     <EncoderNavigationProvider>
       <div className="flex flex-col h-full">
         <Menu />
-        <div className="flex-1 overflow-hidden">{children}</div>
+        <div className="flex-1 overflow-hidden ">{children}</div>
         <Player />
         <Dialog />
         <OverlaySearch />

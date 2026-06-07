@@ -5,7 +5,7 @@ import ActionMenu from "../Actions";
 import type { CSSProperties, KeyboardEvent } from "react";
 import { AnyItem, Track } from "@/types";
 import { getSubtitle } from "@/util";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePlayNow } from "@/hooks/usePlayNow";
 import { useMenuActions } from "@/hooks/useMenuActions";
 
@@ -28,6 +28,8 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingCover, setLoadingCover] = useState<boolean>(false);
+
+  const actionMenuContainerRef = useRef<HTMLDivElement>(null);
 
   const onClickItem = async () => {
     setLoading(true);
@@ -54,13 +56,32 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    // Ganz wichtig! Verhindert, dass Chromium/Electron auf dem Pi das 
+    // standardmäßige, hässliche graue Browser-Kontextmenü anzeigt.
+    e.preventDefault();
+
+    if (actionMenuContainerRef.current) {
+      // Suche nach dem echten Button (oder dem div mit der Rolle button) im ActionMenu
+      const targetButton = 
+        actionMenuContainerRef.current.querySelector("button") || 
+        actionMenuContainerRef.current.querySelector<HTMLElement>('[role="button"]');
+
+      // Wenn gefunden, simuliere einen ganz normalen Linksklick darauf
+      if (targetButton) {
+        targetButton.click();
+      }
+    }
+  };
+
   return (
     <div
       role="button"
       tabIndex={0}
       onClick={onClickItem}
+      onContextMenu={handleContextMenu}
       onKeyDown={onKeyDownItem}
-      className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200 outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
+      className="cursor-pointer relative p-3 lg:p-4 pb-6 hover:bg-button-hover rounded-md transition-all duration-200 outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px] listItem"
       style={style}
     >
       <div className="w-full">
@@ -88,7 +109,7 @@ const GridItem = ({ item, shadow = false, onClick, style }: GridItem) => {
               </div>
             )}
           </div>
-          <div className="-mr-2" onClick={(e) => e.stopPropagation()}>
+          <div className="-mr-2" onClick={(e) => e.stopPropagation()} ref={actionMenuContainerRef}>
             <ActionMenu items={itemsMenu(item)} />
           </div>
         </div>

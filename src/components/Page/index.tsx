@@ -45,7 +45,7 @@ const Page = ({ title, backButton = false, backButtonOnClick, rightComponent, wf
         {rightComponent && <div className="flex justify-end items-center  flex-shrink-0">{rightComponent}</div>}
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center menuViewContainer">
         <div className={`${!wfull && "lg:max-w-[800px]"} w-full`}>{children}</div>
       </div>
     </div>

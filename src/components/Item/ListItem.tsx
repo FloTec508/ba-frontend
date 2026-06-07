@@ -65,7 +65,7 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
         tabIndex={0}
         onClick={onClickItem}
         onKeyDown={onKeyDownItem}
-        className="flex items-center w-full cursor-pointer justify-between relative outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
+        className="flex items-center w-full cursor-pointer justify-between relative outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px] listItem"
       >
         <div className="py-3 px-4 flex justify-between w-full items-center">
           <div className="flex items-center w-full">
@@ -109,14 +109,14 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
             </div>
           </div>
         </div>
+        {selectable ? (
+          <div className="pr-4">{selected ? <CheckCircleIcon weight="fill" size={ICON_SM} /> : <CircleIcon size={25} className="opacity-50" />}</div>
+        ) : (
+          <div className="pr-2 " >
+            <ActionMenu items={itemsMenu(item)} />
+          </div>
+        )}
       </div>
-      {selectable ? (
-        <div className="pr-4">{selected ? <CheckCircleIcon weight="fill" size={ICON_SM} /> : <CircleIcon size={25} className="opacity-50" />}</div>
-      ) : (
-        <div className="pr-2">
-          <ActionMenu items={itemsMenu(item)} />
-        </div>
-      )}
     </>
   );
 };

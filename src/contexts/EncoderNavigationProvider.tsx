@@ -1,9 +1,11 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
+type FocusZone = 'BARS' | 'MENU';
+
 const FOCUSABLE_SELECTORS = [
-  "button:not([disabled])",
+  "button:not([disabled]):not(.nofocus)",
   "[role=button]:not([disabled])",
   "a[href]",
   "input:not([disabled])",
@@ -21,7 +23,7 @@ const isElementVisible = (element: HTMLElement) => {
 const isElementInViewport = (element: HTMLElement, container: HTMLElement): boolean => {
   const rect = element.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
-  
+
   // Check if element is within container's viewport
   // Allow partial visibility (element only needs to be partially in view)
   return !(
@@ -34,7 +36,7 @@ const isElementInViewport = (element: HTMLElement, container: HTMLElement): bool
 
 const isElementInWindowViewport = (element: HTMLElement): boolean => {
   const rect = element.getBoundingClientRect();
-  
+
   // Allow partial visibility in the window
   return !(
     rect.bottom < 0 ||                    // Element is above window
@@ -48,10 +50,10 @@ const getScrollableParent = (element: HTMLElement): HTMLElement | null => {
   let parent = element.parentElement;
   while (parent) {
     const style = window.getComputedStyle(parent);
-    const isScrollable = 
+    const isScrollable =
       (style.overflowY === "auto" || style.overflowY === "scroll" || style.overflow === "auto" || style.overflow === "scroll") ||
       (style.overflowX === "auto" || style.overflowX === "scroll");
-    
+
     if (isScrollable) {
       return parent;
     }
@@ -60,50 +62,121 @@ const getScrollableParent = (element: HTMLElement): HTMLElement | null => {
   return null;
 };
 
+const isOverlayRootActive = (overlay: HTMLElement): boolean => {
+  const style = window.getComputedStyle(overlay);
+  if (style.display === "none" || style.visibility === "hidden" || style.pointerEvents === "none") {
+    return false;
+  }
+  if (overlay.classList.contains("hidden")) {
+    return false;
+  }
+
+  const rect = overlay.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) {
+    return false;
+  }
+
+  return !(
+    rect.bottom < 0 ||
+    rect.top > window.innerHeight ||
+    rect.right < 0 ||
+    rect.left > window.innerWidth
+  );
+};
+
+const isElementInMain = (element: HTMLElement): boolean => {
+  let parent = element.parentElement;
+  while (parent) {
+    if (parent.classList.contains("menuViewContainer")) {
+      return true;
+    }
+    parent = parent.parentElement;
+  }
+  return false;
+}
+
+const isElementInMenuitem = (element: HTMLElement): boolean => {
+  let parent = element.parentElement;
+  while (parent) {
+    if (parent.classList.contains("listItem")) {
+      return true;
+    }
+    parent = parent.parentElement;
+  }
+  return false;
+}
+
 const getActiveModal = (): HTMLElement | null => {
-  // Look for visible modal with z-50 class (from Modal component)
+  // Look for active overlay roots first (OverlayStandby, OverlayVolume, etc.)
+  const overlays = document.querySelectorAll<HTMLElement>('[data-overlay="true"]');
+  for (const overlay of overlays) {
+    if (overlay.classList.contains("player")) {
+      continue;
+    }
+    if (!isOverlayRootActive(overlay) || !isElementInWindowViewport(overlay)) {
+      continue;
+    }
+    return overlay;
+  }
+
+  // Fallback to modal dialogs rendered with z-50
   const modals = document.querySelectorAll<HTMLElement>('[class*="z-50"]');
   for (const modal of modals) {
-    // Check if this looks like a modal backdrop/container
-    const style = window.getComputedStyle(modal);
-    if (style.position === "fixed" && modal.offsetHeight > 0 && modal.offsetWidth > 0) {
-      // Found an active modal, now find the inner content container
-      const content = modal.querySelector<HTMLElement>('[class*="rounded-2xl"], [role="dialog"], [role="alertdialog"]');
-      if (content) return content;
-      return modal;
+    if (!isOverlayRootActive(modal)) {
+      continue;
     }
+    const content = modal.querySelector<HTMLElement>('[class*="rounded-2xl"], [role="dialog"], [role="alertdialog"]');
+    if (content) return content;
+    return modal;
   }
   return null;
 };
 
-const getFocusableElements = (root: HTMLElement) => {
+
+const getFocusableElements = (root: HTMLElement, zone: FocusZone) => {
   // If a modal is open, only search within the modal
   const activeModal = getActiveModal();
   const searchRoot = activeModal || root;
-  
+
   return Array.from(searchRoot.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)).filter((element) => {
     if (element.hasAttribute("disabled")) return false;
     if (element.getAttribute("aria-hidden") === "true") return false;
     if (element.hasAttribute("nofocus")) return false;
     if (element.tabIndex < 0) return false;
     if (!isElementVisible(element)) return false;
-    
+
     // Skip items in overlay containers (Player, OverlayVolume, etc)
     // unless a modal is actively open
     if (!activeModal) {
       let parent = element.parentElement;
       while (parent) {
-        if (parent.getAttribute("data-overlay") === "true") {
+        if (parent.getAttribute("data-overlay") === "true" && !parent.classList.contains("player")) {
           return false;
         }
         parent = parent.parentElement;
       }
     }
-    
+
+    const isInMain = isElementInMain(element);
+    if (zone == "BARS") {
+      if (isInMain) {
+        return false;
+      }
+    } else {
+      if (!isInMain) {
+        return false;
+      }
+    }
+
+    const isInListItem = isElementInMenuitem(element);
+    if (isInListItem) {
+      return false;
+    }
+
     // Check if element is in viewport of its scrollable parent
     const scrollParent = getScrollableParent(element);
     if (scrollParent) {
-      if (!isElementInViewport(element, scrollParent)) {
+      if (!isElementInViewport(element, scrollParent) && zone !== "MENU") {
         return false;
       }
     } else {
@@ -126,8 +199,8 @@ const focusElement = (element: HTMLElement) => {
   }
 };
 
-const focusNextElement = (root: HTMLElement, direction: 1 | -1) => {
-  const focusable = getFocusableElements(root);
+const focusNextElement = (root: HTMLElement, zone: FocusZone, direction: 1 | -1) => {
+  const focusable = getFocusableElements(root, zone);
   if (!focusable.length) return;
 
   const activeElement = document.activeElement as HTMLElement | null;
@@ -147,9 +220,8 @@ const clickActiveElement = () => {
   }
 };
 
-const isEncoderClickEvent = (eventType: string) => eventType === "encoder/click" || eventType === "encoder/press";
-
 export default function EncoderNavigationProvider({ children }: { children: ReactNode }) {
+  const [zone, setZone] = useState<FocusZone>('BARS');
   const rootRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const action = useSelector((state: any) => state.event);
@@ -158,18 +230,20 @@ export default function EncoderNavigationProvider({ children }: { children: Reac
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    
+
     // Use setTimeout to ensure DOM is fully rendered after route change
     const timeoutId = setTimeout(() => {
       // Get first focusable element and focus it
-      const focusable = getFocusableElements(root);
+      const focusable = getFocusableElements(root, zone);
       if (focusable.length > 0) {
         focusElement(focusable[0]);
       }
     }, 0);
-    
+
     return () => clearTimeout(timeoutId);
   }, [location.pathname]);
+
+  
 
   useEffect(() => {
     const root = rootRef.current;
@@ -178,14 +252,18 @@ export default function EncoderNavigationProvider({ children }: { children: Reac
     if (action.event == "command") {
       const direction = action.payload.action || "" as string;
       if (direction === "down" || direction === "right") {
-        focusNextElement(root, 1);
+        focusNextElement(root, zone, 1);
       } else if (direction === "up" || direction === "left") {
-        focusNextElement(root, -1);
+        focusNextElement(root, zone, -1);
+      } else if (direction === "enter") {
+        clickActiveElement();
+      } else if (direction === "longpress") {
+        if (zone == "BARS") {
+          setZone("MENU");
+        } else {
+          setZone("BARS");
+        }
       }
-    }
-
-    if (isEncoderClickEvent(action.event)) {
-      clickActiveElement();
     }
   }, [action]);
 

@@ -53,6 +53,15 @@
   --accent-foreground: #ffffff;
   --button-hover: rgba(189, 189, 189, 0.3);
 }
+
+.encoder-focused {
+  border-color: hsl(var(--ring)) !important;
+
+  box-shadow: 0 0 0 3px hsla(var(--ring), 0.5) !important;
+
+  outline: none !important;
+}
+
 .dark {
   --background: #1f1f1f;
   --foreground: oklch(0.985 0 0);
