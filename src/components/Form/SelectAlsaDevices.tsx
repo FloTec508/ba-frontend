@@ -18,7 +18,9 @@ function SelectAlsaDevices(props: SelectAlsaDevicesProps) {
   useEffect(() => {
     const fetchPlaybackDevices = async () => {
       const response = await getAlsaDevices(props.cmd);
+      console.log("got devices: ", response);
       setDevices(response);
+      console.log("saved devices: ", devices);
     };
     fetchPlaybackDevices();
   }, [props.cmd]);

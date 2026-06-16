@@ -12,23 +12,38 @@ interface SelectAlsaDevicesProps {
 
 function SelectAlsaVolumeDevice(props: SelectAlsaDevicesProps) {
   const { getAlsaVolumeDevices } = useMixerService();
+  // Wir initialisieren mit einem leeren Array
   const [devices, setDevices] = useState<AlsaVolumeDevice[]>([]);
 
   useEffect(() => {
     const fetchVolumeDevices = async () => {
-      const response = await getAlsaVolumeDevices(props?.card);
-      setDevices(response);
+      // Wenn keine Card übergeben wurde, brauchen wir das Backend gar nicht erst fragen
+      if (!props.card) {
+        setDevices([]);
+        return;
+      }
+
+      try {
+        const response = await getAlsaVolumeDevices(props.card);
+        // Falls das Backend null oder undefined liefert, nutzen wir den Fallback || []
+        setDevices(response || []);
+      } catch (error) {
+        console.error("Fehler beim Laden der Volume Devices:", error);
+        setDevices([]); // Bei einem Fehler ebenfalls auf leeres Array zurückfallen
+      }
     };
     fetchVolumeDevices();
   }, [props.card]);
 
-  const items = devices.map((device) => ({
+  // Zur absoluten Sicherheit mappen wir auf (devices || []), 
+  // falls der State jemals wieder korrumpiert wird
+  const items = (devices || []).map((device) => ({
     label: device.name,
     value: device.name,
     description: device.description,
   }));
 
-  const hasCurrentValue = devices.some((device) => device.name === props.value);
+  const hasCurrentValue = (devices || []).some((device) => device.name === props.value);
   const value = hasCurrentValue ? props.value : null;
 
   return <SelectComboBox items={items} {...props} value={value} />;

@@ -11,6 +11,6 @@ export const useMixerService = () => {
     getMixerVolume: () => request("mixer.get_volume"),
     setMixerVolume: (volume: number) => request("mixer.set_volume", { volume: volume }),
     getAlsaDevices: (cmd: string) => request("mixer.alsa_devices", { cmd }),
-    getAlsaVolumeDevices: (card?: string) => request("mixer.alsa_mixer_volume", { card }),
+    getAlsaVolumeDevices: (device?: string) => request("mixer.alsa_mixer_volume", { device }),
   };
 };
