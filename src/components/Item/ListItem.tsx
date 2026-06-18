@@ -7,7 +7,7 @@ import { CheckCircleIcon, CircleIcon, MusicNotesIcon } from "@phosphor-icons/rea
 import { formatNo, getDuration, getSubtitle, getTitle } from "@/util";
 import { AnyItem, Storage } from "@/types";
 import { usePlayNow } from "@/hooks/usePlayNow";
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useRef } from "react";
 import { useMenuActions } from "@/hooks/useMenuActions";
 import { ICON_SM } from "@/constants";
 
@@ -32,6 +32,8 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
 
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingCover, setLoadingCover] = useState<boolean>(false);
+
+  const actionMenuContainerRef = useRef<HTMLDivElement>(null);
 
   const onClickItem = async () => {
     setLoading(true);
@@ -58,6 +60,24 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    // Ganz wichtig! Verhindert, dass Chromium/Electron auf dem Pi das 
+    // standardmäßige, hässliche graue Browser-Kontextmenü anzeigt.
+    e.preventDefault();
+
+    if (actionMenuContainerRef.current) {
+      // Suche nach dem echten Button (oder dem div mit der Rolle button) im ActionMenu
+      const targetButton = 
+        actionMenuContainerRef.current.querySelector("button") || 
+        actionMenuContainerRef.current.querySelector<HTMLElement>('[role="button"]');
+
+      // Wenn gefunden, simuliere einen ganz normalen Linksklick darauf
+      if (targetButton) {
+        targetButton.click();
+      }
+    }
+  };
+
   return (
     <>
       <div
@@ -65,6 +85,7 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
         tabIndex={0}
         onClick={onClickItem}
         onKeyDown={onKeyDownItem}
+        onContextMenu={handleContextMenu}
         className="flex items-center w-full cursor-pointer justify-between relative outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px] listItem"
       >
         <div className="py-3 px-4 flex justify-between w-full items-center">

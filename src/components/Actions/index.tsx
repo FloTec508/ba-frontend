@@ -43,7 +43,7 @@ const ActionMenu = ({ items }: { items: MenuItem[] }) => {
       <button
         key={idx}
         onClick={() => handleAction(idx, item.action as any)}
-        className={`flex w-full items-center gap-2 px-4 py-3 md:py-2 text-left cursor-pointer hover:bg-primary hover:text-primary-foreground bg-popover ${
+        className={`flex w-full items-center gap-2 px-4 py-3 md:py-2 text-left cursor-pointer hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus:outline-none bg-popover ${
           item.disabled ? "text-muted! hover:bg-popover disabled:opacity-50" : ""
         }`}
         disabled={item.disabled}

@@ -110,13 +110,34 @@ const getActiveModal = (): HTMLElement | null => {
   // Look for active overlay roots first (OverlayStandby, OverlayVolume, etc.)
   const overlays = document.querySelectorAll<HTMLElement>('[data-overlay="true"]');
   for (const overlay of overlays) {
+    // Ignore player container if present
     if (overlay.classList.contains("player")) {
       continue;
     }
+    // Ensure overlay is actually active/visible and intersects viewport
     if (!isOverlayRootActive(overlay) || !isElementInWindowViewport(overlay)) {
       continue;
     }
     return overlay;
+  }
+
+  // Detect action-menu popups (e.g. desktop dropdowns and mobile drawers)
+  // Common popup containers use bg-popover, shadow-lg and elevated z-indexes.
+  const popupCandidates = Array.from(document.querySelectorAll<HTMLElement>(".bg-popover, .shadow-lg, [class*='max-h-60']"));
+  for (const popup of popupCandidates) {
+    // Skip if it's the player or not visible/interactive
+    if (popup.classList.contains("player")) continue;
+    if (!isOverlayRootActive(popup)) continue;
+
+    const style = window.getComputedStyle(popup);
+    if (!(style.position === "fixed" || style.position === "absolute" || style.position === "relative")) continue;
+
+    // popup should contain actionable items (buttons/menuitems)
+    if (!popup.querySelector('button, [role="menuitem"], [role="menu"]')) continue;
+
+    if (!isElementInWindowViewport(popup)) continue;
+
+    return popup;
   }
 
   // Fallback to modal dialogs rendered with z-50
@@ -137,6 +158,7 @@ const getFocusableElements = (root: HTMLElement, zone: FocusZone) => {
   // If a modal is open, only search within the modal
   const activeModal = getActiveModal();
   const searchRoot = activeModal || root;
+  const isModalActive = Boolean(activeModal);
 
   return Array.from(searchRoot.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)).filter((element) => {
     if (element.hasAttribute("disabled")) return false;
@@ -146,8 +168,8 @@ const getFocusableElements = (root: HTMLElement, zone: FocusZone) => {
     if (!isElementVisible(element)) return false;
 
     // Skip items in overlay containers (Player, OverlayVolume, etc)
-    // unless a modal is actively open
-    if (!activeModal) {
+    // unless a modal or popup is actively open
+    if (!isModalActive) {
       let parent = element.parentElement;
       while (parent) {
         if (parent.getAttribute("data-overlay") === "true" && !parent.classList.contains("player")) {
@@ -157,20 +179,22 @@ const getFocusableElements = (root: HTMLElement, zone: FocusZone) => {
       }
     }
 
-    const isInMain = isElementInMain(element);
-    if (zone == "BARS") {
-      if (isInMain) {
-        return false;
+    if (!isModalActive) {
+      const isInMain = isElementInMain(element);
+      if (zone == "BARS") {
+        if (isInMain) {
+          return false;
+        }
+      } else {
+        if (!isInMain) {
+          return false;
+        }
       }
-    } else {
-      if (!isInMain) {
-        return false;
-      }
-    }
 
-    const isInListItem = isElementInMenuitem(element);
-    if (isInListItem) {
-      return false;
+      const isInListItem = isElementInMenuitem(element);
+      if (isInListItem) {
+        return false;
+      }
     }
 
     // Check if element is in viewport of its scrollable parent
@@ -257,11 +281,18 @@ export default function EncoderNavigationProvider({ children }: { children: Reac
         focusNextElement(root, zone, -1);
       } else if (direction === "enter") {
         clickActiveElement();
-      } else if (direction === "longpress") {
+      } else if (direction === "doubleclick") {
         if (zone == "BARS") {
           setZone("MENU");
         } else {
           setZone("BARS");
+        }
+      }else if(direction === "longpress") {
+        const activeElement = document.activeElement;
+        console.log(activeElement);
+        if (activeElement) {
+          // trigger right click event
+          activeElement.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
         }
       }
     }
