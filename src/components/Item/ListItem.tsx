@@ -133,7 +133,7 @@ const ListItem = ({ no, item, selected = false, onClick, selectable = false }: L
         {selectable ? (
           <div className="pr-4">{selected ? <CheckCircleIcon weight="fill" size={ICON_SM} /> : <CircleIcon size={25} className="opacity-50" />}</div>
         ) : (
-          <div className="pr-2 " >
+          <div className="pr-2 " ref={actionMenuContainerRef}>
             <ActionMenu items={itemsMenu(item)} />
           </div>
         )}
